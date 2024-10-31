@@ -6,9 +6,9 @@ class AuthService:
     def __init__(self):
 
         self.users = {
-            "admin": Admin("admin", ""),
-            "patient1": Patient("patient1", ""),
-            "mhwp1": MHWP("mhwp1", "")
+            "admin": Admin("admin", "1234567"),
+            "patient1": Patient("patient1", "1234567"),
+            "mhwp1": MHWP("mhwp1", "1234567")
         }
 
     def login(self):
