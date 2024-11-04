@@ -23,33 +23,35 @@ class BreezeApp:
         
     def show_main_menu(self):
         """Displays the main menu and processes user selection for login, registration, or exit.
+           Clear out the user choice in each loop.
         """
-        print(BREEZE_BANNER_STRING)
-        print("Welcome to Breeze - Mental Health Management System ! \n")
-        print("[L]ogin")
-        print("[R]egister")
-        print("[E]xit")
-        print()
-        
-        print("Please select an action from the options above (you can use any case):")
-        user_choice = input("> ")
-        
-        match user_choice.lower():
-            case "l":
-                clear_screen()
-                print(LOGIN_BANNER_STRING)
-                self.show_login()
-            case "r":
-                clear_screen()
-                print(REGISTER_BANNER_STRING)
-                self.show_register()
-            case "e":
-                clear_screen()
-                self.exit()
-            case _:
-                clear_screen()
-                print_system_message("Invalid choice, try again!")   
-                self.show_main_menu()
+        while True:
+            print(BREEZE_BANNER_STRING)
+            print("Welcome to Breeze - Mental Health Management System ! \n")
+            print("[L]ogin")
+            print("[R]egister")
+            print("[E]xit")
+            print()
+            
+            print("Please select an action from the options above (you can use any case):")
+            user_choice = input("> ")
+            
+            match user_choice.lower():
+                case "l":
+                    clear_screen()
+                    print(LOGIN_BANNER_STRING)
+                    self.show_login()
+                case "r":
+                    clear_screen()
+                    print(REGISTER_BANNER_STRING)
+                    self.show_register()
+                case "e":
+                    clear_screen()
+                    self.exit()
+                case _:
+                    clear_screen()
+                    print_system_message("Invalid choice, try again!")   
+                    self.show_main_menu()
 
     def show_login(self):
         """Prompts the user to log in, and redirects to the dashboard.
@@ -81,7 +83,7 @@ class BreezeApp:
         """Displays a goodbye message and exits the application.
         """
         print_system_message("Bye!")
-        return
+        exit()
 
     def show_dashboard(self, user):
         """Redirects the user to their respective dashboard based on role (Patient, Admin, or MHWP).
@@ -89,12 +91,20 @@ class BreezeApp:
         Args:
             user (User): The user you going to redirect to their dashboard.
         """
-        clear_screen()
-        if user.get_role() == 'Patient':
-            self.patient_service.show_patient_dashboard(user)
-        elif user.get_role() == 'Admin':
-            print('Admin login')
-        elif user.get_role() == "MHWP":
-            print('MHWP login')
-        else:
-            print('Unknow user role')
+        while True:
+            clear_screen()
+            if user.get_role() == 'Patient':
+                logged_out = self.patient_service.show_patient_dashboard(user)
+            elif user.get_role() == 'Admin':
+                print('Admin login')
+            elif user.get_role() == "MHWP":
+                print('MHWP login')
+            else:
+                print('Unknow user role')
+            
+            if logged_out:
+                user = self.auth_service.logout()
+                clear_screen()
+                print_system_message("Loged out successully!")
+                self.show_main_menu()
+                break

@@ -12,6 +12,8 @@ class AuthService:
             "patient1": Patient("patient1", "1234567"),
             "mhwp1": MHWP("mhwp1", "1234567")
         }
+        
+        self.current_user = None
 
     def login(self):
         username = input("Username: ")
@@ -19,9 +21,14 @@ class AuthService:
         user = self.users.get(username)
         if user and user.login(password):
             print(f"Welcome, {username}")
+            self.current_user = user
             return user
         return None
     
+    def logout(self):
+        if self.current_user:
+            self.current_user = None
+            return None
     
     def _register_role(self, role, username, password):   
         """Helper method to create a new user based on role.

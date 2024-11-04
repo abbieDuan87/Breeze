@@ -6,6 +6,14 @@ class PatientService:
         pass
     
     def show_patient_dashboard(self, user):
+        """Displays the patient dashboard and processes user actions.
+
+        Args:
+            user (User): _The logged-in user
+            
+        Returns:
+            bool: True if the user chose to log out, otherwise False
+        """
         clear_screen()
         print(PATIENT_BANNER_STRING)
         print('Hi', user.get_username(), '!')
@@ -16,13 +24,18 @@ class PatientService:
         print("[J] Journal - enter your journaling text")
         print("[S] Search for meditation and relaxation exercises")
         print("[B] Book or cancel an appointment with my MHWP")
+        print("[X] Log out")
         
         user_input = input('> ')
         match user_input.strip().lower():
             case "e":
                 self.edit_personal_information(user)
+            case "x":
+                return True
             case _:
-                print('end')
+                pass
+        
+        return False
     
     def edit_personal_information(self, user):
         clear_screen()
@@ -69,5 +82,4 @@ class PatientService:
     
     def manage_appointment(self, user):
         pass
-        
         
