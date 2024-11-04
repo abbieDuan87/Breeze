@@ -100,7 +100,7 @@ class BreezeApp:
             elif user.get_role() == "MHWP":
                 print('MHWP login')
             else:
-                print('Unknow user role')
+                print('Unknown user role')
             
             if logged_out:
                 user = self.auth_service.logout()
