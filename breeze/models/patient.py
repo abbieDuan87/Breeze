@@ -1,13 +1,17 @@
 from .user import User
 
 class Patient(User):
-    def __init__(self, username, password, email=None, emergency_contact_email=None, is_disabled=False, mood_entries=[], journal_entries=[], appointments=[]):
+    def __init__(self, username, password, email=None, emergency_contact_email=None, is_disabled=False, name=None, mood_entries=[], journal_entries=[], appointments=[]):
         super().__init__(username, password, role="Patient", is_disabled=is_disabled)
+        self.__name = name
         self.__email = email 
         self.__emergency_contact_email = emergency_contact_email
         self.__mood_entries = mood_entries
         self.__journal_entries = journal_entries
         self.__appointments = appointments
+    
+    def get_name(self):
+        return self.__name
     
     def get_email(self):
         return self.__email
@@ -17,6 +21,9 @@ class Patient(User):
     
     def get_mood_entries(self):
         return self.__mood_entries
+    
+    def set_name(self, name):
+        self.__name = name
     
     def set_email(self, email):
         self.__email = email
@@ -46,8 +53,9 @@ class Patient(User):
             "role": self.get_role(),
             "isDisabled": self.get_is_disabled(),
             "information": {
-              "email": self.get_email(),
-              "emergencyContactEmail": self.get_emergency_contact()  
+                "name": self.get_name(),
+                "email": self.get_email(),
+                "emergencyContactEmail": self.get_emergency_contact()  
             },
             "moods": self.__mood_entries,
             "journals": self.__journal_entries,
