@@ -13,7 +13,7 @@ class BreezeApp:
     def __init__(self):
         self.auth_service = AuthService()
         self.admin_service = AdminService()
-        self.patient_service = PatientService()
+        self.patient_service = PatientService(self.auth_service)
         self.mhwp_service = MHWPService()
     
     def run(self):
