@@ -7,16 +7,16 @@
       "isDisabled": false,
       "information": {
         "email": "",
-        "emergency_contact_email": ""
+        "emergencyContactEmail": ""
       },
       "moods": [
         {
-          "color_code": "",
+          "colorCode": "",
           "comment": "",
           "datetime": ""
         },
         {
-          "color_code": "",
+          "colorCode": "",
           "comment": "",
           "datetime": ""
         }
