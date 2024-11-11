@@ -3,17 +3,17 @@ from breeze.models.patient import Patient
 from breeze.models.mhwp import MHWP
 
 from breeze.utils.cli_utils import print_system_message
+from breeze.utils.data_utils import load_data, save_data
 
 class AuthService:
     def __init__(self):
-
-        self.users = {
-            "admin": Admin("admin", "1234567"),
-            "patient1": Patient("patient1", "1234567"),
-            "mhwp1": MHWP("mhwp1", "1234567")
-        }
-        
+        self.users = {user.get_username(): user for user in load_data("./data/users.json").get("users", [])}
         self.current_user = None
+    
+    def save_data_to_file(self):
+        """Save the updated user data to the JSON file"""
+        data = {"users": [user.to_dict() for user in self.users.values()]}
+        save_data("./data/users.json", data)
 
     def login(self):
         username = input("Username: ")
@@ -71,8 +71,11 @@ class AuthService:
             # Register role based on input
             new_user = self._register_role(role, username, password)
             if new_user:
-              break  
+                break  
         
-        self.users[username] = new_user
+        # save the new user into the self.users dictionary
+        self.users[new_user.get_username()] = new_user
         print_system_message("Account created successfully! Press B to go back and log in.")
         return new_user
+
+    
