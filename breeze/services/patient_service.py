@@ -30,6 +30,8 @@ class PatientService:
         match user_input.strip().lower():
             case "e":
                 self.edit_personal_information(user)
+            case "r":
+                self.record_mood(user)
             case "x":
                 return True
             case "s":
@@ -76,8 +78,42 @@ class PatientService:
         direct_to_dashboard()
     
     def record_mood(self, user):
-        pass
-    
+        clear_screen()
+        print(PATIENT_BANNER_STRING)
+
+        print("Record Your Mood for the Day")
+        print("Please choose a colour that best describes your mood:")
+        print("Green - Very Happy")
+        print("Light Green - Happy")
+        print("Yellow - Neutral")
+        print("Orange - Sad")
+        print("Red - Very Sad or Angry")
+
+        colour_to_mood = {
+            "green": "Very Happy",
+            "light green": "Happy",
+            "yellow": "Neutral",
+            "orange": "Sad",
+            "red": "Very Sad or Angry"
+        }
+
+        while True:
+
+            colour_input = input("Enter the colour that represents your mood today: ").strip().lower()
+            
+            
+            if colour_input in colour_to_mood:
+                mood_description = colour_to_mood[colour_input]
+                comment = input("Would you like to add any additional comments about your mood today? (optional): ").strip()
+                
+                user.add_mood_entry(mood=mood_description, comment=comment)
+                
+                print("Mood recorded successfully!")
+                break  
+            else:
+                print("Invalid colour entered. Please choose from Green, Light Green, Yellow, Orange, or Red.")
+            
+           
     def enter_journaling(self, user):
         pass
     
