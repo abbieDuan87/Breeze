@@ -1,4 +1,4 @@
-from breeze.utils.cli_utils import print_system_message, clear_screen
+from breeze.utils.cli_utils import print_system_message, clear_screen, direct_to_dashboard
 from breeze.utils.constants import PATIENT_BANNER_STRING
 
 class PatientService:
@@ -32,6 +32,8 @@ class PatientService:
                 self.edit_personal_information(user)
             case "x":
                 return True
+            case "s":
+                self.search_exercise(user)
             case _:
                 pass
         
@@ -71,14 +73,7 @@ class PatientService:
         # Save the changes to the file via AuthService
         self.auth_service.save_data_to_file()
         
-        print("\nPress B to go back:")
-        while True:
-            user_input = input("> ").strip().lower()
-            if user_input == "b":
-                break  # exit the edit mode and return to dashboard
-            else:
-                print_system_message("Invalid input. Please press B to go back.")
-        
+        direct_to_dashboard()
     
     def record_mood(self, user):
         pass
@@ -87,8 +82,37 @@ class PatientService:
         pass
     
     def search_exercise(self, user):
-        pass
-    
+        """Allows the patient to search for meditation and relaxation exercises by keyword."""
+        clear_screen()
+        print(PATIENT_BANNER_STRING)
+        print_system_message("Search for Meditation and Relaxation Exercises")
+        
+        valid_keywords = {
+            "sleep": "deep-sleep",
+            "piano": "piano-meditation",
+            "rain": "rain-and-thunder-sound-therapy",
+            "campfire": "nature-sounds-campfire-and-stream",
+            "harp": "i-see-you-harp"
+        }
+        
+        print_system_message("Choose a sound you like from the following options:")
+        for keyword in valid_keywords.keys():
+            print(f"- {keyword.capitalize()}")
+        
+        while True:
+            print()
+            keyword = input("Enter a keyword from the list above to start your meditation: ").strip().lower()
+            
+            if keyword in valid_keywords:
+                search_url = f"https://insighttimer.com/indiemusicbox/guided-meditations/{valid_keywords[keyword]}"
+                print_system_message(f"Here is your selected meditation for '{keyword}':")
+                print(search_url)
+                break
+            else:
+                print_system_message("Invalid keyword. Please choose a keyword from the list.")
+
+        direct_to_dashboard()
+            
     def manage_appointment(self, user):
         pass
         
