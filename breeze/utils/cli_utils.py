@@ -21,3 +21,12 @@ def print_system_message(message):
  
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
+    
+def direct_to_dashboard():
+    print("\nPress B to go back:")
+    while True:
+        user_input = input("> ").strip().lower()
+        if user_input == "b":
+            break
+        else:
+            print("Invalid input. Please press B to go back.")
