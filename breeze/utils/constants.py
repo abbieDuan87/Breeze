@@ -25,3 +25,8 @@ PATIENT_BANNER_STRING = """
 █▀█ ▄▀█ ▀█▀ █ █▀▀ █▄░█ ▀█▀
 █▀▀ █▀█ ░█░ █ ██▄ █░▀█ ░█░
 """
+
+ADMIN_BANNER_STRING = """
+
+ENTER ADMIN STRING
+"""

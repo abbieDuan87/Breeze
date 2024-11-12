@@ -12,7 +12,7 @@ class BreezeApp:
     """
     def __init__(self):
         self.auth_service = AuthService()
-        self.admin_service = AdminService()
+        self.admin_service = AdminService(self.auth_service)
         self.patient_service = PatientService(self.auth_service)
         self.mhwp_service = MHWPService()
     
@@ -96,7 +96,7 @@ class BreezeApp:
             if user.get_role() == 'Patient':
                 logged_out = self.patient_service.show_patient_dashboard(user)
             elif user.get_role() == 'Admin':
-                print('Admin login')
+                logged_out = self.admin_service.show_admin_dashboard(user)
             elif user.get_role() == "MHWP":
                 print('MHWP login')
             else:
@@ -105,6 +105,6 @@ class BreezeApp:
             if logged_out:
                 user = self.auth_service.logout()
                 clear_screen()
-                print_system_message("Loged out successully!")
+                print_system_message("Logged out successully!")
                 self.show_main_menu()
                 break
