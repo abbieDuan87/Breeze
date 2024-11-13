@@ -78,4 +78,5 @@ class AuthService:
         print_system_message("Account created successfully! Press B to go back and log in.")
         return new_user
 
-    
+    def get_all_users(self):
+        return self.users

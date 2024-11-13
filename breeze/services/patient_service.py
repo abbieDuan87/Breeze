@@ -1,4 +1,4 @@
-from breeze.utils.cli_utils import print_system_message, clear_screen, direct_to_dashboard
+from breeze.utils.cli_utils import print_system_message, clear_screen, direct_to_dashboard, show_disabled_account_dashboard_menu
 from breeze.utils.constants import PATIENT_BANNER_STRING
 
 class PatientService:
@@ -10,35 +10,40 @@ class PatientService:
 
         Args:
             user (User): _The logged-in user
-            
+
         Returns:
             bool: True if the user chose to log out, otherwise False
         """
-        #clear_screen()
+        
         print(PATIENT_BANNER_STRING)
-        print('Hi', user.get_username(), '!')
-        print('What do you want to do today?')
         
-        print("[E] Edit my personal information")
-        print("[R] Record my mood for today")
-        print("[J] Journal - enter your journaling text")
-        print("[S] Search for meditation and relaxation exercises")
-        print("[B] Book or cancel an appointment with my MHWP")
-        print("[X] Log out")
-        
-        user_input = input('> ')
-        match user_input.strip().lower():
-            case "e":
-                self.edit_personal_information(user)
-            case "x":
-                return True
-            case "s":
-                self.search_exercise(user)
-            case _:
-                pass
-        
+        if user.get_is_disabled():
+            return show_disabled_account_dashboard_menu(user.get_username())
+             
+        else:
+            # If account is not disabled, show the full list of options
+            print('Hi', user.get_username(), '!')
+            print('What do you want to do today?')
+            print("[E] Edit my personal information")
+            print("[R] Record my mood for today")
+            print("[J] Journal - enter your journaling text")
+            print("[S] Search for meditation and relaxation exercises")
+            print("[B] Book or cancel an appointment with my MHWP")
+            print("[X] Log out")
+
+            user_input = input('> ')
+            match user_input.strip().lower():
+                case "e":
+                    self.edit_personal_information(user)
+                case "s":
+                    self.search_exercise(user)
+                case "x":
+                    return True
+                case _:
+                    print_system_message("Invalid choice. Please try again.")
+
         return False
-    
+
     def edit_personal_information(self, user):
         clear_screen()
         print(PATIENT_BANNER_STRING)
