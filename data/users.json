@@ -1,60 +1,28 @@
 {
-    "users": [
-        {
-            "username": "patient1",
-            "password": "",
-            "role": "Patient",
-            "isDisabled": false,
-            "information": {
-                "name": null,
-                "email": null,
-                "emergencyContactEmail": null
-            },
-            "moods": [],
-            "journals": [],
-            "appointments": []
-        },
-        {
-            "username": "patient2",
-            "password": "",
-            "role": "Patient",
-            "isDisabled": false,
-            "information": {
-                "name": null,
-                "email": null,
-                "emergencyContactEmail": null
-            },
-            "moods": [],
-            "journals": [],
-            "appointments": []
-        },
-        {
-            "username": "mhwp1",
-            "password": "",
-            "role": "MHWP",
-            "isDisabled": false,
-            "appointments": []
-        },
-        {
-            "username": "mhwp2",
-            "password": "",
-            "role": "MHWP",
-            "isDisabled": false,
-            "appointments": []
-        },
-        {
-            "username": "rhea",
-            "password": "",
-            "role": "Patient",
-            "isDisabled": false,
-            "information": {
-                "name": null,
-                "email": null,
-                "emergencyContactEmail": null
-            },
-            "moods": [],
-            "journals": [],
-            "appointments": []
-        }
-    ]
+  "users": [
+    {
+      "username": "patient1",
+      "password": "",
+      "role": "patient",
+      "isDisabled": false
+    },
+    {
+      "username": "patient2",
+      "password": "",
+      "role": "patient",
+      "isDisabled": false
+    },
+    {
+      "username": "mhwp1",
+      "password": "",
+      "role": "mhwp",
+      "isDisabled": false
+    },
+    {
+      "username": "mhwp2",
+      "password": "",
+      "role": "mhwp",
+      "isDisabled": false
+    }
+  ]
 }
