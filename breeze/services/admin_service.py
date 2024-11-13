@@ -70,13 +70,14 @@ class AdminService:
                 print_system_message(f"Username '{user_input}' not found! Please try again")
             else:
                 user_to_disable = self.auth_service.get_all_users().get(user_input) # get the user by username
-                if user_to_disable.get_is_disabled(): 
+                if user_to_disable.get_role() == "Admin":
+                    print_system_message("You cannot disable this account.")
+                elif user_to_disable.get_is_disabled(): 
                     print_system_message(f"The account '{user_input}' is already disabled.")
                 else:  
                     user_to_disable.set_is_disabled(True) # disable the user
                     self.auth_service.save_data_to_file() # save the change
                     print_system_message(f"The account '{user_input}' has been successfully disabled.")
-                break
                 
         direct_to_dashboard()
         
