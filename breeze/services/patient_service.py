@@ -44,7 +44,7 @@ class PatientService:
             case "r":
                 self.record_mood(user)    
             case "r":
-                self.record_mood(user)    
+                self.record_mood(user)   
             case _:
                 pass
         
