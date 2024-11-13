@@ -2,6 +2,9 @@ import json
 import datetime 
 from breeze.utils.cli_utils import print_system_message, clear_screen, direct_to_dashboard
 from breeze.utils.constants import PATIENT_BANNER_STRING
+from breeze.utils.data_utils import load_data, save_data
+import datetime
+
 
 class PatientService:
     def __init__(self, auth_service):
@@ -38,6 +41,8 @@ class PatientService:
                 return True
             case "s":
                 self.search_exercise(user)
+            case "r":
+                self.record_mood(user)    
             case "r":
                 self.record_mood(user)    
             case _:
@@ -129,8 +134,7 @@ class PatientService:
                 return
             else:
                 print_system_message("Invalid colour entered. Please choose from Green, Light Green, Yellow, Orange, or Red.")
-                break  
-            
+
     def enter_journaling(self, user):
         pass
     

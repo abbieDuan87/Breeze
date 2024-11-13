@@ -4,6 +4,7 @@ from breeze.models.admin import Admin
 from breeze.models.mhwp import MHWP
 from breeze.models.patient import Patient
 
+
 def decode_user(user_data):
     """
     Decodes a dictionary of user data into the appropriate user object (Patient, Admin, MHWP).
