@@ -16,48 +16,49 @@ class AdminService:
             bool: True if the user chose to log out, otherwise False
         """
 
-        clear_screen()
         print(ADMIN_BANNER_STRING)
         print('Hi', user.get_username(), '!')
         print('What do you want to do today?')
 
-        while True:
-            print('[A] Allocate patient to MHWP')
-            print('[E] Edit user information')
-            print('[R] Delete a user')
-            print('[D] Disable a user')
-            print('[V] View summary')
-            print('[X] Log out')
+        
+        print('[A] Allocate patient to MHWP')
+        print('[E] Edit user information')
+        print('[R] Delete a user')
+        print('[D] Disable a user')
+        print('[V] View summary')
+        print('[X] Log out')
 
-            user_input = input("> ").strip().lower()
-            match user_input:
-                case "a":
-                    self.allocate_patient_to_mhwp()
-                case "e":
-                    self.edit_user_information()
-                case "d":
-                    self.delete_user()
-                case "r":
-                    self.disable_user()
-                case "v":
-                    self.view_summary()
-                case "x":
-                    return True
-                case _:
-                    print_system_message("Invalid choice. Please try again.")
+        user_input = input("> ").strip().lower()
+        match user_input:
+            case "a":
+                self.allocate_patient_to_mhwp()
+            case "e":
+                self.edit_user_information()
+            case "d":
+                self.delete_user()
+            case "r":
+                self.disable_user()
+            case "v":
+                self.view_summary()
+            case "x":
+                return True
+            case _:
+                print_system_message("Invalid choice. Please try again.")
+
+        return False
 
     def allocate_patient_to_mhwp(self):
-        print_system_message('Feature to allocate to MHWP to be implemented soon')
+        pass
 
     def edit_user_information(self):
-        print_system_message('Feature to edit user info to be implemented soon')
+        pass
 
     def delete_user(self):
-        print_system_message('Feature to delete userto be implemented soon')
+        pass
 
     def disable_user(self):
-        print_system_message('Feature to disable user to be implemented soon')
+        pass
 
     def view_summary(self):
-        print_system_message('Feature view summary to be implemented soon')
+        pass
 
