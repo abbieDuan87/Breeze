@@ -14,7 +14,7 @@ class PatientService:
         Returns:
             bool: True if the user chose to log out, otherwise False
         """
-        # clear_screen()
+        #clear_screen()
         print(PATIENT_BANNER_STRING)
         print('Hi', user.get_username(), '!')
         print('What do you want to do today?')
