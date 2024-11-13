@@ -14,7 +14,7 @@ class BreezeApp:
         self.auth_service = AuthService()
         self.admin_service = AdminService(self.auth_service)
         self.patient_service = PatientService(self.auth_service)
-        self.mhwp_service = MHWPService()
+        self.mhwp_service = MHWPService(self.auth_service)
     
     def run(self):
         """Starts the application and displays the main menu.
@@ -98,7 +98,7 @@ class BreezeApp:
             elif user.get_role() == 'Admin':
                 logged_out = self.admin_service.show_admin_dashboard(user)
             elif user.get_role() == "MHWP":
-                print('MHWP login')
+                logged_out = self.mhwp_service.show_mhwp_dashboard(user)
             else:
                 print('Unknown user role')
             

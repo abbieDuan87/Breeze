@@ -47,17 +47,17 @@ class AdminService:
                     print_system_message("Invalid choice. Please try again.")
 
     def allocate_patient_to_mhwp(self):
-        print_system_message('Feature to allocation to MHWP be implemented soon')
+        print_system_message('Feature to allocate to MHWP to be implemented soon')
 
     def edit_user_information(self):
-        print_system_message('Feature to edit user info coming soon')
+        print_system_message('Feature to edit user info to be implemented soon')
 
     def delete_user(self):
-        print_system_message('Feature to delete user coming soon')
+        print_system_message('Feature to delete userto be implemented soon')
 
     def disable_user(self):
-        print_system_message('Feature to disable user coming soon')
+        print_system_message('Feature to disable user to be implemented soon')
 
     def view_summary(self):
-        print_system_message('Feature view summary coming soon')
+        print_system_message('Feature view summary to be implemented soon')
 
