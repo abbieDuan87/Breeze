@@ -33,14 +33,10 @@ class PatientService:
         match user_input.strip().lower():
             case "e":
                 self.edit_personal_information(user)
-            case "r":
-                self.record_mood(user)
             case "x":
                 return True
             case "s":
                 self.search_exercise(user)
-            case "r":
-                self.record_mood(user)    
             case "r":
                 self.record_mood(user)   
             case _:
