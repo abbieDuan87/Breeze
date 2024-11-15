@@ -1,5 +1,8 @@
 from breeze.utils.cli_utils import print_system_message, clear_screen, direct_to_dashboard, show_disabled_account_dashboard_menu
 from breeze.utils.constants import PATIENT_BANNER_STRING
+from breeze.utils.data_utils import load_data, save_data
+import datetime
+
 
 class PatientService:
     def __init__(self, auth_service):
@@ -35,6 +38,8 @@ class PatientService:
             match user_input.strip().lower():
                 case "e":
                     self.edit_personal_information(user)
+                case "r":
+                    self.record_mood(user)
                 case "s":
                     self.search_exercise(user)
                 case "x":
@@ -81,8 +86,54 @@ class PatientService:
         direct_to_dashboard()
     
     def record_mood(self, user):
-        pass
-    
+        clear_screen()
+        print(PATIENT_BANNER_STRING)
+        
+        print("Record Your Mood for the Day")
+        print("Please choose a colour that best describes your mood:")
+        print("[G]reen - Very Happy")
+        print("[L]ight Green - Happy")
+        print("[Y]ellow - Neutral")
+        print("[O]range - Sad")
+        print("[R]ed - Very Sad")
+
+        colour_to_mood = {
+            "g": "Very Happy",
+            "l": "Happy",
+            "y": "Neutral",
+            "o": "Sad",
+            "r": "Very Sad"
+        }
+
+        while True:
+            colour_input = input("Enter the colour code that represents your mood today: ").strip().lower()
+            if colour_input in colour_to_mood:
+                mood_description = colour_to_mood[colour_input]
+                comment = input("Would you like to add any additional comments about your mood today? Type [R] to discard your entry: ").strip()
+                
+                if comment.lower() == 'r':
+                    print_system_message("Mood entry discarded. Returning to dashboard.")
+                    direct_to_dashboard()
+                    return
+
+                date_string = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                mood_entry = {
+                    "mood": mood_description,
+                    "comment": comment,
+                    "datetime": date_string
+                }
+
+                if hasattr(user, "add_mood_entry"):
+                    user.add_mood_entry(mood_description, comment, date_string)
+
+                self.auth_service.save_data_to_file()
+
+                print_system_message("Mood recorded successfully!")
+                direct_to_dashboard()  
+                return
+            else:
+                print_system_message("Invalid colour entered. Please choose from Green, Light Green, Yellow, Orange, or Red.")
+
     def enter_journaling(self, user):
         pass
     
