@@ -1,10 +1,8 @@
 from breeze.utils.cli_utils import print_system_message, clear_screen, direct_to_dashboard
 from breeze.utils.constants import ADMIN_BANNER_STRING
 from breeze.utils.data_utils import load_data, save_data, decode_user
-from breeze.models.user import User
 from breeze.models.patient import Patient
-from breeze.models.admin import Admin
-from breeze.models.mhwp import MHWP
+
 
 
 class AdminService:
