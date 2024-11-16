@@ -30,8 +30,9 @@ class Admin(User):
             "password": self.get_password(),
             "role": self.get_role(),
             "isDisabled": self.get_is_disabled(),
-            "information":{
+            "information": {
                 "firstName": self.get_first_name(),
-                "lastName": self.get_last_name()
-            }
+                "lastName": self.get_last_name(),
+                "email": self.get_email()},
+            
         }
