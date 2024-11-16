@@ -74,14 +74,31 @@ class AdminService:
                 continue
         
             user = next((u for u in users if u.get_username() == username), None)
+
             if user:
                 print(f"Editing information for user: {user.get_username()}")
+                print('Here is the current information:')
+                current_info = (
+                    f"First name: {user.get_first_name()}\n"
+                    f"Last name: {user.get_last_name()}\n"
+                    f"Email: {user.get_email()}\n"
+                )
+
+                if isinstance(user, Patient):
+                    current_info += f"Emergency contact email: {user.get_emergency_contact()}\n"
+
+                print_system_message(current_info)
+
+
                 print("\nEnter the new information or leave blank to keep the current value:")
             # get user input and update that user info
                 updated_first_name = input("First name: ").strip()
                 updated_last_name = input("Last name: ").strip()
                 updated_email = input("email: ").strip()
-                updated_emergency_contact_email = input("emergency contact email: ").strip()
+                updated_emergency_contact_email = None
+
+                if isinstance(user, Patient):
+                    updated_emergency_contact_email = input("Emergency contact email: ").strip()
             
             # TODO: validate the inputs
                 if updated_first_name:
@@ -93,15 +110,25 @@ class AdminService:
                 if updated_emergency_contact_email:
                     user.set_emergency_contact(updated_emergency_contact_email)
             
-                # set the update message based on whether the user update all the fields or not
                 update_message = ""
                 if not updated_first_name and not updated_last_name and not updated_email and not updated_emergency_contact_email:
                     update_message = "\nHere is your updated information (no changes made):"
+
                 else:
                     update_message = '\nInfo updated successfully! Here is your updated information:'
                 
                 print(update_message)
-                print_system_message(f"first name: {user.get_first_name()}\nlast name: {user.get_last_name()}\nemail: {user.get_email()}\nemergency contact email: {user.get_emergency_contact()}")
+                # added str just in case there are any type errors
+                updated_info = (
+                "First name: " + str(user.get_first_name()) + "\n"
+                "Last name: " + str(user.get_last_name()) + "\n"
+                "Email: " + str(user.get_email()) + "\n"
+                )
+
+                if isinstance(user, Patient):
+                    updated_info = updated_info + "Emergency contact email: " + str(user.get_emergency_contact()) + "\n"
+            
+                print_system_message(updated_info)
 
                 self.auth_service.users[username] = user
                 self.auth_service.save_data_to_file()

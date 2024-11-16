@@ -42,6 +42,9 @@ def decode_user(user_data):
         return MHWP(
             username=user_data.get("username"),
             password=user_data.get("password"),
+            first_name=user_data.get("information", {}).get("firstName"),
+            last_name=user_data.get("information", {}).get("lastName"),
+            email=user_data.get("information", {}).get("email"),
             is_disabled=user_data.get("isDisabled", False),
             appointments=user_data.get("appointments", [])
         )
