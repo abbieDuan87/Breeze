@@ -2,7 +2,7 @@ from breeze.models.admin import Admin
 from breeze.models.patient import Patient
 from breeze.models.mhwp import MHWP
 
-from breeze.utils.cli_utils import print_system_message
+from breeze.utils.cli_utils import print_system_message, direct_to_dashboard
 from breeze.utils.data_utils import load_data, save_data
 
 class AuthService:
@@ -16,7 +16,12 @@ class AuthService:
         save_data("./data/users.json", data)
 
     def login(self):
-        username = input("Username: ")
+        while True:
+            username = input("Username: ").strip()
+            if not username:
+                print_system_message("Username cannot be empty. Please try again.")
+                continue
+            break
         password = input("Password: ")
         user = self.users.get(username)
         if user and user.login(password):
@@ -54,12 +59,15 @@ class AuthService:
         Returns:
             user (Admin/Patient/MHWP): The created new user
         """
-        username = input("Username: ")
-        
-        # Check if username already exists
-        if username in self.users:
-            print_system_message("Username already taken! Please choose another.")
-            return None
+        while True:
+            username = input("Username: ").strip()
+            if not username:
+                print_system_message("Username cannot be empty. Please try again.")
+                continue
+            if username in self.users:
+                print_system_message("Username already taken! Please choose another.")
+                continue
+            break
 
         password = input("Password: ")
         
@@ -75,8 +83,8 @@ class AuthService:
         
         # save the new user into the self.users dictionary
         self.users[new_user.get_username()] = new_user
-        print_system_message("Account created successfully! Press B to go back and log in.")
-        return new_user
+        self.save_data_to_file()
+        direct_to_dashboard("Account created successfully!")
 
     def get_all_users(self):
         return self.users
