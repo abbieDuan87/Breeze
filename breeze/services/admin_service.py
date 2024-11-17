@@ -58,6 +58,8 @@ class AdminService:
         """
         Allows admin to edit information for a patient or an MWHP
         """
+        clear_screen()
+        print(ADMIN_BANNER_STRING)
         print_system_message("Edit User Information")
        
         while True:
@@ -70,6 +72,8 @@ class AdminService:
             user = self.auth_service.users.get(username)
 
             if user:
+                clear_screen()
+                print(ADMIN_BANNER_STRING)
                 print(f"Editing information for user: {user.get_username()}")
                 print('Here is the current information:')
                 current_info = (
@@ -111,6 +115,8 @@ class AdminService:
                 else:
                     update_message = '\nInfo updated successfully! Here is your updated information:'
                 
+                clear_screen()
+                print(ADMIN_BANNER_STRING)
                 print(update_message)
                 # added str just in case there are any type errors
                 updated_info = (
