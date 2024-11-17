@@ -42,11 +42,21 @@ def show_disabled_account_dashboard_menu(username):
         print_system_message("Sorry, you can only log out because your account is disabled.")
         return False
 
-def direct_to_dashboard():
-    print("\nPress B to go back:")
+def direct_to_dashboard(message=""):
+    """
+    Helper function to return to the dashboard with a custom message.
+
+    Args:
+        message (str): Custom message to display before the prompt.
+    """
+    if message:
+        print(f"\n{message}")
+    print("Please press B to go back to the dashboard.")
+    
     while True:
         user_input = input("> ").strip().lower()
         if user_input == "b":
+            clear_screen()
             break
         else:
-            print("Invalid input. Please press B to go back.")
+            print("Invalid input. Please press B to go back to the dashboard.")
