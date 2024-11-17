@@ -1,92 +1,28 @@
 {
-    "users": [
-        {
-            "username": "patient1",
-            "password": "",
-            "role": "Patient",
-            "isDisabled": false,
-            "information": {
-                "firstName": "UpdatedbyAdmin",
-                "lastName": "Adminchange",
-                "email": "testingfunction@email.com",
-                "emergencyContactEmail": "emcontact@email.com"
-            },
-            "moods": [],
-            "journals": [],
-            "appointments": []
-        },
-        {
-            "username": "patient2",
-            "password": "",
-            "role": "Patient",
-            "isDisabled": false,
-            "information": {
-                "firstName": null,
-                "lastName": null,
-                "email": null,
-                "emergencyContactEmail": null
-            },
-            "moods": [],
-            "journals": [],
-            "appointments": []
-        },
-        {
-            "username": "mhwp1",
-            "password": "",
-            "role": "MHWP",
-            "isDisabled": false,
-            "information": {
-                "firstName": null,
-                "lastName": null,
-                "email": null
-            },
-            "appointments": []
-        },
-        {
-            "username": "mhwp2",
-            "password": "",
-            "role": "MHWP",
-            "isDisabled": false,
-            "information": {
-                "firstName": null,
-                "lastName": null,
-                "email": null
-            },
-            "appointments": []
-        },
-        {
-            "username": "admin1",
-            "password": "",
-            "role": "Admin",
-            "isDisabled": false,
-            "information": {
-                "firstName": "Admin",
-                "lastName": "test",
-                "email": "adasd"
-            }
-        },
-        {
-            "username": "admin2",
-            "password": "",
-            "role": "Admin",
-            "isDisabled": false,
-            "information": {
-                "firstName": "Admin",
-                "lastName": "Test",
-                "email": "Admintest@gmail.com"
-            }
-        },
-        {
-            "username": "mhwp3",
-            "password": "",
-            "role": "MHWP",
-            "isDisabled": false,
-            "information": {
-                "firstName": "MHWPupdate",
-                "lastName": "byadmin",
-                "email": "testingfunction@email.com"
-            },
-            "appointments": []
-        }
-    ]
+  "users": [
+    {
+      "username": "patient1",
+      "password": "",
+      "role": "patient",
+      "isDisabled": false
+    },
+    {
+      "username": "patient2",
+      "password": "",
+      "role": "patient",
+      "isDisabled": false
+    },
+    {
+      "username": "mhwp1",
+      "password": "",
+      "role": "mhwp",
+      "isDisabled": false
+    },
+    {
+      "username": "mhwp2",
+      "password": "",
+      "role": "mhwp",
+      "isDisabled": false
+    }
+  ]
 }

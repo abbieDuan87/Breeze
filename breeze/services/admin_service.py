@@ -1,6 +1,6 @@
 from breeze.utils.cli_utils import print_system_message, clear_screen, direct_to_dashboard
 from breeze.utils.constants import ADMIN_BANNER_STRING
-from breeze.utils.data_utils import load_data, save_data, decode_user
+from breeze.services.auth_service import AuthService
 from breeze.models.patient import Patient
 
 
@@ -8,7 +8,6 @@ from breeze.models.patient import Patient
 class AdminService:
     def __init__(self, auth_service):
         self.auth_service = auth_service
-        self.data_file_path = './data/users.json'
     
     def show_admin_dashboard(self, user):
         """
@@ -60,9 +59,6 @@ class AdminService:
         Allows admin to edit information for a patient or an MWHP
         """
         print_system_message("Edit User Information")
-
-        data = load_data(self.data_file_path)
-        users = data.get("users", [])
        
         while True:
             username = input("Enter the username of the user to edit: ").strip()
@@ -70,8 +66,8 @@ class AdminService:
             if not username:
                 print("Username cannot be empty. Please enter a valid username.")
                 continue
-        
-            user = next((u for u in users if u.get_username() == username), None)
+
+            user = self.auth_service.users.get(username)
 
             if user:
                 print(f"Editing information for user: {user.get_username()}")
@@ -92,7 +88,7 @@ class AdminService:
             # get user input and update that user info
                 updated_first_name = input("First name: ").strip()
                 updated_last_name = input("Last name: ").strip()
-                updated_email = input("email: ").strip()
+                updated_email = input("Email: ").strip()
                 updated_emergency_contact_email = None
 
                 if isinstance(user, Patient):

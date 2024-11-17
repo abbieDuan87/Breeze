@@ -2,32 +2,11 @@ from .user import User
 
 class Patient(User):
     def __init__(self, username, password, first_name = None, last_name = None, email=None, emergency_contact_email=None, is_disabled=False, mood_entries=[], journal_entries=[], appointments=[]):
-        super().__init__(username, password, role="Patient", is_disabled=is_disabled)
-        self.__first_name = first_name
-        self.__last_name = last_name
-        self.__email = email 
+        super().__init__(username, password, role="Patient", first_name= first_name, last_name= last_name, email= email, is_disabled=is_disabled)
         self.__emergency_contact_email = emergency_contact_email
         self.__mood_entries = mood_entries
         self.__journal_entries = journal_entries
         self.__appointments = appointments
-    
-    def get_first_name(self):
-        return self.__first_name
-    
-    def set_first_name(self, first_name):
-        self.__first_name = first_name
-    
-    def get_last_name(self):
-        return self.__last_name
-    
-    def set_last_name(self, last_name):
-        self.__last_name = last_name
-    
-    def get_email(self):
-        return self.__email
-    
-    def set_email(self, email):
-        self.__email = email
     
     def get_emergency_contact(self):
         return self.__emergency_contact_email
