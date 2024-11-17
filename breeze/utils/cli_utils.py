@@ -22,6 +22,26 @@ def print_system_message(message):
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
     
+def show_disabled_account_dashboard_menu(username):
+    """
+    Prompts the user with a message when their account is disabled.
+    
+    Args:
+        user (User): The user whose account is disabled.
+        
+    Returns:
+        bool: True if the user chose to log out, otherwise False.
+    """
+    print_system_message(f'Hi {username}, your account has been disabled, please contact the admin for more info!')
+    print("[X] Log out")
+            
+    user_input = input('> ')
+    if user_input.strip().lower() == "x":
+        return True
+    else:
+        print_system_message("Sorry, you can only log out because your account is disabled.")
+        return False
+
 def direct_to_dashboard():
     print("\nPress B to go back:")
     while True:

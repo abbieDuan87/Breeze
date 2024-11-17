@@ -90,4 +90,5 @@ class AuthService:
             
         return new_user
 
-    
+    def get_all_users(self):
+        return self.users
