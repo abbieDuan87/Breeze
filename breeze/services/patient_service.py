@@ -147,9 +147,10 @@ class PatientService:
         print(PATIENT_BANNER_STRING)
         print(f'Hi {user.get_username()} !')
         print_system_message('Write your journal entry below, or enter [R] at any time to return to the previous page without saving')
+        print_system_message('What is the title of your entry?')
         invalid_title = True
         while invalid_title:
-            journal_title = input('What is the title of your entry? \n').strip()
+            journal_title = input().strip()
             if return_to_previous(journal_title, 'r'):
                 return
             if not journal_title:
@@ -161,7 +162,13 @@ class PatientService:
         print(PATIENT_BANNER_STRING)
         print_system_message('Write your journal entry below, or enter [R] at any time to return to the previous page without saving: \n')
         print(journal_title)
-        journal_body = input('Write your journal entry here: \n').strip()
+        print_system_message('Write your journal entry here:')
+        journal_body = input('').strip()
+        clear_screen()
+        print(PATIENT_BANNER_STRING)
+        print_system_message('Write your journal entry below, or enter [R] at any time to return to the previous page without saving: \n')
+        print(journal_title)
+        print(journal_body)
         if journal_body.strip() == '':
             direct_to_dashboard('Entry is empty!')
             return
@@ -170,7 +177,8 @@ class PatientService:
         journal_additions = []
         in_progress = True
         while in_progress:
-            journal_addition = input('Would you like to write more? Type [N] if finished, or continue writing: \n').strip()
+            print_system_message('Would you like to write more? Type [N] if finished, or continue writing:')
+            journal_addition = input('').strip()
             if return_to_previous(journal_addition, 'r'):
                 return
             if journal_addition.lower() == 'n':
@@ -179,7 +187,7 @@ class PatientService:
                 journal_additions.append(journal_addition)
                 clear_screen()
                 print(PATIENT_BANNER_STRING)
-                print('Write your journal entry below, or enter [R] at any time to return to the previous page without saving: \n')
+                print_system_message('Write your journal entry below, or enter [R] at any time to return to the previous page without saving: \n')
                 print(journal_title)
                 print(journal_body)
                 print("\n".join(journal_additions))
@@ -191,8 +199,9 @@ class PatientService:
             # save file to users.json
             user.add_journal_entry(journal_title, journal_ent, date_string)
             self.auth_service.save_data_to_file()
-            print_system_message('Journal entry saved! Returning to dashboard...')
-            time.sleep(2)
+            clear_screen()
+            print(PATIENT_BANNER_STRING)
+            direct_to_dashboard('Journal entry saved!')
             return
         print_system_message(f'User {user} not in records!')
         time.sleep(2)
