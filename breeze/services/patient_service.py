@@ -41,6 +41,8 @@ class PatientService:
                     self.edit_personal_information(user)
                 case "r":
                     self.record_mood(user)
+                case "j":
+                    self.enter_journaling(user)
                 case "s":
                     self.search_exercise(user)
                 case "x":
