@@ -22,6 +22,10 @@ def decode_user(user_data):
             username=user_data.get("username"),
             password=user_data.get("password"),
             is_disabled=user_data.get("isDisabled", False),
+            first_name=user_data.get("information", {}).get("firstName"),
+            last_name=user_data.get("information", {}).get("lastName"),
+            email=user_data.get("information",{}).get("email"),
+            emergency_contact_email=user_data.get("information", {}).get("emergencyContactEmail"),
             mood_entries=user_data.get("moods", []),
             journal_entries=user_data.get("journals", []),
             appointments=user_data.get("appointments", [])
@@ -31,6 +35,9 @@ def decode_user(user_data):
          return Admin(
             username=user_data.get("username"),
             password=user_data.get("password"),
+            first_name=user_data.get("information", {}).get("firstName"),
+            last_name=user_data.get("information", {}).get("lastName"),
+            email=user_data.get("information", {}).get("email"),
             is_disabled=user_data.get("isDisabled", False)
         )
     
@@ -38,6 +45,9 @@ def decode_user(user_data):
         return MHWP(
             username=user_data.get("username"),
             password=user_data.get("password"),
+            first_name=user_data.get("information", {}).get("firstName"),
+            last_name=user_data.get("information", {}).get("lastName"),
+            email=user_data.get("information", {}).get("email"),
             is_disabled=user_data.get("isDisabled", False),
             appointments=user_data.get("appointments", [])
         )
