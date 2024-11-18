@@ -144,7 +144,55 @@ class AdminService:
 
 
     def delete_user(self):
-        pass
+        clear_screen()
+        print(ADMIN_BANNER_STRING)
+        
+        print(f'Hi {user.get_username()} ! Here are all the users:')
+        users = self.auth_service.get_all_users().values()
+        print("-" * 50)  
+        print(f"| {'Username':<20} | {'Role':<15}")
+        print("-" * 50) 
+        for user in users:
+            if not user.get_role() == 'Admin':
+                username = user.get_username()
+                role = user.get_role()
+                print(f"| {username:<20} | {role:<15}")
+
+       
+        while True:
+            print("Enter the username of the user you want to delete (case insensitive), or press [R] to cancel:")
+            user_input = input("> ").strip().lower()
+            
+            if user_input == "r":
+                break
+            
+            all_users = self.auth_service.get_all_users()
+            user_to_delete = all_users.get(user_input)
+
+            if not user_to_delete:
+                print_system_message(f"Username '{user_input}' not found! Please try again")
+            
+            elif user_to_delete.get_role() == "Admin":
+                print_system_message("You cannot delete admin accounts")
+            
+            else:
+                print_system_message(f"Are you sure you want to delete the user '{user_input}'? Type [Y] to confirm or [N] to cancel")
+                confirmation = input("> ").strip().lower()
+
+                if confirmation == "y":
+                    del all_users[user_input]
+                    self.auth_service.save_data_to_file()
+                    print_system_message(f"The user '{user_input}' has been sucessfully deleted")
+                
+                elif confirmation == "n":
+                    print_system_message("Deletion canceled. You can enter another username or press [R] to return")
+                
+                else:
+                    print_system_message("Invalid input. Please type [Y] to confirm or [N] to cancel")        
+
+        direct_to_dashboard()                
+
+
 
     def disable_user(self, user):
         clear_screen()
