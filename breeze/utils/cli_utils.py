@@ -60,3 +60,7 @@ def direct_to_dashboard(message=""):
             break
         else:
             print("Invalid input. Please press B to go back to the dashboard.")
+    
+def return_to_previous(string, param):
+    if string.strip().lower()==param:
+        return True

@@ -23,8 +23,8 @@ class Patient(User):
     def add_mood_entry(self, mood, comment, datetime):
         self.__mood_entries.append({"mood": mood, "comment": comment, "datetime": datetime})
     
-    def add_journal_entry(self, entry, datetime):
-        self.__journal_entries.append({"entry": entry, "datetime": datetime})
+    def add_journal_entry(self, title, entry, datetime):
+        self.__journal_entries.append({"title": title, "entry": entry, "datetime": datetime})
     
     def __str__(self):
         return f"Patient: {self.get_username()}, Role: {self.get_role()}"
