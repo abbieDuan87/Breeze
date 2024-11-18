@@ -1,7 +1,8 @@
-from breeze.utils.cli_utils import print_system_message, clear_screen, direct_to_dashboard, show_disabled_account_dashboard_menu
+from breeze.utils.cli_utils import print_system_message, clear_screen, direct_to_dashboard, show_disabled_account_dashboard_menu, return_to_previous
 from breeze.utils.constants import PATIENT_BANNER_STRING
 from breeze.utils.data_utils import load_data, save_data
 import datetime
+import time
 
 
 class PatientService:
@@ -42,6 +43,8 @@ class PatientService:
                     self.record_mood(user)
                 case "s":
                     self.search_exercise(user)
+                case "j":
+                    self.enter_journaling(user)
                 case "x":
                     return True
                 case _:
@@ -52,22 +55,19 @@ class PatientService:
     def edit_personal_information(self, user):
         clear_screen()
         print(PATIENT_BANNER_STRING)
-        print(f'Hi {user.get_first_name()} (username: {user.get_username()}) ! Please update your personal information')
+        print(f'Hi {user.get_name()} (username: {user.get_username()}) ! Please update your personal information')
         print('Here is your current information:')
-        print_system_message(f"First name: {user.get_first_name()}\nLast name: {user.get_last_name()}\nemail: {user.get_email()}\nemergency contact email: {user.get_emergency_contact()}")
+        print_system_message(f"name: {user.get_name()}\nemail: {user.get_email()}\nemergency contact email: {user.get_emergency_contact()}")
         
         print("\nEnter the new information or leave blank to keep the current value:")
         # get user input and update that user info
-        updated_first_name = input("First name: ").strip()
-        updated_last_name = input("Last name: ").strip()
+        updated_name = input("name: ").strip()
         updated_email = input("email: ").strip()
         updated_emergency_contact_email = input("emergency contact email: ").strip()
         
         # TODO: validate the inputs
-        if updated_first_name:
-            user.set_first_name(updated_first_name)
-        if updated_last_name:
-            user.set_last_name(updated_last_name)
+        if updated_name:
+            user.set_name(updated_name)
         if updated_email:
             user.set_email(updated_email)
         if updated_emergency_contact_email:
@@ -75,13 +75,13 @@ class PatientService:
         
         # set the update message based on whether the user update all the fields or not
         update_message = ""
-        if not updated_first_name and not updated_last_name and not updated_email and not updated_emergency_contact_email:
+        if not updated_name and not updated_email and not updated_emergency_contact_email:
             update_message = "\nHere is your updated information (no changes made):"
         else:
             update_message = '\nInfo updated successfully! Here is your updated information:'
         
         print(update_message)
-        print_system_message(f"First name: {user.get_first_name()}\nLast name: {user.get_last_name()}\nemail: {user.get_email()}\nemergency contact email: {user.get_emergency_contact()}")
+        print_system_message(f"name: {user.get_name()}\nemail: {user.get_email()}\nemergency contact email: {user.get_emergency_contact()}")
         
         # Save the changes to the file via AuthService
         self.auth_service.save_data_to_file()
@@ -138,8 +138,58 @@ class PatientService:
                 print_system_message("Invalid colour entered. Please choose from Green, Light Green, Yellow, Orange, or Red.")
 
     def enter_journaling(self, user):
-        pass
-    
+        # Include util 'print system message'
+        # Include all funcs from data utils to load/save entry to json file
+        clear_screen()
+        print(PATIENT_BANNER_STRING)
+        print(f'Hi {user.get_username()} !')
+        print_system_message('Write your journal entry below, or enter [R] at any time to return to the previous page without saving')
+        journal_title = input('What is the title of your entry? \n').strip()
+        if return_to_previous(journal_title, 'r'):
+            return
+        if journal_title.strip() == '':
+            print_system_message('Your title is empty! Returning to dashboard...')
+            time.sleep(2)
+            return
+        journal_body = input('Write your journal entry here: \n').strip()
+        if return_to_previous(journal_body, 'r'):
+            return
+        journal_additions = []
+        in_progress = True
+        while in_progress:
+            journal_addition = input('Would you like to write more? Type [N] if finished, or continue writing: \n').strip()
+            if return_to_previous(journal_addition, 'r'):
+                return
+            if journal_addition.lower() == 'n':
+                in_progress = False
+            else:
+                journal_additions.append(journal_addition)
+                clear_screen()
+                print(PATIENT_BANNER_STRING)
+                print('Write your journal entry below, or enter [R] at any time to return to the previous page without saving: \n')
+                print(journal_title)
+                print(journal_body)
+                print("\n".join(journal_additions))
+
+        journal_ent = (journal_body + ' ' + ' '.join(journal_additions))
+        if journal_ent.strip() == '':
+            print_system_message('Entry is empty! Returning to dashboard...')
+            time.sleep(2)
+            return
+
+        date_string = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        new_entry = {'title' : journal_title, 'text': journal_ent, 'date' : date_string}
+        if hasattr(user, "add_journal_entry"):
+            # save file to users.json
+            user.add_journal_entry(journal_title, journal_ent, date_string)
+            self.auth_service.save_data_to_file()
+            print_system_message('Journal entry saved! Returning to dashboard...')
+            time.sleep(2)
+            return
+        print_system_message(f'User {user} not in records!')
+        time.sleep(2)
+        return
+                
     def search_exercise(self, user):
         """Allows the patient to search for meditation and relaxation exercises by keyword."""
         clear_screen()
