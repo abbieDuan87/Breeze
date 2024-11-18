@@ -38,7 +38,7 @@ class AdminService:
             case "e":
                 self.edit_user_information()
             case "d":
-                self.delete_user()
+                self.delete_user(user)
             case "i":
                 self.disable_user(user)
             case "v":
@@ -143,7 +143,7 @@ class AdminService:
                
 
 
-    def delete_user(self):
+    def delete_user(self,user):
         clear_screen()
         print(ADMIN_BANNER_STRING)
         
