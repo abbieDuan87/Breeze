@@ -75,12 +75,16 @@ class AuthService:
         first_name = input("First name: ").strip()
         last_name = input("Last name: ").strip()
         email = input("Email: ").strip()
-        username = input("Username: ").strip()
         
-        # Check if username already exists
-        if username in self.users:
-            print_system_message("Username already taken! Please choose another.")
-            return None
+        while True:
+            username = input("Username: ").strip()
+            if not username:
+                print_system_message("Username cannot be empty. Please try again.")
+                continue
+            if username in self.users:
+                print_system_message("Username already taken! Please choose another.")
+                continue
+            break
         
         password = input("Password: ").strip()
         emergency_contact_email = None
@@ -92,10 +96,8 @@ class AuthService:
         new_user = self._register_role(role, username, password, first_name, last_name, email, emergency_contact_email)
         if new_user:
             self.users[new_user.get_username()] = new_user
-            print_system_message("Account created successfully! Press B to go back and log in.")
             self.save_data_to_file()
-            
-        return new_user
+            direct_to_dashboard("Account created successfully!")
 
     def get_all_users(self):
         return self.users
