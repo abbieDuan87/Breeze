@@ -4,3 +4,4 @@ breeze_env/
 .vscode/
 data/example_users.json
 data/users.json
+.idea/

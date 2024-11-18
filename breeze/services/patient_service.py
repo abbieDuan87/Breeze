@@ -1,7 +1,9 @@
+import breeze.models.user 
+import breeze.models.patient
 from breeze.utils.cli_utils import print_system_message, clear_screen, direct_to_dashboard, show_disabled_account_dashboard_menu
 from breeze.utils.constants import PATIENT_BANNER_STRING
-from breeze.utils.data_utils import load_data, save_data
-import datetime
+from datetime import date, timedelta
+from breeze.models.appointmentEntry import appointmentEntry
 
 
 class PatientService:
@@ -119,7 +121,7 @@ class PatientService:
                     direct_to_dashboard()
                     return
 
-                date_string = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                date_string = date.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 mood_entry = {
                     "mood": mood_description,
                     "comment": comment,
@@ -173,5 +175,93 @@ class PatientService:
         direct_to_dashboard()
             
     def manage_appointment(self, user):
-        pass
-        
+        '''Allows the patient to book and manage upcoming appointments'''
+
+        clear_screen()
+        print(PATIENT_BANNER_STRING)
+        print_system_message("Book or Manage an Upcoming Appointment")
+
+        while True:
+            print('\n[B]ook an appointment\n[C]ancel an upcoming appointment\n[E]xit\n')
+            keyword = input('>').strip().lower()
+            if keyword == 'b':
+                clear_screen()
+                print(PATIENT_BANNER_STRING)
+                print_system_message("\nSelect an Available Appointment Date\n")
+                print("Please select a date from the following options:\n")
+
+                # Creates an available dates dictionary for the user to select from -- this will eventually be generated from the MHWP's calendar
+                available_dates = {}
+                for i in range(1, 8):
+                    available_dates[i] = date.today() + timedelta(days=i)
+                    print(f"[{i}] {date.today() + timedelta(days=i)}")
+                
+                # User selects a date and time and then an AppointmentEntry Object is created and added to the JSON
+                users_date = int(input(">"))
+                if users_date not in available_dates:
+                    print("Please select a valid date")
+                else:
+                    clear_screen()
+                    print_system_message(f"Please select a time for {available_dates[users_date]}")
+                    
+                    # Like the above but with available times, this will be replaced with the MHWP's available times from the calendar
+                    available_times = {}
+                    for i in range(1, 10):
+                        available_times[i] = int(str(i + 8) + "00")
+                        print(f"[{i}] {i+8}:00")
+
+                    users_time = int(input(">"))
+                    if users_time not in available_times:
+                        print("Please select a valid time")
+                    else:
+                        clear_screen()
+                        print_system_message(f"You have requested an appointment for {available_dates[users_date]} at {available_times[users_time]}")
+                        new_appointment = appointmentEntry(date=str(available_dates[users_date]), time=available_times[users_time], isCancelled=False)
+                        if hasattr(user, 'set_appointment'):
+                            user.set_appointment(new_appointment)
+                        
+                        self.auth_service.save_data_to_file()
+
+            elif keyword == 'c':
+                clear_screen()
+                print(PATIENT_BANNER_STRING)
+                print_system_message("\nCancel an Upcoming Appointment\n")
+                print("Here are your upcoming appointments:")
+                x = user.to_dict()
+                upcoming_appointments = {}
+                if len(x['appointments']) == 0:
+                    print("You have no upcoming appointments")
+                    direct_to_dashboard()
+
+                else: 
+                    for i in range(len(x['appointments'])):
+                        if x['appointments'][i]['isCancelled'] == True:
+                            continue
+                        upcoming_appointments[i] = x['appointments'][i]
+                        print(f"[{i+1}] {upcoming_appointments[i]['date']} at {upcoming_appointments[i]['time']}")
+                    else:
+                        if len(upcoming_appointments) == 0:
+                            print("You have no upcoming appointments")
+                            direct_to_dashboard()
+                            break 
+                        
+                    user_input = int(input(">"))
+                    clear_screen()
+                    if (user_input-1) not in upcoming_appointments:
+                        print("Please select a valid appointment")
+                    else:
+                        cancelledAppointment = appointmentEntry(date=upcoming_appointments[user_input-1]['date'], time=upcoming_appointments[user_input-1]['time'], isCancelled=True)
+                        user.set_appointment(cancelledAppointment)
+                        for i in x['appointments']:
+                            if i['date'] == upcoming_appointments[user_input-1]['date'] and i['time'] == upcoming_appointments[user_input-1]['time']:
+                                x['appointments'].remove(i)
+                                break
+                        self.auth_service.save_data_to_file()
+                        print_system_message(f"Appointment for {upcoming_appointments[user_input-1]['date']} at {upcoming_appointments[user_input-1]['time']} has been cancelled")
+                        direct_to_dashboard()
+
+            elif keyword == 'e':
+                direct_to_dashboard()
+                break
+            else:
+                print('Please enter a valid option')
