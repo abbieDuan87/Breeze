@@ -147,14 +147,24 @@ class PatientService:
         print(PATIENT_BANNER_STRING)
         print(f'Hi {user.get_username()} !')
         print_system_message('Write your journal entry below, or enter [R] at any time to return to the previous page without saving')
-        journal_title = input('What is the title of your entry? \n').strip()
-        if return_to_previous(journal_title, 'r'):
-            return
-        if journal_title.strip() == '':
-            print_system_message('Your title is empty! Returning to dashboard...')
-            time.sleep(2)
-            return
+        invalid_title = True
+        while invalid_title:
+            journal_title = input('What is the title of your entry? \n').strip()
+            if return_to_previous(journal_title, 'r'):
+                return
+            if not journal_title:
+                print_system_message('Your title is empty! Please try again!')
+                continue
+            else:
+                break
+        clear_screen()
+        print(PATIENT_BANNER_STRING)
+        print_system_message('Write your journal entry below, or enter [R] at any time to return to the previous page without saving: \n')
+        print(journal_title)
         journal_body = input('Write your journal entry here: \n').strip()
+        if journal_body.strip() == '':
+            direct_to_dashboard('Entry is empty!')
+            return
         if return_to_previous(journal_body, 'r'):
             return
         journal_additions = []
@@ -175,11 +185,6 @@ class PatientService:
                 print("\n".join(journal_additions))
 
         journal_ent = (journal_body + ' ' + ' '.join(journal_additions))
-        if journal_ent.strip() == '':
-            print_system_message('Entry is empty! Returning to dashboard...')
-            time.sleep(2)
-            return
-
         date_string = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         new_entry = {'title' : journal_title, 'text': journal_ent, 'date' : date_string}
         if hasattr(user, "add_journal_entry"):
