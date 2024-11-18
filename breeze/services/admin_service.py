@@ -2,6 +2,8 @@ from breeze.utils.cli_utils import print_system_message, clear_screen, direct_to
 from breeze.utils.constants import ADMIN_BANNER_STRING
 from breeze.services.auth_service import AuthService
 from breeze.models.patient import Patient
+from breeze.models.mhwp import  MHWP
+from breeze.models.user import User
 
 
 
@@ -51,7 +53,62 @@ class AdminService:
         return False
 
     def allocate_patient_to_mhwp(self):
-        pass
+        clear_screen()
+        print(ADMIN_BANNER_STRING)
+        print_system_message("Allocate Patient to MHWP")
+
+        unassigned_patients = []
+        available_mhwps = []
+
+        # Find unassigned patients and available MHWPs
+        for username, user in self.auth_service.users.items():
+            if isinstance(user, Patient) and not user.get_assigned_mhwp():
+                unassigned_patients.append(user)
+            elif isinstance(user, MHWP):
+                available_mhwps.append(user)
+        
+        if not unassigned_patients:
+            print_system_message("No unassigned patients available. All patients assigned")
+            direct_to_dashboard()
+            return
+        
+        # List of unassigned patients
+        print("List of unassigned patients:")
+        for patient in unassigned_patients:
+            print(f"- Username: {patient.get_username()}, Name: {patient.get_first_name()} {patient.get_last_name()}")
+        # Admin enters username of unassigned patient
+        while True:
+            selected_patient_username = input("\nEnter the username of the unassigned patient to assign: ").strip()
+
+            selected_patient = self.auth_service.users.get(selected_patient_username)
+            if selected_patient and isinstance(selected_patient, Patient) and not selected_patient.get_assigned_mhwp():
+                break
+            else:
+                print_system_message("Invalid username or patient is already assigned. Please enter a valid unassigned patient username.")
+            
+        # List of MHWPs
+        print(f"\nAssigning patient: {selected_patient.get_first_name()} {selected_patient.get_last_name()} (Username: {selected_patient.get_username()})")
+        print("List of available MHWPs:")
+        for mhwp in available_mhwps:
+            print(f"- Username: {mhwp.get_username()}, Name: {mhwp.get_first_name()} {mhwp.get_last_name()}")
+        
+        # Admin enters username of MHWP
+        while True:
+            selected_mhwp_username = input("\nEnter the username of the MHWP to assign the patient to: ").strip()
+
+            selected_mhwp = self.auth_service.users.get(selected_mhwp_username)
+            if selected_mhwp and isinstance(selected_mhwp, MHWP):
+                selected_patient.set_assigned_mhwp(selected_mhwp_username)
+                selected_mhwp.add_patient(selected_patient_username)
+
+                self.auth_service.save_data_to_file()
+
+                print_system_message(f"Successfully assigned patient '{selected_patient.get_username()}' to MHWP '{selected_mhwp.get_username()}'.")
+                direct_to_dashboard()
+                return
+        else:
+            print_system_message("Invalid MHWP username. Please enter a valid MHWP username.")
+
 
     def edit_user_information(self):
         """
