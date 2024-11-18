@@ -2,7 +2,7 @@ from breeze.models.admin import Admin
 from breeze.models.patient import Patient
 from breeze.models.mhwp import MHWP
 
-from breeze.utils.cli_utils import print_system_message
+from breeze.utils.cli_utils import print_system_message, direct_to_dashboard
 from breeze.utils.data_utils import load_data, save_data
 
 class AuthService:
@@ -16,7 +16,12 @@ class AuthService:
         save_data("./data/users.json", data)
 
     def login(self):
-        username = input("Username: ")
+        while True:
+            username = input("Username: ").strip()
+            if not username:
+                print_system_message("Username cannot be empty. Please try again.")
+                continue
+            break
         password = input("Password: ")
         user = self.users.get(username)
         if user and user.login(password):
@@ -59,6 +64,7 @@ class AuthService:
             user (Admin/Patient/MHWP): The created new user
         """
         print("Please choose a role:\n[A]dmin\n[P]atient\n[M]HWP")
+        
         while True:
             role = input("Select a role [A/P/M]: ").strip().lower()
             if role in ["a", "p", "m"]:
@@ -82,6 +88,7 @@ class AuthService:
             emergency_contact_email = input("Emergency contact email: ").strip()
 
             # Register role based on input
+
         new_user = self._register_role(role, username, password, first_name, last_name, email, emergency_contact_email)
         if new_user:
             self.users[new_user.get_username()] = new_user
