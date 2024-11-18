@@ -1,28 +1,28 @@
 {
-  "users": [
-    {
-      "username": "patient1",
-      "password": "",
-      "role": "patient",
-      "isDisabled": false
-    },
-    {
-      "username": "patient2",
-      "password": "",
-      "role": "patient",
-      "isDisabled": false
-    },
-    {
-      "username": "mhwp1",
-      "password": "",
-      "role": "mhwp",
-      "isDisabled": false
-    },
-    {
-      "username": "mhwp2",
-      "password": "",
-      "role": "mhwp",
-      "isDisabled": false
-    }
-  ]
-}
+    "users": [
+      {
+        "username": "patient1",
+        "password": "",
+        "role": "patient",
+        "isDisabled": false
+      },
+      {
+        "username": "patient2",
+        "password": "",
+        "role": "patient",
+        "isDisabled": false
+      },
+      {
+        "username": "mhwp1",
+        "password": "",
+        "role": "mhwp",
+        "isDisabled": false
+      },
+      {
+        "username": "mhwp2",
+        "password": "",
+        "role": "mhwp",
+        "isDisabled": false
+      }
+    ]
+  }
