@@ -3,7 +3,10 @@ import breeze.models.patient
 from breeze.utils.cli_utils import print_system_message, clear_screen, direct_to_dashboard, show_disabled_account_dashboard_menu
 from breeze.utils.constants import PATIENT_BANNER_STRING
 from datetime import date, timedelta
-from breeze.models.appointmentEntry import appointmentEntry
+from breeze.models.appointment_entry import appointmentEntry
+from breeze.utils.data_utils import decode_user
+
+
 
 
 class PatientService:
@@ -46,6 +49,8 @@ class PatientService:
                     self.search_exercise(user)
                 case "x":
                     return True
+                case "b":
+                    self.manage_appointment(user)
                 case _:
                     print_system_message("Invalid choice. Please try again.")
 
