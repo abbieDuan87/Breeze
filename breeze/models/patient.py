@@ -1,12 +1,13 @@
 from .user import User
 
 class Patient(User):
-    def __init__(self, username, password, first_name = None, last_name = None, email=None, emergency_contact_email=None, is_disabled=False, mood_entries=[], journal_entries=[], appointments=[]):
+    def __init__(self, username, password, first_name = None, last_name = None, email=None, emergency_contact_email=None, is_disabled=False, mood_entries=[], journal_entries=[], appointments=[], assigned_MHWP = None):
         super().__init__(username, password, role="Patient", first_name= first_name, last_name= last_name, email= email, is_disabled=is_disabled)
         self.__emergency_contact_email = emergency_contact_email
         self.__mood_entries = mood_entries
         self.__journal_entries = journal_entries
         self.__appointments = appointments
+        self.__assigned_mhwp = assigned_MHWP
     
     def get_emergency_contact(self):
         return self.__emergency_contact_email
@@ -16,7 +17,7 @@ class Patient(User):
     
     def get_mood_entries(self):
         return self.__mood_entries
-    
+
     def get_appointments(self):
         return self.__appointments
 
@@ -28,6 +29,12 @@ class Patient(User):
     
     def add_journal_entry(self, title, entry, datetime):
         self.__journal_entries.append({"title": title, "entry": entry, "datetime": datetime})
+    
+    def get_assigned_mhwp(self):
+        return self.__assigned_mhwp
+
+    def set_assigned_mhwp(self, mhwp_username):
+        self.__assigned_mhwp = mhwp_username
     
     def __str__(self):
         return f"Patient: {self.get_username()}, Role: {self.get_role()}"
@@ -47,6 +54,7 @@ class Patient(User):
                 "email": self.get_email(),
                 "emergencyContactEmail": self.get_emergency_contact()  
             },
+            "assignedMHWP": self.get_assigned_mhwp(),
             "moods": self.__mood_entries,
             "journals": self.__journal_entries,
             "appointments": self.__appointments
