@@ -3,20 +3,31 @@ import json
 from breeze.models.admin import Admin
 from breeze.models.mhwp import MHWP
 from breeze.models.patient import Patient
+from breeze.models.appointment_entry import AppointmentEntry
 
-def decode_user(user_data):
+
+def decode_user(user_data, appointments_data):
     """
     Decodes a dictionary of user data into the appropriate user object (Patient, Admin, MHWP).
 
     Args:
         user_data (dict): User data containing 'username', 'password', 'role', etc.
+        appointments_data (dict): Dictionary of all appointments.
 
     Returns:
-        User: An instance of Patient, Admin, or MHWP based on the 'role' field. 
+        User: An instance of Patient, Admin, or MHWP based on the 'role' field.
               Returns the original data if the role is unrecognized.
     """
     role = user_data.get("role", "").lower()
-    
+
+    # Get the list of appointment_ids and retrieve actual AppointmentEntry objects
+    appointment_ids = user_data.get("appointments", [])
+    appointments = [
+        appointments_data.get(app_id)
+        for app_id in appointment_ids
+        if appointments_data.get(app_id)
+    ]
+
     if role == "patient":
         return Patient(
             username=user_data.get("username"),
@@ -24,23 +35,25 @@ def decode_user(user_data):
             is_disabled=user_data.get("isDisabled", False),
             first_name=user_data.get("information", {}).get("firstName"),
             last_name=user_data.get("information", {}).get("lastName"),
-            email=user_data.get("information",{}).get("email"),
-            emergency_contact_email=user_data.get("information", {}).get("emergencyContactEmail"),
+            email=user_data.get("information", {}).get("email"),
+            emergency_contact_email=user_data.get("information", {}).get(
+                "emergencyContactEmail"
+            ),
             mood_entries=user_data.get("moods", []),
             journal_entries=user_data.get("journals", []),
-            appointments=user_data.get("appointments", [])
+            appointments=appointments,
         )
 
     elif role == "admin":
-         return Admin(
+        return Admin(
             username=user_data.get("username"),
             password=user_data.get("password"),
             first_name=user_data.get("information", {}).get("firstName"),
             last_name=user_data.get("information", {}).get("lastName"),
             email=user_data.get("information", {}).get("email"),
-            is_disabled=user_data.get("isDisabled", False)
+            is_disabled=user_data.get("isDisabled", False),
         )
-    
+
     elif role == "mhwp":
         return MHWP(
             username=user_data.get("username"),
@@ -49,10 +62,11 @@ def decode_user(user_data):
             last_name=user_data.get("information", {}).get("lastName"),
             email=user_data.get("information", {}).get("email"),
             is_disabled=user_data.get("isDisabled", False),
-            appointments=user_data.get("appointments", [])
+            appointments=appointments,
         )
-    
+
     return user_data
+
 
 def load_data(file_path):
     """
@@ -66,11 +80,28 @@ def load_data(file_path):
     """
     try:
         with open(file_path, "r") as file:
-            return json.load(file, object_hook=decode_user)
-    except FileNotFoundError:
-        return {}
+            data = json.load(file)
 
-def save_data(file_path, data):
+            appointment_entries = create_appointments_from_data(
+                data.get("appointments", [])
+            )
+
+            appointments_data = {
+                appointment.get_id(): appointment for appointment in appointment_entries
+            }
+
+            users = data.get("users", [])
+            user_objects = {}
+            for user in users:
+                user_objects[user["username"]] = decode_user(user, appointments_data)
+
+            return user_objects, appointments_data
+
+    except FileNotFoundError:
+        return {}, {}
+
+
+def save_data(file_path, user_object_list):
     """
     Saves data to a JSON file.
 
@@ -81,14 +112,62 @@ def save_data(file_path, data):
     Returns:
         None
     """
+    unique_appointments = {}
+
+    for user in user_object_list:
+        if user.get_role().lower() != 'admin':
+            for app in user.get_appointments():
+                unique_appointments[app.get_id()] = app
+
+    appointments_dict_list = [app.to_dict() for app in unique_appointments.values()]
+    users_dict_list = [user.to_dict() for user in user_object_list]
+
+    data_to_save = {"appointments": appointments_dict_list, "users": users_dict_list}
+
     with open(file_path, "w") as file:
-        json.dump(data, file, indent=4)
+        json.dump(data_to_save, file, indent=4)
+
+
+def create_appointments_from_data(appointments_data):
+    """Convert each appointment entry (dictionary) into Appoinment Entry object
+
+    Args:
+        appointments_data (list of dict): _description_
+
+    Returns:
+        list of AppointmentEntry: _description_
+    """
+    appointment_entries = []
+
+    for app in appointments_data:
+        date = app.get("date")
+        time = app.get("time")
+        is_cancel = app.get("isCancel", False)
+        status = app.get("status", None)
+        mhwp_username = app.get("mhwp_username", None)
+        patient_username = app.get("patient_username", None)
+        appointment_id = app.get("appointment_id", None)
+        appointment_entries.append(
+            AppointmentEntry(
+                date,
+                time,
+                is_cancel,
+                status,
+                mhwp_username,
+                patient_username,
+                appointment_id,
+            )
+        )
+
+    return appointment_entries
+
 
 # for testing, to run: python -m breeze.utils.data_utils
 if __name__ == "__main__":
-    data = load_data('./data/users.json')
-    users = data.get("users", [])
-    
-    for user in users:
-        print(user)
-    
+    users_data, appointments_data = load_data("./data/users.json")
+
+    for username, user in users_data.items():
+        print(f"User: {user.get_username()}")
+        if user.get_appointments():
+            for app in user.get_appointments():
+                print(app)

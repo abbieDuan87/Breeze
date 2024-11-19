@@ -1,28 +1,49 @@
 {
-    "users": [
-      {
-        "username": "patient1",
-        "password": "",
-        "role": "patient",
-        "isDisabled": false
-      },
-      {
-        "username": "patient2",
-        "password": "",
-        "role": "patient",
-        "isDisabled": false
-      },
-      {
-        "username": "mhwp1",
-        "password": "",
-        "role": "mhwp",
-        "isDisabled": false
-      },
-      {
-        "username": "mhwp2",
-        "password": "",
-        "role": "mhwp",
-        "isDisabled": false
-      }
-    ]
-  }
+  "appointments": [
+    {
+      "appointment_id": "1",
+      "date": "2024-11-21",
+      "time": "10:00 AM",
+      "status": "confirmed",
+      "mhwp_username": "mhwp1",
+      "patient_username": "patient1"
+    },
+    {
+      "appointment_id": "2",
+      "date": "2024-11-22",
+      "time": "2:00 PM",
+      "status": "confirmed",
+      "mhwp_username": "mhwp2",
+      "patient_username": "patient2"
+    }
+  ],
+  "users": [
+    {
+      "username": "patient1",
+      "password": "",
+      "role": "patient",
+      "isDisabled": false,
+      "appointments": ["1"]
+    },
+    {
+      "username": "patient2",
+      "password": "",
+      "role": "patient",
+      "isDisabled": false,
+      "appointments": ["2"]
+    },
+    {
+      "username": "mhwp1",
+      "password": "",
+      "role": "mhwp",
+      "appointments": ["1"]
+    },
+    {
+      "username": "mhwp2",
+      "password": "",
+      "role": "mhwp",
+      "isDisabled": false,
+      "appointments": ["2"]
+    }
+  ]
+}
