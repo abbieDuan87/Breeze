@@ -1,29 +1,35 @@
-from breeze.utils.cli_utils import print_system_message, clear_screen, direct_to_dashboard, show_disabled_account_dashboard_menu
+from breeze.utils.cli_utils import (
+    print_system_message,
+    clear_screen,
+    direct_to_dashboard,
+    show_disabled_account_dashboard_menu
+)
 from breeze.utils.constants import MHWP_BANNER_STRING
+
 
 class MHWPService:
     def __init__(self, auth_service):
         self.auth_service = auth_service
-        
+
     def show_mhwp_dashboard(self, user):
         """
         Displays the MWHP dashboard and processes user actions.
 
         Args:
             user (User): _The logged-in user
-            
+
         Returns:
             bool: True if the user chose to log out, otherwise False
         """
-        
+
         print(MHWP_BANNER_STRING)
-        
+
         if user.get_is_disabled():
             return show_disabled_account_dashboard_menu(user.get_username())
-            
+
         else:
-            print('Hi', user.get_username(), '!')
-            print('What do you want to do today?')        
+            print("Hi", user.get_username(), "!")
+            print("What do you want to do today?")
             print("[C] View Calendar of Appointments")
             print("[M] Manage Appointments (Confirm or Cancel)")
             print("[A] Add Patient Information (Condition, Notes)")
@@ -41,14 +47,19 @@ class MHWPService:
                 case "d":
                     self.display_patient_summary(user)
                 case "x":
-                    return True 
+                    return True
                 case _:
                     print_system_message("Invalid choice. Please try again.")
 
         return False
 
     def view_calendar(self, user):
-       pass
+        clear_screen()
+        print(MHWP_BANNER_STRING)
+        user.display_calendar()
+        print()
+
+        direct_to_dashboard()
 
     def manage_appointments(self, user):
         pass

@@ -1,12 +1,8 @@
-import breeze.models.user 
-import breeze.models.patient
 from breeze.utils.constants import PATIENT_BANNER_STRING
 from datetime import date, timedelta
-from breeze.models.appointment_entry import appointmentEntry
-from breeze.utils.data_utils import decode_user
+from breeze.models.appointment_entry import AppointmentEntry
 from breeze.utils.cli_utils import print_system_message, clear_screen, direct_to_dashboard, return_to_previous, show_disabled_account_dashboard_menu
 from breeze.utils.constants import PATIENT_BANNER_STRING
-from breeze.utils.data_utils import load_data, save_data
 import datetime
 import time
 
@@ -291,7 +287,7 @@ class PatientService:
                     else:
                         clear_screen()
                         print_system_message(f"You have requested an appointment for {available_dates[users_date]} at {available_times[users_time]}")
-                        new_appointment = appointmentEntry(date=str(available_dates[users_date]), time=available_times[users_time], isCancelled=False)
+                        new_appointment = AppointmentEntry(date=str(available_dates[users_date]), time=available_times[users_time], isCancelled=False)
                         if hasattr(user, 'set_appointment'):
                             user.set_appointment(new_appointment)
                         
@@ -325,7 +321,7 @@ class PatientService:
                     if (user_input-1) not in upcoming_appointments:
                         print("Please select a valid appointment")
                     else:
-                        cancelledAppointment = appointmentEntry(date=upcoming_appointments[user_input-1]['date'], time=upcoming_appointments[user_input-1]['time'], isCancelled=True)
+                        cancelledAppointment = AppointmentEntry(date=upcoming_appointments[user_input-1]['date'], time=upcoming_appointments[user_input-1]['time'], isCancelled=True)
                         user.set_appointment(cancelledAppointment)
                         for i in x['appointments']:
                             if i['date'] == upcoming_appointments[user_input-1]['date'] and i['time'] == upcoming_appointments[user_input-1]['time']:
