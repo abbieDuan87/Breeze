@@ -20,6 +20,7 @@ class MHWP(User):
         email=None,
         is_disabled=False,
         appointments=[],
+        assigned_patients=None
     ):
         super().__init__(
             username,
@@ -31,6 +32,7 @@ class MHWP(User):
             is_disabled=is_disabled,
         )
         self.__appointments = appointments
+        self.__assigned_patients = assigned_patients
 
     def get_appointments(self):
         return self.__appointments
@@ -106,6 +108,13 @@ class MHWP(User):
 
         print("+", "-" * (10 + 17 * len(next_available_days)), "+")
 
+    def add_patient(self, patient_username):
+        if patient_username not in self.__assigned_patients:
+            self.__assigned_patients.append(patient_username)
+
+    def get_assigned_patients(self):
+        return self.__assigned_patients
+      
     def __str__(self):
         return f"MHWP: {self.get_username()}, Role: {self.get_role()}"
 
@@ -124,6 +133,7 @@ class MHWP(User):
                 "email": self.get_email(),
             },
             "appointments": [app.get_id() for app in self.get_appointments()],
+            "assignedPatients": self.__assigned_patients
         }
 
 
