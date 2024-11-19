@@ -1,8 +1,15 @@
+import breeze.models.user 
+import breeze.models.patient
+from breeze.utils.constants import PATIENT_BANNER_STRING
+from datetime import date, timedelta
+from breeze.models.appointment_entry import appointmentEntry
+from breeze.utils.data_utils import decode_user
 from breeze.utils.cli_utils import print_system_message, clear_screen, direct_to_dashboard, return_to_previous, show_disabled_account_dashboard_menu
 from breeze.utils.constants import PATIENT_BANNER_STRING
 from breeze.utils.data_utils import load_data, save_data
 import datetime
 import time
+
 
 
 class PatientService:
@@ -47,6 +54,8 @@ class PatientService:
                     self.search_exercise(user)
                 case "x":
                     return True
+                case "b":
+                    self.manage_appointment(user)
                 case _:
                     print_system_message("Invalid choice. Please try again.")
 
@@ -122,7 +131,7 @@ class PatientService:
                     direct_to_dashboard()
                     return
 
-                date_string = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                date_string = date.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 mood_entry = {
                     "mood": mood_description,
                     "comment": comment,
@@ -208,37 +217,126 @@ class PatientService:
         return
 
     def search_exercise(self, user):
-        """Allows the patient to search for meditation and relaxation exercises by keyword."""
+        """Allows the patient to search for meditation and relaxation exercises with the ability to select multiple options."""
         clear_screen()
         print(PATIENT_BANNER_STRING)
         print_system_message("Search for Meditation and Relaxation Exercises")
         
         valid_keywords = {
-            "sleep": "deep-sleep",
-            "piano": "piano-meditation",
-            "rain": "rain-and-thunder-sound-therapy",
-            "campfire": "nature-sounds-campfire-and-stream",
-            "harp": "i-see-you-harp"
+            "s": {"name": "Sleep", "path": "deep-sleep"},
+            "p": {"name": "Piano", "path": "piano-meditation"},
+            "r": {"name": "Rain", "path": "rain-and-thunder-sound-therapy"},
+            "c": {"name": "Campfire", "path": "nature-sounds-campfire-and-stream"},
+            "h": {"name": "Harp", "path": "i-see-you-harp"}
         }
         
         print_system_message("Choose a sound you like from the following options:")
-        for keyword in valid_keywords.keys():
-            print(f"- {keyword.capitalize()}")
+        for key, option in valid_keywords.items():
+            print(f"- [{key.upper()}] {option['name']}")
+        print("- [X] Exit")
         
         while True:
             print()
-            keyword = input("Enter a keyword from the list above to start your meditation: ").strip().lower()
-            
-            if keyword in valid_keywords:
-                search_url = f"https://insighttimer.com/indiemusicbox/guided-meditations/{valid_keywords[keyword]}"
-                print_system_message(f"Here is your selected meditation for '{keyword}':")
-                print(search_url)
+            choice = input("Select an option using the first letter or [X] to exit: ").strip().lower()
+            if choice == "x":
+                print_system_message("Exiting to the dashboard...")
+                clear_screen()
                 break
+            elif choice in valid_keywords:
+                search_url = f"https://insighttimer.com/indiemusicbox/guided-meditations/{valid_keywords[choice]['path']}"
+                print_system_message(f"Here is your selected meditation for '{valid_keywords[choice]['name']}':")
+                print(search_url)
             else:
-                print_system_message("Invalid keyword. Please choose a keyword from the list.")
-
-        direct_to_dashboard()
+                print_system_message("Invalid choice. Please select a valid option.")
             
     def manage_appointment(self, user):
-        pass
-        
+        '''Allows the patient to book and manage upcoming appointments'''
+
+        clear_screen()
+        print(PATIENT_BANNER_STRING)
+        print_system_message("Book or Manage an Upcoming Appointment")
+
+        while True:
+            print('\n[B]ook an appointment\n[C]ancel an upcoming appointment\n[E]xit\n')
+            keyword = input('>').strip().lower()
+            if keyword == 'b':
+                clear_screen()
+                print(PATIENT_BANNER_STRING)
+                print_system_message("\nSelect an Available Appointment Date\n")
+                print("Please select a date from the following options:\n")
+
+                # Creates an available dates dictionary for the user to select from -- this will eventually be generated from the MHWP's calendar
+                available_dates = {}
+                for i in range(1, 8):
+                    available_dates[i] = date.today() + timedelta(days=i)
+                    print(f"[{i}] {date.today() + timedelta(days=i)}")
+                
+                # User selects a date and time and then an AppointmentEntry Object is created and added to the JSON
+                users_date = int(input(">"))
+                if users_date not in available_dates:
+                    print("Please select a valid date")
+                else:
+                    clear_screen()
+                    print_system_message(f"Please select a time for {available_dates[users_date]}")
+                    
+                    # Like the above but with available times, this will be replaced with the MHWP's available times from the calendar
+                    available_times = {}
+                    for i in range(1, 10):
+                        available_times[i] = int(str(i + 8) + "00")
+                        print(f"[{i}] {i+8}:00")
+
+                    users_time = int(input(">"))
+                    if users_time not in available_times:
+                        print("Please select a valid time")
+                    else:
+                        clear_screen()
+                        print_system_message(f"You have requested an appointment for {available_dates[users_date]} at {available_times[users_time]}")
+                        new_appointment = appointmentEntry(date=str(available_dates[users_date]), time=available_times[users_time], isCancelled=False)
+                        if hasattr(user, 'set_appointment'):
+                            user.set_appointment(new_appointment)
+                        
+                        self.auth_service.save_data_to_file()
+
+            elif keyword == 'c':
+                clear_screen()
+                print(PATIENT_BANNER_STRING)
+                print_system_message("\nCancel an Upcoming Appointment\n")
+                print("Here are your upcoming appointments:")
+                x = user.to_dict()
+                upcoming_appointments = {}
+                if len(x['appointments']) == 0:
+                    print("You have no upcoming appointments")
+                    direct_to_dashboard()
+
+                else: 
+                    for i in range(len(x['appointments'])):
+                        if x['appointments'][i]['isCancelled'] == True:
+                            continue
+                        upcoming_appointments[i] = x['appointments'][i]
+                        print(f"[{i+1}] {upcoming_appointments[i]['date']} at {upcoming_appointments[i]['time']}")
+                    else:
+                        if len(upcoming_appointments) == 0:
+                            print("You have no upcoming appointments")
+                            direct_to_dashboard()
+                            break 
+                        
+                    user_input = int(input(">"))
+                    clear_screen()
+                    if (user_input-1) not in upcoming_appointments:
+                        print("Please select a valid appointment")
+                    else:
+                        cancelledAppointment = appointmentEntry(date=upcoming_appointments[user_input-1]['date'], time=upcoming_appointments[user_input-1]['time'], isCancelled=True)
+                        user.set_appointment(cancelledAppointment)
+                        for i in x['appointments']:
+                            if i['date'] == upcoming_appointments[user_input-1]['date'] and i['time'] == upcoming_appointments[user_input-1]['time']:
+                                x['appointments'].remove(i)
+                                break
+                        self.auth_service.save_data_to_file()
+                        print_system_message(f"Appointment for {upcoming_appointments[user_input-1]['date']} at {upcoming_appointments[user_input-1]['time']} has been cancelled")
+                        direct_to_dashboard()
+
+            elif keyword == 'e':
+                direct_to_dashboard()
+                break
+            else:
+                print('Please enter a valid option')

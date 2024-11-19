@@ -17,21 +17,24 @@ class Patient(User):
     
     def get_mood_entries(self):
         return self.__mood_entries
-    
-    def set_appointments(self, appointments): 
-        self.__appointments = appointments
 
-    def get_assigned_mhwp(self):
-        return self.__assigned_mhwp
+    def get_appointments(self):
+        return self.__appointments
 
-    def set_assigned_mhwp(self, mhwp_username):
-        self.__assigned_mhwp = mhwp_username
+    def set_appointment(self, appointment): 
+        self.__appointments.append({"date": appointment.get_date(), "time": appointment.get_time(), "isCancelled": appointment.is_cancelled()})
 
     def add_mood_entry(self, mood, comment, datetime):
         self.__mood_entries.append({"mood": mood, "comment": comment, "datetime": datetime})
     
     def add_journal_entry(self, title, entry, datetime):
         self.__journal_entries.append({"title": title, "entry": entry, "datetime": datetime})
+    
+    def get_assigned_mhwp(self):
+        return self.__assigned_mhwp
+
+    def set_assigned_mhwp(self, mhwp_username):
+        self.__assigned_mhwp = mhwp_username
     
     def __str__(self):
         return f"Patient: {self.get_username()}, Role: {self.get_role()}"
