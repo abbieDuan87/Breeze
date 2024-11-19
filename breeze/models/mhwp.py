@@ -19,8 +19,8 @@ class MHWP(User):
         last_name=None,
         email=None,
         is_disabled=False,
-        appointments=[],
-        assigned_patients=None
+        appointments=None,
+        assigned_patients=None,
     ):
         super().__init__(
             username,
@@ -31,8 +31,8 @@ class MHWP(User):
             email=email,
             is_disabled=is_disabled,
         )
-        self.__appointments = appointments
-        self.__assigned_patients = assigned_patients
+        self.__appointments = appointments if appointments is not None else []
+        self.__assigned_patients = assigned_patients if assigned_patients is not None else []
 
     def get_appointments(self):
         return self.__appointments
