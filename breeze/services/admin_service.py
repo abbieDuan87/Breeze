@@ -1,4 +1,4 @@
-from breeze.utils.cli_utils import print_system_message, clear_screen, direct_to_dashboard
+from breeze.utils.cli_utils import print_system_message, clear_screen, direct_to_dashboard, return_to_previous
 from breeze.utils.constants import ADMIN_BANNER_STRING
 from breeze.services.auth_service import AuthService
 from breeze.models.patient import Patient
@@ -21,36 +21,36 @@ class AdminService:
         Returns:
             bool: True if the user chose to log out, otherwise False
         """
+        while True:
+            clear_screen()
+            print(ADMIN_BANNER_STRING)
+            print('Hi', user.get_username(), '!')
+            print('What do you want to do today?')
+            
+            print('[A] Allocate patient to MHWP')
+            print('[E] Edit user information')
+            print('[D] Delete a user')
+            print('[I] Disable a user')
+            print('[V] View summary')
+            print('[X] Log out')
 
-        print(ADMIN_BANNER_STRING)
-        print('Hi', user.get_username(), '!')
-        print('What do you want to do today?')
-        
-        print('[A] Allocate patient to MHWP')
-        print('[E] Edit user information')
-        print('[D] Delete a user')
-        print('[I] Disable a user')
-        print('[V] View summary')
-        print('[X] Log out')
-
-        user_input = input("> ").strip().lower()
-        match user_input:
-            case "a":
-                self.allocate_patient_to_mhwp()
-            case "e":
-                self.edit_user_information()
-            case "d":
-                self.delete_user(user)
-            case "i":
-                self.disable_user(user)
-            case "v":
-                self.view_summary()
-            case "x":
-                return True
-            case _:
-                print_system_message("Invalid choice. Please try again.")
-
-        return False
+            user_input = input("> ").strip().lower()
+            match user_input:
+                case "a":
+                    self.allocate_patient_to_mhwp()
+                case "e":
+                    self.edit_user_information()
+                case "d":
+                    self.delete_user(user)
+                case "i":
+                    self.disable_user(user)
+                case "v":
+                    self.view_summary()
+                case "x":
+                    return True
+                case _:
+                    print_system_message("Invalid choice. Please try again.")
+                    input("\nPress Enter to continue...")
 
     def allocate_patient_to_mhwp(self):
         clear_screen()
@@ -74,12 +74,14 @@ class AdminService:
         
         # List of unassigned patients
         self._print_users(unassigned_patients, "Unassigned Patients")
-        # print("List of unassigned patients:")
-        # for patient in unassigned_patients:
-        #     print(f"- Username: {patient.get_username()}, Name: {patient.get_first_name()} {patient.get_last_name()}")
+        print("\nEnter the username of the unassigned patient to assign (or enter [R] to return to the dashboard):")
+        
         # Admin enters username of unassigned patient
         while True:
-            selected_patient_username = input("\nEnter the username of the unassigned patient to assign: ").strip()
+            selected_patient_username = input("> ").strip()
+
+            if return_to_previous(selected_patient_username, "r"):
+                return
 
             selected_patient = self.auth_service.users.get(selected_patient_username)
             if selected_patient and isinstance(selected_patient, Patient) and not selected_patient.get_assigned_mhwp():
@@ -88,13 +90,12 @@ class AdminService:
                 print_system_message("Invalid username or patient is already assigned. Please enter a valid unassigned patient username.")
             
         # List of MHWPs
+        clear_screen()
+        print(ADMIN_BANNER_STRING)
         print(f"\nAssigning patient: {selected_patient.get_first_name()} {selected_patient.get_last_name()} (Username: {selected_patient.get_username()})")
         self._print_users(available_mhwps, "Available MHWPs")
-        # print("List of available MHWPs:")
-        # for mhwp in available_mhwps:
-        #     print(f"- Username: {mhwp.get_username()}, Name: {mhwp.get_first_name()} {mhwp.get_last_name()}")
         
-        # Admin enters username of MHWP
+    
         while True:
             selected_mhwp_username = input("\nEnter the username of the MHWP to assign the patient to: ").strip()
 
@@ -105,6 +106,8 @@ class AdminService:
 
                 self.auth_service.save_data_to_file()
 
+                clear_screen()
+                print(ADMIN_BANNER_STRING)
                 print_system_message(f"Successfully assigned patient '{selected_patient.get_username()}' to MHWP '{selected_mhwp.get_username()}'.")
                 direct_to_dashboard()
                 return
@@ -326,8 +329,8 @@ class AdminService:
 
         for user in users:
             username = user.get_username()
-            first_name = user.get_first_name() or "N/A"  # Use empty string if None
-            last_name = user.get_last_name() or "N/A"    # Use empty string if None
+            first_name = user.get_first_name() or "N/A"
+            last_name = user.get_last_name() or "N/A"
             print(f"| {username:<20} | {first_name:<15} | {last_name:<15} |")
 
         print("-" * 65)
