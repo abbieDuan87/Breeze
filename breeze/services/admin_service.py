@@ -53,74 +53,74 @@ class AdminService:
                     input("\nPress Enter to continue...")
 
     def allocate_patient_to_mhwp(self):
-        clear_screen()
-        print(ADMIN_BANNER_STRING)
-        print_system_message("Allocate Patient to MHWP")
-
-        unassigned_patients = []
-        available_mhwps = []
-
-        # Find unassigned patients and available MHWPs
-        for username, user in self.auth_service.users.items():
-            if isinstance(user, Patient) and not user.get_assigned_mhwp():
-                unassigned_patients.append(user)
-            elif isinstance(user, MHWP) and len(user.get_assigned_patients()) < 5:
-                available_mhwps.append(user)
-        
-        if not unassigned_patients:
-            print_system_message("No unassigned patients available. All patients assigned")
-            direct_to_dashboard()
-            return
-        
-        # List of unassigned patients
-        self._print_users(unassigned_patients, "Unassigned Patients", show_assigned_patients=False)
-        print("\nEnter the username of the unassigned patient to assign (or enter [R] to return to the dashboard):")
-        
-        # Admin enters username of unassigned patient
         while True:
-            selected_patient_username = input("> ").strip()
+            clear_screen()
+            print(ADMIN_BANNER_STRING)
+            print_system_message("Allocate Patient to MHWP")
 
-            if return_to_previous(selected_patient_username, "r"):
+            unassigned_patients = []
+            available_mhwps = []
+
+            # Find unassigned patients and available MHWPs
+            for username, user in self.auth_service.users.items():
+                if isinstance(user, Patient) and not user.get_assigned_mhwp():
+                    unassigned_patients.append(user)
+                elif isinstance(user, MHWP) and len(user.get_assigned_patients()) < 5:
+                    available_mhwps.append(user)
+            
+            if not unassigned_patients:
+                print_system_message("No unassigned patients available. All patients assigned")
+                direct_to_dashboard()
+                return
+            
+            # List of unassigned patients
+            self._print_users(unassigned_patients, "Unassigned Patients", show_assigned_patients=False)
+            print("\nEnter the username of the unassigned patient to assign (or enter [R] to return to the dashboard):")
+            
+            # Admin enters username of unassigned patient
+            while True:
+                selected_patient_username = input("> ").strip()
+
+                if return_to_previous(selected_patient_username, "r"):
+                    return
+
+                selected_patient = self.auth_service.users.get(selected_patient_username)
+                if selected_patient and isinstance(selected_patient, Patient) and not selected_patient.get_assigned_mhwp():
+                    break
+                else:
+                    print_system_message("Invalid username or patient is already assigned. Please enter a valid unassigned patient username.")
+                
+            # List of MHWPs
+            if not available_mhwps:
+                print_system_message("No available MHWPs at this moment. All MHWPs have reached their maximum capacity of 5 patients.")
+                direct_to_dashboard()
                 return
 
-            selected_patient = self.auth_service.users.get(selected_patient_username)
-            if selected_patient and isinstance(selected_patient, Patient) and not selected_patient.get_assigned_mhwp():
-                break
-            else:
-                print_system_message("Invalid username or patient is already assigned. Please enter a valid unassigned patient username.")
+            clear_screen()
+            print(ADMIN_BANNER_STRING)
+            print(f"\nAssigning patient: {selected_patient.get_first_name()} {selected_patient.get_last_name()} (Username: {selected_patient.get_username()})")
+            self._print_users(available_mhwps, "Available MHWPs", show_assigned_patients=True)
             
-        # List of MHWPs
-        if not available_mhwps:
-            print_system_message("No available MHWPs at this moment. All MHWPs have reached their maximum capacity of 5 patients.")
-            direct_to_dashboard()
-            return
-
-        clear_screen()
-        print(ADMIN_BANNER_STRING)
-        print(f"\nAssigning patient: {selected_patient.get_first_name()} {selected_patient.get_last_name()} (Username: {selected_patient.get_username()})")
-        self._print_users(available_mhwps, "Available MHWPs", show_assigned_patients=True)
         
-    
-        while True:
-            selected_mhwp_username = input("\nEnter the username of the MHWP to assign the patient to: ").strip()
+            while True:
+                selected_mhwp_username = input("\nEnter the username of the MHWP to assign the patient to: ").strip()
 
-            selected_mhwp = self.auth_service.users.get(selected_mhwp_username)
-            if selected_mhwp and isinstance(selected_mhwp, MHWP):
-                if len(selected_mhwp.get_assigned_patients()) < 5:
-                    selected_patient.set_assigned_mhwp(selected_mhwp_username)
-                    selected_mhwp.add_patient(selected_patient_username)
+                selected_mhwp = self.auth_service.users.get(selected_mhwp_username)
+                if selected_mhwp and isinstance(selected_mhwp, MHWP):
+                    if len(selected_mhwp.get_assigned_patients()) < 5:
+                        selected_patient.set_assigned_mhwp(selected_mhwp_username)
+                        selected_mhwp.add_patient(selected_patient_username)
 
-                    self.auth_service.save_data_to_file()
+                        self.auth_service.save_data_to_file()
 
-                    clear_screen()
-                    print(ADMIN_BANNER_STRING)
-                    print_system_message(f"Successfully assigned patient '{selected_patient.get_username()}' to MHWP '{selected_mhwp.get_username()}'.")
-                    direct_to_dashboard()
-                    return
+                        clear_screen()
+                        print(ADMIN_BANNER_STRING)
+                        print_system_message(f"Successfully assigned patient '{selected_patient.get_username()}' to MHWP '{selected_mhwp.get_username()}'.")
+                        break
+                    else:
+                        print_system_message(f"MHWP '{selected_mhwp.get_username()}' has already reached the maximum number of 5 patients. Please select a different MHWP.")
                 else:
-                    print_system_message(f"MHWP '{selected_mhwp.get_username()}' has already reached the maximum number of 5 patients. Please select a different MHWP.")
-            else:
-                print_system_message("Invalid MHWP username. Please enter a valid MHWP username.")
+                    print_system_message("Invalid MHWP username. Please enter a valid MHWP username.")
 
 
     def edit_user_information(self):
