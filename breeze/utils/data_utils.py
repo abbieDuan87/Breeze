@@ -115,8 +115,9 @@ def save_data(file_path, user_object_list):
     unique_appointments = {}
 
     for user in user_object_list:
-        for app in user.get_appointments():
-            unique_appointments[app.get_id()] = app
+        if user.get_role().lower() != 'admin':
+            for app in user.get_appointments():
+                unique_appointments[app.get_id()] = app
 
     appointments_dict_list = [app.to_dict() for app in unique_appointments.values()]
     users_dict_list = [user.to_dict() for user in user_object_list]
