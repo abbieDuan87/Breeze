@@ -73,7 +73,7 @@ class AdminService:
             return
         
         # List of unassigned patients
-        self._print_users(unassigned_patients, "Unassigned Patients")
+        self._print_users(unassigned_patients, "Unassigned Patients", show_assigned_patients=False)
         print("\nEnter the username of the unassigned patient to assign (or enter [R] to return to the dashboard):")
         
         # Admin enters username of unassigned patient
@@ -93,7 +93,7 @@ class AdminService:
         clear_screen()
         print(ADMIN_BANNER_STRING)
         print(f"\nAssigning patient: {selected_patient.get_first_name()} {selected_patient.get_last_name()} (Username: {selected_patient.get_username()})")
-        self._print_users(available_mhwps, "Available MHWPs")
+        self._print_users(available_mhwps, "Available MHWPs", show_assigned_patients=True)
         
     
         while True:
@@ -315,22 +315,38 @@ class AdminService:
         print("-" * 65)
 
     
-    def _print_users(self, users, title):
+    def _print_users(self, users, title, show_assigned_patients=False):
         """Helper function to print the list of users in a table format.
 
         Args:
             users (list): List of users (Patients or MHWPs).
             title (str): Title for the table.
+            show_assigned_patients (bool): Whether to show the 'Assigned Patients' column for MHWPs.
         """
         print(f"\n{title}:")
-        print("-" * 65)
-        print(f"| {'Username':<20} | {'First Name':<15} | {'Last Name':<15} |")
-        print("-" * 65)
+        
+        if show_assigned_patients:
+            print("-" * 80)
+            print(f"| {'Username':<20} | {'First Name':<15} | {'Last Name':<15} | {'Assigned Patients':<15} |")
+            print("-" * 80)
+        else:
+            print("-" * 65)
+            print(f"| {'Username':<20} | {'First Name':<15} | {'Last Name':<15} |")
+            print("-" * 65)
 
         for user in users:
             username = user.get_username()
             first_name = user.get_first_name() or "N/A"
             last_name = user.get_last_name() or "N/A"
-            print(f"| {username:<20} | {first_name:<15} | {last_name:<15} |")
+            
+            if show_assigned_patients and isinstance(user, MHWP):
+                assigned_patients = len(user.get_assigned_patients())
+                print(f"| {username:<20} | {first_name:<15} | {last_name:<15} | {assigned_patients:<15} |")
+            else:
+                print(f"| {username:<20} | {first_name:<15} | {last_name:<15} |")
 
-        print("-" * 65)
+        if show_assigned_patients:
+            print("-" * 80)
+        else:
+            print("-" * 65)
+

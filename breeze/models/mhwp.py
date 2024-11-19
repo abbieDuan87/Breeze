@@ -1,10 +1,13 @@
 from .user import User
 
 class MHWP(User):
-    def __init__(self, username, password, first_name = None, last_name = None, email= None, is_disabled=False, appointments=[], assigned_patients=[]):
+    def __init__(self, username, password, first_name = None, last_name = None, email= None, is_disabled=False, appointments=None, assigned_patients=None):
         super().__init__(username, password, role='MHWP', first_name= first_name, last_name= last_name, email= email, is_disabled=is_disabled)
-        self.__appointments = appointments
-        self.__assigned_patients = assigned_patients
+        self.__appointments = appointments if appointments is not None else []
+        self.__assigned_patients = assigned_patients if assigned_patients is not None else []
+
+        # self.__appointments = appointments
+        # self.__assigned_patients = assigned_patients
 
     def add_patient(self, patient_username):
         if patient_username not in self.__assigned_patients:
