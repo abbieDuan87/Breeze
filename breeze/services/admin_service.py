@@ -73,9 +73,10 @@ class AdminService:
             return
         
         # List of unassigned patients
-        print("List of unassigned patients:")
-        for patient in unassigned_patients:
-            print(f"- Username: {patient.get_username()}, Name: {patient.get_first_name()} {patient.get_last_name()}")
+        self._print_users(unassigned_patients, "Unassigned Patients")
+        # print("List of unassigned patients:")
+        # for patient in unassigned_patients:
+        #     print(f"- Username: {patient.get_username()}, Name: {patient.get_first_name()} {patient.get_last_name()}")
         # Admin enters username of unassigned patient
         while True:
             selected_patient_username = input("\nEnter the username of the unassigned patient to assign: ").strip()
@@ -88,9 +89,10 @@ class AdminService:
             
         # List of MHWPs
         print(f"\nAssigning patient: {selected_patient.get_first_name()} {selected_patient.get_last_name()} (Username: {selected_patient.get_username()})")
-        print("List of available MHWPs:")
-        for mhwp in available_mhwps:
-            print(f"- Username: {mhwp.get_username()}, Name: {mhwp.get_first_name()} {mhwp.get_last_name()}")
+        self._print_users(available_mhwps, "Available MHWPs")
+        # print("List of available MHWPs:")
+        # for mhwp in available_mhwps:
+        #     print(f"- Username: {mhwp.get_username()}, Name: {mhwp.get_first_name()} {mhwp.get_last_name()}")
         
         # Admin enters username of MHWP
         while True:
@@ -106,8 +108,8 @@ class AdminService:
                 print_system_message(f"Successfully assigned patient '{selected_patient.get_username()}' to MHWP '{selected_mhwp.get_username()}'.")
                 direct_to_dashboard()
                 return
-        else:
-            print_system_message("Invalid MHWP username. Please enter a valid MHWP username.")
+            else:
+                print_system_message("Invalid MHWP username. Please enter a valid MHWP username.")
 
 
     def edit_user_information(self):
@@ -307,4 +309,25 @@ class AdminService:
                 is_account_disabled = "True" if user.get_is_disabled() else "False"
                 print(f"| {username:<20} | {role:<15} | {is_account_disabled:<20} |")
         
-        print("-" * 65)  
+        print("-" * 65)
+
+    
+    def _print_users(self, users, title):
+        """Helper function to print the list of users in a table format.
+
+        Args:
+            users (list): List of users (Patients or MHWPs).
+            title (str): Title for the table.
+        """
+        print(f"\n{title}:")
+        print("-" * 65)
+        print(f"| {'Username':<20} | {'First Name':<15} | {'Last Name':<15} |")
+        print("-" * 65)
+
+        for user in users:
+            username = user.get_username()
+            first_name = user.get_first_name() or "N/A"  # Use empty string if None
+            last_name = user.get_last_name() or "N/A"    # Use empty string if None
+            print(f"| {username:<20} | {first_name:<15} | {last_name:<15} |")
+
+        print("-" * 65)
