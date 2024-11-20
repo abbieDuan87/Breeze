@@ -89,11 +89,11 @@ class AppointmentEntry:
             dict: Dictionary representation of the appointment entry.
         """
         return {
-            "appointment_id": self.appointment_id,
+            "appointmentId": self.appointment_id,
             "date": self.date.strftime("%Y-%m-%d"),
             "time": self.time.strftime("%I:%M %p"),
             "isCancel": self.isCancelled,
             "status": self.status,
-            "mhwp_username": self.mhwp_username,
-            "patient_username": self.patient_username,
+            "mhwpUsername": self.mhwp_username,
+            "patientUsername": self.patient_username,
         }

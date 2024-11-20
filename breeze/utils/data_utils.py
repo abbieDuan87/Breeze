@@ -42,6 +42,7 @@ def decode_user(user_data, appointments_data):
             mood_entries=user_data.get("moods", []),
             journal_entries=user_data.get("journals", []),
             appointments=appointments,
+            assigned_MHWP=user_data.get("assignedMHWP", None),
         )
 
     elif role == "admin":
@@ -63,6 +64,7 @@ def decode_user(user_data, appointments_data):
             email=user_data.get("information", {}).get("email"),
             is_disabled=user_data.get("isDisabled", False),
             appointments=appointments,
+            assigned_patients=user_data.get("assignedPatients", []),
         )
 
     return user_data
@@ -115,7 +117,7 @@ def save_data(file_path, user_object_list):
     unique_appointments = {}
 
     for user in user_object_list:
-        if user.get_role().lower() != 'admin':
+        if user.get_role().lower() != "admin":
             for app in user.get_appointments():
                 unique_appointments[app.get_id()] = app
 
@@ -144,9 +146,9 @@ def create_appointments_from_data(appointments_data):
         time = app.get("time")
         is_cancel = app.get("isCancel", False)
         status = app.get("status", None)
-        mhwp_username = app.get("mhwp_username", None)
-        patient_username = app.get("patient_username", None)
-        appointment_id = app.get("appointment_id", None)
+        mhwp_username = app.get("mhwpUsername", None)
+        patient_username = app.get("patientUsername", None)
+        appointment_id = app.get("appointmentId", None)
         appointment_entries.append(
             AppointmentEntry(
                 date,
