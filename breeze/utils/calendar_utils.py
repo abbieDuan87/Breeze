@@ -46,7 +46,7 @@ def generate_time_slots(start="09:00", end="17:00", interval_minutes=30):
     return slots
 
 
-def generate_calendar_slot_code_map(next_available_days, time_slots):
+def generate_calendar_slot_code_map(next_available_days=None, time_slots=None):
     """Generates a dictionary mapping unique codes to (date, time) pairs.
 
     Args:
@@ -56,6 +56,11 @@ def generate_calendar_slot_code_map(next_available_days, time_slots):
     Returns:
         dict: A dictionary where each key is a code (e.g., "A1") and each value is a (date, time) tuple.
     """
+    if not next_available_days:
+        next_available_days = get_next_available_days()
+    if not time_slots:
+        time_slots = generate_time_slots()
+        
     codes = {}
     for i, slot in enumerate(time_slots):
         col_code = chr(ord("A") + i)

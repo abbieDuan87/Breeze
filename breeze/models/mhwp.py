@@ -89,6 +89,8 @@ class MHWP(User):
         print(
             f"\nUpcoming Calendar for {self.get_username()} in the next five working days ({date_range}):"
         )
+        print("Number of appointments:", len(self.get_appointments()))
+
         print("+", "-" * (10 + 17 * len(next_available_days)), "+")
 
         print(f"| {'Time':<10}", end=" | ")
@@ -141,9 +143,14 @@ class MHWP(User):
 
 if __name__ == "__main__":
     gp1 = MHWP(username="gp1", password="")
-    app1 = AppointmentEntry("2024-11-21", "10:00 AM")
+    app1 = AppointmentEntry("2024-11-22", "10:00 AM")
+    app2 = AppointmentEntry("2024-11-25", "11:00 AM")
     gp1.add_appointment(app1)
+    gp1.add_appointment(app2)
     app1.request_appointment()
-    print(gp1.get_appointments()[0])
-    print(gp1.get_appointment_by_date_time("2024-11-21", "10:00 AM"))
+    app2.confirm_appointment()
+    print(gp1.get_appointments())
+    print("app1:", gp1.get_appointment_by_date_time("2024-11-22", "10:00 AM"))
+    print("app2:", gp1.get_appointment_by_date_time("2024-11-23", "11:00 AM"))
+
     gp1.display_calendar()

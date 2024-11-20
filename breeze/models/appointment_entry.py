@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime
+from datetime import datetime, time, date
 
 
 class AppointmentEntry:
@@ -23,12 +23,17 @@ class AppointmentEntry:
             status (str): The status of the appointment (e.g., "requested", "confirmed", "cancelled").
         """
         self.appointment_id = appointment_id or str(uuid.uuid4())
-        self.date = datetime.strptime(
-            date_str, "%Y-%m-%d"
-        ).date()  # Store as datetime.date
-        self.time = datetime.strptime(
-            time_str, "%I:%M %p"
-        ).time()  # Store as datetime.time
+        # Handle date input
+        if isinstance(date_str, date):
+            self.date = date_str
+        else:
+            self.date = datetime.strptime(date_str, "%Y-%m-%d").date()
+        
+        # Handle time input
+        if isinstance(time_str, time):
+            self.time = time_str
+        else:
+            self.time = datetime.strptime(time_str, "%I:%M %p").time()
         self.mhwp_username = mhwp_username
         self.patient_username = patient_username
         self.isCancelled = isCancelled
