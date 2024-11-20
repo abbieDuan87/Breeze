@@ -44,6 +44,11 @@
       "role": "mhwp",
       "isDisabled": false,
       "appointments": ["2"]
+    },
+    {
+      "username": "admin",
+      "password": "",
+      "role": "admin"
     }
   ]
 }
