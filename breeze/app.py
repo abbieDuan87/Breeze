@@ -1,6 +1,6 @@
 from breeze.services.auth_service import AuthService
 from breeze.services.admin_service import AdminService
-from breeze.services.patient_service import PatientService
+from breeze.services.patient_service.patient_service import PatientService
 from breeze.services.mhwp_service import MHWPService
 
 from breeze.utils.cli_utils import print_system_message, clear_screen
