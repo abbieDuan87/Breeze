@@ -1,20 +1,20 @@
 {
   "appointments": [
     {
-      "appointment_id": "1",
+      "appointmentId": "1",
       "date": "2024-11-21",
       "time": "10:00 AM",
       "status": "confirmed",
-      "mhwp_username": "mhwp1",
-      "patient_username": "patient1"
+      "mhwpUsername": "mhwp1",
+      "patientUsername": "patient1"
     },
     {
-      "appointment_id": "2",
+      "appointmentId": "2",
       "date": "2024-11-22",
       "time": "2:00 PM",
       "status": "confirmed",
-      "mhwp_username": "mhwp2",
-      "patient_username": "patient2"
+      "mhwpUsername": "mhwp2",
+      "patientUsername": "patient2"
     }
   ],
   "users": [
