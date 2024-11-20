@@ -1,8 +1,14 @@
 import time
 from breeze.models.appointment_entry import AppointmentEntry
+from breeze.utils.appointment_utils import (
+    confirm_user_choice,
+    handle_appointment_action,
+    show_upcoming_appointments,
+)
 from breeze.utils.calendar_utils import generate_calendar_slot_code_map
 from breeze.utils.cli_utils import (
     clear_screen,
+    clear_screen_and_show_banner,
     direct_to_dashboard,
     print_appointments,
     print_system_message,
@@ -14,19 +20,6 @@ def manage_appointment(user, auth_service):
     """
     Allows the patient to book and manage upcoming appointments.
     """
-
-    def show_upcoming_appointments():
-        """Displays the patient's upcoming appointments."""
-        upcoming_appointments = sorted(
-            user.get_appointments(), key=lambda app: (app.get_date(), app.get_time())
-        )
-        if upcoming_appointments:
-            print("\nHere are your upcoming appointments:")
-            print_appointments(upcoming_appointments)
-            return upcoming_appointments
-
-        else:
-            print("You have no upcoming appointment.")
 
     def display_mhwp_selection():
         """Displays available MHWPs for the patient to choose from."""
@@ -89,31 +82,13 @@ def manage_appointment(user, auth_service):
             )
         print(separator)
 
-    def clear_screen_and_show_header():
-        clear_screen()
-        print(PATIENT_BANNER_STRING)
-
-    def confirm_user_choice(
-        on_confirm=lambda: print("Action confirmed."),
-        on_cancel=lambda: print("Action canceled."),
-    ):
-        while True:
-            print("\nPress [Y] for confirm and [N] for cancel:")
-            user_choice = input("> ").strip().lower()
-            if user_choice == "y":
-                on_confirm()
-                break
-            elif user_choice == "n":
-                on_cancel()
-                break
-
     def handle_confirm_appointment(user, selected_mhwp, requested_app):
         user.add_appointment(requested_app)
         selected_mhwp.add_appointment(requested_app)
         print("Appointment confirmed and added.")
 
     while True:
-        clear_screen_and_show_header()
+        clear_screen_and_show_banner(PATIENT_BANNER_STRING)
 
         assigned_mhwp = user.get_assigned_mhwp()
         if assigned_mhwp:
@@ -121,7 +96,7 @@ def manage_appointment(user, auth_service):
         else:
             print("Your have no assigned MHWP.")
 
-        show_upcoming_appointments()
+        show_upcoming_appointments(user)
 
         print("\nChoose one of the following options:")
         print("\n[B]ook an appointment\n[C]ancel an upcoming appointment\n[E]xit\n")
@@ -129,7 +104,7 @@ def manage_appointment(user, auth_service):
 
         if user_choice == "b":
             while True:
-                clear_screen_and_show_header()
+                clear_screen_and_show_banner(PATIENT_BANNER_STRING)
                 print("\nChoose the MHWP from the following list:")
                 available_mhwps = display_mhwp_selection()
 
@@ -152,12 +127,12 @@ def manage_appointment(user, auth_service):
                 )
 
                 if selected_mhwp:
-                    clear_screen_and_show_header()
+                    clear_screen_and_show_banner(PATIENT_BANNER_STRING)
                     app_code_map = generate_calendar_slot_code_map()
 
                     while True:
-                        clear_screen_and_show_header()
-                        selected_mhwp.display_calendar()
+                        clear_screen_and_show_banner(PATIENT_BANNER_STRING)
+                        selected_mhwp.display_calendar(is_MHWP_view=False)
                         print(
                             "\nSelect the available slot from the calendar (press [r] to cancel):"
                         )
@@ -204,11 +179,12 @@ def manage_appointment(user, auth_service):
 
         elif user_choice == "c":
             while True:
-                clear_screen_and_show_header()
+                clear_screen_and_show_banner(PATIENT_BANNER_STRING)
 
-                upcoming_appointments = show_upcoming_appointments()
+                upcoming_appointments = show_upcoming_appointments(user)
 
                 if not upcoming_appointments:
+                    time.sleep(1)
                     break
 
                 print(
@@ -221,31 +197,18 @@ def manage_appointment(user, auth_service):
 
                 try:
                     selected_index = int(selected_appointment_index)
-                    if selected_index < 1 or selected_index > len(
-                        upcoming_appointments
+
+                    if not handle_appointment_action(
+                        upcoming_appointments, selected_index, auth_service
                     ):
-                        print_system_message(
-                            "Invalid appointment index number. Please try again."
-                        )
-                        time.sleep(0.5)
-                        continue
+                        print_system_message("Action could not be completed.")
 
-                    appointment_to_cancel = upcoming_appointments[selected_index - 1]
-                    if appointment_to_cancel:
-                        print_system_message(
-                            f"Appointment {selected_index} will be canceled."
-                        )
-                        appointment_to_cancel.cancel_appointment()
-                        auth_service.save_data_to_file()
-                        time.sleep(1)
+                except ValueError as ve:
+                    if "invalid literal for int()" in str(ve):
+                        print_system_message("Please enter a valid number.")
+                    else:
+                        print_system_message(str(ve))
 
-                        print_system_message(
-                            f"Appointment {selected_index} has been canceled."
-                        )
-                        time.sleep(1)
-
-                except ValueError:
-                    print_system_message("Please enter a valid number.")
                     time.sleep(0.5)
                     continue
 

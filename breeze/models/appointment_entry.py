@@ -28,7 +28,7 @@ class AppointmentEntry:
             self.date = date_str
         else:
             self.date = datetime.strptime(date_str, "%Y-%m-%d").date()
-        
+
         # Handle time input
         if isinstance(time_str, time):
             self.time = time_str
@@ -65,12 +65,14 @@ class AppointmentEntry:
         """
         Marks the appointment as confirmed and updates status.
         """
+        self.isCancelled = False
         self.status = "confirmed"
 
     def request_appointment(self):
         """
         Marks the appointment as requested and updates status.
         """
+        self.isCancelled = False
         self.status = "requested"
 
     def __str__(self):

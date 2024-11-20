@@ -119,3 +119,8 @@ def print_appointments(appointments=[]):
             + " |"
         )
     print(separator)
+
+
+def clear_screen_and_show_banner(banner_str):
+    clear_screen()
+    print(banner_str)

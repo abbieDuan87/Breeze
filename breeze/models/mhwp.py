@@ -67,7 +67,7 @@ class MHWP(User):
                 return app
         return None
 
-    def display_calendar(self, code_map=None):
+    def display_calendar(self, code_map=None, is_MHWP_view=True):
         """
         Displays the calendar with dates as columns and time slots as rows for this MHWP.
         """
@@ -106,7 +106,10 @@ class MHWP(User):
                 day_slot = code_map[code]
 
                 app = self.get_appointment_by_date_time(day_slot[0], day_slot[1])
-                placeholder = app.get_status() if app else code
+                if is_MHWP_view:
+                    placeholder = app.get_status() if app else '\u25CB'
+                else:
+                    placeholder = app.get_status() if app else code
                 print(f"{placeholder:<14}", end=" | ")
             print()
 
@@ -153,4 +156,4 @@ if __name__ == "__main__":
     print("app1:", gp1.get_appointment_by_date_time("2024-11-22", "10:00 AM"))
     print("app2:", gp1.get_appointment_by_date_time("2024-11-23", "11:00 AM"))
 
-    gp1.display_calendar()
+    gp1.display_calendar(is_MHWP_view=True)
