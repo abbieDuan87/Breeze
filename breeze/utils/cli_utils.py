@@ -1,5 +1,7 @@
 import os
 
+from breeze.utils.calendar_utils import get_colored_status, strip_ansi_codes
+
 
 def print_system_message(message):
     """Print the system message in a box that dynamically sizes according to the length of the message.
@@ -80,15 +82,14 @@ def print_appointments(appointments=[]):
         print("No upcoming appointments.")
         return
 
-    headers = ["#", "Date", "Time", "Status", "Cancelled", "Patient", "MHWP"]
+    headers = ["#", "Date", "Time", "Status", "Patient", "MHWP"]
 
     rows = [
         [
             index + 1,
             app.date,
             app.time,
-            app.status,
-            "Yes" if app.isCancelled else "No",
+            get_colored_status(app.status),
             app.patient_username,
             app.mhwp_username,
         ]
@@ -96,8 +97,10 @@ def print_appointments(appointments=[]):
     ]
 
     column_widths = [
-        max(len(str(row[i])) for row in rows + [headers]) for i in range(len(headers))
+        max(len(strip_ansi_codes(str(row[i]))) for row in rows + [headers])
+        for i in range(len(headers))
     ]
+
     separator = "+".join("-" * (width + 2) for width in column_widths)
     separator = f"+{separator}+"
 
@@ -114,7 +117,8 @@ def print_appointments(appointments=[]):
         print(
             "| "
             + " | ".join(
-                str(cell).ljust(width) for cell, width in zip(row, column_widths)
+                str(cell).ljust(width + len(str(cell)) - len(strip_ansi_codes(str(cell))))
+                for cell, width in zip(row, column_widths)
             )
             + " |"
         )
