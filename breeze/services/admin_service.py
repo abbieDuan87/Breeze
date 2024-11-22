@@ -334,13 +334,13 @@ class AdminService:
         print(f"\n{title}:")
         
         if show_assigned_patients:
-            print("-" * 80)
-            print(f"| {'Username':<20} | {'First Name':<15} | {'Last Name':<15} | {'Assigned Patients':<15} |")
-            print("-" * 80)
+            print("-" * 83)
+            print(f"| {'Username':<20} | {'First Name':<15} | {'Last Name':<15} | {'Assigned Patients':<20} |")
+            print("-" * 83)
         else:
-            print("-" * 65)
+            print("-" * 60)
             print(f"| {'Username':<20} | {'First Name':<15} | {'Last Name':<15} |")
-            print("-" * 65)
+            print("-" * 60)
 
         for user in users:
             username = user.get_username()
@@ -348,13 +348,13 @@ class AdminService:
             last_name = user.get_last_name() or "N/A"
             
             if show_assigned_patients and isinstance(user, MHWP):
-                assigned_patients = len(user.get_assigned_patients())
-                print(f"| {username:<20} | {first_name:<15} | {last_name:<15} | {assigned_patients:<15} |")
+                assigned_patients = str(len(user.get_assigned_patients()))
+                print(f"| {username:<20} | {first_name:<15} | {last_name:<15} | {assigned_patients:<20} |")
             else:
                 print(f"| {username:<20} | {first_name:<15} | {last_name:<15} |")
 
         if show_assigned_patients:
-            print("-" * 80)
+            print("-" * 83)
         else:
-            print("-" * 65)
+            print("-" * 60)
 
