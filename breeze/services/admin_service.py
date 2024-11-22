@@ -130,12 +130,41 @@ class AdminService:
         clear_screen()
         print(ADMIN_BANNER_STRING)
         print_system_message("Edit User Information")
+
+        while True:
+            print("\nDo you want to edit information for a Patient or an MHWP?\nEnter [P] for Patient or [M] for MHWP (or [R] to return to the dashboard):")
+            user_input = input("> ").strip().lower()
+
+            if user_input == "r":
+                return  
+            elif user_input in ["p", "m"]:
+                break
+            else:
+                print_system_message("Invalid choice.")
+
+        # Filter and display users of the chosen type
+        users_to_edit = []
+        if user_input == "p":
+            users_to_edit = [user for user in self.auth_service.users.values() if isinstance(user, Patient)]
+            title = "Patients"
+        elif user_input == "m":
+            users_to_edit = [user for user in self.auth_service.users.values() if isinstance(user, MHWP)]
+            title = "MHWPs"
+
+        # Display table of users
+        clear_screen()
+        print(ADMIN_BANNER_STRING)
+        self._print_users(users_to_edit, title, show_assigned_patients=False)
        
         while True:
-            username = input("Enter the username of the user to edit: ").strip()
+            print("\nEnter the username of the user to edit (or enter [R] to return to the dashboard):")
+            username = input("> ").strip()
+
+            if username.lower() == "r":
+                return
 
             if not username:
-                print("Username cannot be empty. Please enter a valid username.")
+                print_system_message("Username cannot be empty. Please enter a valid username.\n")
                 continue
 
             user = self.auth_service.users.get(username)
@@ -206,9 +235,8 @@ class AdminService:
                 return
                 
             else:
-                print_system_message("User not found.")
-                direct_to_dashboard()
-                return
+                print_system_message("User not found. Please enter a valid username.")
+                
         
                
 
@@ -219,14 +247,18 @@ class AdminService:
         
         print(f'Hi {user.get_username()} ! Here are all the users:')
         users = self.auth_service.get_all_users().values()
-        print("-" * 50)  
-        print(f"| {'Username':<20} | {'Role':<15}")
-        print("-" * 50) 
+        print("-" * 42)  
+        print(f"| {'Username':<20} | {'Role':<15} |")
+        print("-" * 42)
+
         for user in users:
             if not user.get_role() == 'Admin':
                 username = user.get_username()
                 role = user.get_role()
-                print(f"| {username:<20} | {role:<15}")
+                print(f"| {username:<20} | {role:<15} |")
+        
+        print("-" * 42)
+
 
        
         while True:
@@ -334,13 +366,13 @@ class AdminService:
         print(f"\n{title}:")
         
         if show_assigned_patients:
-            print("-" * 80)
-            print(f"| {'Username':<20} | {'First Name':<15} | {'Last Name':<15} | {'Assigned Patients':<15} |")
-            print("-" * 80)
+            print("-" * 83)
+            print(f"| {'Username':<20} | {'First Name':<15} | {'Last Name':<15} | {'Assigned Patients':<20} |")
+            print("-" * 83)
         else:
-            print("-" * 65)
+            print("-" * 60)
             print(f"| {'Username':<20} | {'First Name':<15} | {'Last Name':<15} |")
-            print("-" * 65)
+            print("-" * 60)
 
         for user in users:
             username = user.get_username()
@@ -348,13 +380,13 @@ class AdminService:
             last_name = user.get_last_name() or "N/A"
             
             if show_assigned_patients and isinstance(user, MHWP):
-                assigned_patients = len(user.get_assigned_patients())
-                print(f"| {username:<20} | {first_name:<15} | {last_name:<15} | {assigned_patients:<15} |")
+                assigned_patients = str(len(user.get_assigned_patients()))
+                print(f"| {username:<20} | {first_name:<15} | {last_name:<15} | {assigned_patients:<20} |")
             else:
                 print(f"| {username:<20} | {first_name:<15} | {last_name:<15} |")
 
         if show_assigned_patients:
-            print("-" * 80)
+            print("-" * 83)
         else:
-            print("-" * 65)
+            print("-" * 60)
 
