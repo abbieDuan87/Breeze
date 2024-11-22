@@ -26,7 +26,6 @@ class AdminService:
             print(ADMIN_BANNER_STRING)
             print('Hi', user.get_username(), '!')
             print('What do you want to do today?')
-            
             print('[A] Allocate patient to MHWP')
             print('[E] Edit user information')
             print('[D] Delete a user')
@@ -35,22 +34,21 @@ class AdminService:
             print('[X] Log out')
 
             user_input = input("> ").strip().lower()
-            match user_input:
-                case "a":
-                    self.allocate_patient_to_mhwp()
-                case "e":
-                    self.edit_user_information()
-                case "d":
-                    self.delete_user(user)
-                case "i":
-                    self.disable_user(user)
-                case "v":
-                    self.view_summary()
-                case "x":
-                    return True
-                case _:
-                    print_system_message("Invalid choice. Please try again.")
-                    input("\nPress Enter to continue...")
+
+            if user_input in ["a", "e", "d", "i", "v", "x"]: 
+                match user_input:
+                    case "a":
+                        self.allocate_patient_to_mhwp()
+                    case "e":
+                        self.edit_user_information()
+                    case "d":
+                        self.delete_user(user)
+                    case "i":
+                        self.disable_user(user)
+                    case "v":
+                        self.view_summary()
+                    case "x":
+                        return True
 
     def allocate_patient_to_mhwp(self):
         while True:

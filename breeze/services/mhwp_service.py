@@ -28,13 +28,14 @@ class MHWPService:
             bool: True if the user chose to log out, otherwise False
         """
 
-        print(MHWP_BANNER_STRING)
+        while True:
+            clear_screen()
+            print(MHWP_BANNER_STRING)
 
-        if user.get_is_disabled():
-            return show_disabled_account_dashboard_menu(user.get_username())
+            if user.get_is_disabled():
+                return show_disabled_account_dashboard_menu(user.get_username())
 
-        else:
-            print(f"Hi, {user.get_username()} !")
+            print(f"Hi", user.get_username(), "!")
             print("What do you want to do today?")
             print("[C] View Calendar of Appointments")
             print("[M] Manage Appointments (Confirm or Cancel)")
@@ -43,21 +44,20 @@ class MHWPService:
             print("[X] Log out")
 
             user_input = input("> ").strip().lower()
-            match user_input:
-                case "c":
-                    self.view_calendar(user)
-                case "m":
-                    self.manage_appointments(user)
-                case "a":
-                    self.add_patient_information(user)
-                case "d":
-                    self.display_patient_summary(user)
-                case "x":
-                    return True
-                case _:
-                    print_system_message("Invalid choice. Please try again.")
 
-        return False
+            if user_input in ["c", "m", "a", "d", "x"]:
+                match user_input:
+                    case "c":
+                        self.view_calendar(user)
+                    case "m":
+                        self.manage_appointments(user)
+                    case "a":
+                        self.add_patient_information(user)
+                    case "d":
+                        self.display_patient_summary(user)
+                    case "x":
+                        return True
+                
 
     def view_calendar(self, user):
         clear_screen_and_show_banner(MHWP_BANNER_STRING)
