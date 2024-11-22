@@ -247,14 +247,18 @@ class AdminService:
         
         print(f'Hi {user.get_username()} ! Here are all the users:')
         users = self.auth_service.get_all_users().values()
-        print("-" * 50)  
-        print(f"| {'Username':<20} | {'Role':<15}")
-        print("-" * 50) 
+        print("-" * 42)  
+        print(f"| {'Username':<20} | {'Role':<15} |")
+        print("-" * 42)
+
         for user in users:
             if not user.get_role() == 'Admin':
                 username = user.get_username()
                 role = user.get_role()
-                print(f"| {username:<20} | {role:<15}")
+                print(f"| {username:<20} | {role:<15} |")
+        
+        print("-" * 42)
+
 
        
         while True:
