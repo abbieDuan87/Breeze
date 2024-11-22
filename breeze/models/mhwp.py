@@ -1,8 +1,10 @@
 from .user import User
 from ..utils.calendar_utils import (
+    get_colored_status,
     get_next_available_days,
     generate_time_slots,
     generate_calendar_slot_code_map,
+    strip_ansi_codes,
 )
 
 import datetime
@@ -67,7 +69,7 @@ class MHWP(User):
                 return app
         return None
 
-    def display_calendar(self, code_map=None):
+    def display_calendar(self, code_map=None, is_MHWP_view=True):
         """
         Displays the calendar with dates as columns and time slots as rows for this MHWP.
         """
@@ -86,11 +88,34 @@ class MHWP(User):
         else:
             date_range = "No available days"
 
-        print(
-            f"\nUpcoming Calendar for {self.get_username()} in the next five working days ({date_range}):"
-        )
-        print("+", "-" * (10 + 17 * len(next_available_days)), "+")
+        current_date = datetime.datetime.now()
+        formatted_date = current_date.strftime("%Y-%m-%d %a")
 
+        header_line = "=" * 98
+        sub_header_line = "-" * 98
+
+        print(f"\n{header_line}")
+        print(f"Today is {formatted_date}".center(98))
+
+        text_with_colors = f"Upcoming Calendar for \33[1m\033[34m{self.get_username()}\33[0m in the \33[1mnext five working days ({date_range})\33[0m:"
+        text_without_colors = strip_ansi_codes(text_with_colors)
+
+        print(text_with_colors.center(98 + (len(text_with_colors) - len(text_without_colors))))
+
+        upcoming_appointments = [
+            app
+            for app in self.get_appointments()
+            if app.get_status() != "cancelled" and app.get_date() > current_date.date()
+        ]
+        requested_appointments_count = len([app for app in upcoming_appointments if app.get_status() == 'requested'])
+        confirmed_appointments_count = len([app for app in upcoming_appointments if app.get_status() == 'confirmed'])
+
+        print(f"Number of requested appointments: {requested_appointments_count}".center(98))
+        print(f"Number of confirmed appointments: {confirmed_appointments_count}".center(98))
+    
+        print(f"{sub_header_line}\n")
+
+        print("+", "-" * (10 + 17 * len(next_available_days)), "+")
         print(f"| {'Time':<10}", end=" | ")
         for day in next_available_days:
             print(f"{day.strftime('%Y-%m-%d %a'):<14}", end=" | ")
@@ -104,8 +129,23 @@ class MHWP(User):
                 day_slot = code_map[code]
 
                 app = self.get_appointment_by_date_time(day_slot[0], day_slot[1])
-                placeholder = app.get_status() if app else code
-                print(f"{placeholder:<14}", end=" | ")
+                if is_MHWP_view:
+                    placeholder = (
+                        get_colored_status(app.get_status())
+                        if app and app.get_status() != "cancelled"
+                        else "\u25CB"
+                    )
+                else:
+                    placeholder = (
+                        get_colored_status(app.get_status())
+                        if app and app.get_status() != "cancelled"
+                        else code
+                    )
+
+                visible_placeholder = strip_ansi_codes(placeholder)
+                padding_width = 14 - len(visible_placeholder) + len(placeholder)
+
+                print(f"{placeholder:<{padding_width}}", end=" | ")
             print()
 
         print("+", "-" * (10 + 17 * len(next_available_days)), "+")
@@ -141,9 +181,14 @@ class MHWP(User):
 
 if __name__ == "__main__":
     gp1 = MHWP(username="gp1", password="")
-    app1 = AppointmentEntry("2024-11-21", "10:00 AM")
+    app1 = AppointmentEntry("2024-11-25", "10:00 AM")
+    app2 = AppointmentEntry("2024-11-25", "11:00 AM")
     gp1.add_appointment(app1)
+    gp1.add_appointment(app2)
     app1.request_appointment()
-    print(gp1.get_appointments()[0])
-    print(gp1.get_appointment_by_date_time("2024-11-21", "10:00 AM"))
-    gp1.display_calendar()
+    app2.confirm_appointment()
+    # print(gp1.get_appointments())
+    # print("app1:", gp1.get_appointment_by_date_time("2024-11-22", "10:00 AM"))
+    # print("app2:", gp1.get_appointment_by_date_time("2024-11-23", "11:00 AM"))
+
+    gp1.display_calendar(is_MHWP_view=True)

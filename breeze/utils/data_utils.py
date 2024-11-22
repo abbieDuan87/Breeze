@@ -144,7 +144,6 @@ def create_appointments_from_data(appointments_data):
     for app in appointments_data:
         date = app.get("date")
         time = app.get("time")
-        is_cancel = app.get("isCancel", False)
         status = app.get("status", None)
         mhwp_username = app.get("mhwpUsername", None)
         patient_username = app.get("patientUsername", None)
@@ -153,7 +152,6 @@ def create_appointments_from_data(appointments_data):
             AppointmentEntry(
                 date,
                 time,
-                is_cancel,
                 status,
                 mhwp_username,
                 patient_username,
