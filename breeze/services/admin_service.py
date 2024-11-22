@@ -132,7 +132,7 @@ class AdminService:
         print_system_message("Edit User Information")
 
         while True:
-            print("\nDo you want to edit information for a Patient or an MHWP?\nEnter [P] for Patient or [M] for MHWP (or [R] to return to the dashboard:)")
+            print("\nDo you want to edit information for a Patient or an MHWP?\nEnter [P] for Patient or [M] for MHWP (or [R] to return to the dashboard):")
             user_input = input("> ").strip().lower()
 
             if user_input == "r":
