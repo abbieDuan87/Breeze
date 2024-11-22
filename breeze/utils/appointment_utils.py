@@ -1,4 +1,5 @@
 import time
+import datetime
 from breeze.utils.cli_utils import print_appointments, print_system_message
 
 
@@ -21,7 +22,14 @@ def show_upcoming_appointments(
     user, key=(lambda app: (app.get_date(), app.get_time()))
 ):
     """Displays the user's upcoming appointments."""
-    upcoming_appointments = sorted(user.get_appointments(), key=key)
+    upcoming_appointments = sorted(
+        [
+            app
+            for app in user.get_appointments()
+            if app.get_date() > datetime.datetime.now().date()
+        ],
+        key=key,
+    )
     if upcoming_appointments:
         print("\nHere are your upcoming appointments:")
         print_appointments(upcoming_appointments)

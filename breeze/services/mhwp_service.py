@@ -34,7 +34,7 @@ class MHWPService:
             return show_disabled_account_dashboard_menu(user.get_username())
 
         else:
-            print("Hi", user.get_username(), "!")
+            print(f"Hi, {user.get_username()} !")
             print("What do you want to do today?")
             print("[C] View Calendar of Appointments")
             print("[M] Manage Appointments (Confirm or Cancel)")
@@ -83,7 +83,7 @@ class MHWPService:
                 )
 
                 print(
-                    f"\nEnter the index number of the appointment you want to {action} (or type 'r' to return):"
+                    f"\nEnter the index number of the appointment you want to {action} (or type [R] to return):"
                 )
                 selected_index_input = input("> ").strip().lower()
 
@@ -114,9 +114,10 @@ class MHWPService:
                 user,
                 (lambda app: (app.get_date(), app.get_time(), app.patient_username)),
             )
-
+            
             if not upcoming_appointments:
                 time.sleep(1)
+                break
 
             print("\nChoose one of the following options:")
             print("\n[C] Cancel appointments\n[F] Confirm appointments\n[E] Exit\n")

@@ -7,7 +7,6 @@ from breeze.utils.appointment_utils import (
 )
 from breeze.utils.calendar_utils import generate_calendar_slot_code_map
 from breeze.utils.cli_utils import (
-    clear_screen,
     clear_screen_and_show_banner,
     direct_to_dashboard,
     print_appointments,
@@ -89,17 +88,18 @@ def manage_appointment(user, auth_service):
 
     while True:
         clear_screen_and_show_banner(PATIENT_BANNER_STRING)
+        print(f"Hi, {user.get_username()} !")
 
         assigned_mhwp = user.get_assigned_mhwp()
         if assigned_mhwp:
             print(f"Your current assigned MHWP: {assigned_mhwp}.")
         else:
-            print("Your have no assigned MHWP.")
+            print("You have no assigned MHWP.")
 
         show_upcoming_appointments(user)
 
         print("\nChoose one of the following options:")
-        print("\n[B]ook an appointment\n[C]ancel an upcoming appointment\n[E]xit\n")
+        print("\n[B] Book an appointment\n[C] Cancel an upcoming appointment\n[E] Exit\n")
         user_choice = input("> ").strip().lower()
 
         if user_choice == "b":
@@ -144,6 +144,17 @@ def manage_appointment(user, auth_service):
                             break
                         elif selected_slot in app_code_map:
                             app_date_time_tuple = app_code_map.get(selected_slot)
+
+                            checked_app = selected_mhwp.get_appointment_by_date_time(
+                                app_date_time_tuple[0], app_date_time_tuple[1]
+                            )
+                            if checked_app:
+                                print_system_message(
+                                    "This slot has already been requested or confirmed. Please select a different one"
+                                )
+                                time.sleep(1)
+                                continue
+
                             requested_app = AppointmentEntry(
                                 app_date_time_tuple[0],
                                 app_date_time_tuple[1],
@@ -180,7 +191,8 @@ def manage_appointment(user, auth_service):
         elif user_choice == "c":
             while True:
                 clear_screen_and_show_banner(PATIENT_BANNER_STRING)
-
+                print(f"Hi, {user.get_username()} !")
+                
                 upcoming_appointments = show_upcoming_appointments(user)
 
                 if not upcoming_appointments:

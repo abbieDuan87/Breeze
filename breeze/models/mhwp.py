@@ -97,20 +97,22 @@ class MHWP(User):
         print(f"\n{header_line}")
         print(f"Today is {formatted_date}".center(98))
 
-        print(
-            f"Upcoming Calendar for \33[1m\033[34m{self.get_username()}\33[0m in the \33[1mnext five working days ({date_range})\33[0m:".center(
-                98
-            )
-        )
+        text_with_colors = f"Upcoming Calendar for \33[1m\033[34m{self.get_username()}\33[0m in the \33[1mnext five working days ({date_range})\33[0m:"
+        text_without_colors = strip_ansi_codes(text_with_colors)
+
+        print(text_with_colors.center(98 + (len(text_with_colors) - len(text_without_colors))))
 
         upcoming_appointments = [
             app
             for app in self.get_appointments()
             if app.get_status() != "cancelled" and app.get_date() > current_date.date()
         ]
-        appointments_count = len(upcoming_appointments)
+        requested_appointments_count = len([app for app in upcoming_appointments if app.get_status() == 'requested'])
+        confirmed_appointments_count = len([app for app in upcoming_appointments if app.get_status() == 'confirmed'])
 
-        print(f"Number of appointments: {appointments_count}".center(98))
+        print(f"Number of requested appointments: {requested_appointments_count}".center(98))
+        print(f"Number of confirmed appointments: {confirmed_appointments_count}".center(98))
+    
         print(f"{sub_header_line}\n")
 
         print("+", "-" * (10 + 17 * len(next_available_days)), "+")
