@@ -4,7 +4,6 @@ from breeze.utils.cli_utils import (
     clear_screen,
     direct_to_dashboard,
     print_system_message,
-    return_to_previous,
 )
 from breeze.utils.constants import PATIENT_BANNER_STRING
 
@@ -19,7 +18,7 @@ def enter_journal(user, auth_service):
     print("\nWhat is the title of your entry?")
     while True:
         journal_title = input("> ").strip()
-        if check_exit(journal_title, "Exiting journal entry without saving..."):
+        if check_exit(journal_title):
             return 
         if not journal_title:
             print_system_message("Your title is empty! Please try again!")
@@ -30,7 +29,7 @@ def enter_journal(user, auth_service):
     #  body of the journal entry
     print("\nWrite your journal entry below.")
     journal_body = input("> ").strip()
-    if check_exit(journal_body, "Exiting journal entry without saving..."):
+    if check_exit(journal_body):
         return
     
     # Allow the user to add more to their journal entry
@@ -38,7 +37,7 @@ def enter_journal(user, auth_service):
     while True:
         print("\nWould you like to add more? Type [S] to save if finished, or continue writing:")
         journal_addition = input("> ").strip()
-        if check_exit(journal_addition, "Exiting journal entry without saving..."):
+        if check_exit(journal_addition):
             return
         if journal_addition.lower() == "s":
             break
