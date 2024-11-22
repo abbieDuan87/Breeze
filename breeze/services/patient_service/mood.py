@@ -1,18 +1,18 @@
 import datetime
 from breeze.utils.cli_utils import (
+    check_exit,
     clear_screen,
     print_system_message,
     direct_to_dashboard,
 )
 from breeze.utils.constants import PATIENT_BANNER_STRING
 
-
 def record_mood(user, auth_service):
     """Records the patient's mood for the day."""
     clear_screen()
     print(PATIENT_BANNER_STRING)
-    print("Record Your Mood for the Day")
-    print("Please choose a colour that best describes your mood:")
+    print("Record your mood for the day. Press [X] to exit without saving.")
+    print("\nPlease choose a colour that best describes your mood:")
     print("[G]reen - Very Happy")
     print("[L]ight Green - Happy")
     print("[Y]ellow - Neutral")
@@ -29,20 +29,20 @@ def record_mood(user, auth_service):
 
     while True:
         colour_input = (
-            input("Enter the colour code that represents your mood today: ")
+            input("\nEnter the colour code that represents your mood today: ")
             .strip()
             .lower()
         )
+        if check_exit(colour_input, "Exiting mood recording without saving..."):
+            return
+
         if colour_input in colour_to_mood:
             mood_description = colour_to_mood[colour_input]
             comment = input(
-                "Would you like to add any additional comments about your mood today? Type [R] to discard your entry: "
+                "Would you like to add any additional comments about your mood today?"
             ).strip()
-
-            if comment.lower() == "r":
-                print_system_message("Mood entry discarded. Returning to dashboard.")
-                direct_to_dashboard()
-                return
+            if check_exit(comment, "Exiting mood recording without saving..."):
+                return 
 
             date_string = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             if hasattr(user, "add_mood_entry"):
