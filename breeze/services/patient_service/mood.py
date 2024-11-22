@@ -28,19 +28,15 @@ def record_mood(user, auth_service):
     }
 
     while True:
-        colour_input = (
-            input("\nEnter the colour code that represents your mood today: ")
-            .strip()
-            .lower()
-        )
+        print("\nEnter the colour code that represents your mood today: ")
+        colour_input = (input("> ").strip().lower())
         if check_exit(colour_input, "Exiting mood recording without saving..."):
             return
 
         if colour_input in colour_to_mood:
             mood_description = colour_to_mood[colour_input]
-            comment = input(
-                "Would you like to add any additional comments about your mood today?"
-            ).strip()
+            print("\nWould you like to add any additional comments about your mood today?")
+            comment = input("> ").strip()
             if check_exit(comment, "Exiting mood recording without saving..."):
                 return 
 
