@@ -78,10 +78,7 @@ def handle_appointment_action(
     )
 
     email_service = EmailService(appointment, auth_service)
-    result = email_service.send_to_both(action)
-    time.sleep(2)
-
-    if not result:
-        time.sleep(2)
+    email_service.send_to_both(action)
+    time.sleep(3)
 
     return True

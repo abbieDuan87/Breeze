@@ -39,17 +39,18 @@ class EmailService:
         mhwp_email = mhwp_obj.get_email()
         patient_email = patient_obj.get_email()
 
-        if not self._validate_and_send_email(
-            mhwp_email, mhwp_email_subject, mhwp_email_body
-        ):
-            return False
-        if not self._validate_and_send_email(
+        mhwp_result = self._validate_and_send_email(
+            mhwp_email, mhwp_email_subject, mhwp_email_body, receiver_role="MHWP"
+        )
+        patient_result = self._validate_and_send_email(
             patient_email, patient_email_subject, patient_email_body
-        ):
-            return False
+        )
 
-        print_system_message("Emails sent successfully to both MHWP and patient.")
-        return True
+        if mhwp_result and patient_result:
+            print_system_message("Emails sent successfully to both MHWP and patient.")
+            return True
+        else:
+            return False
 
     def get_email_display_name(self, user):
         return user.get_full_name() if user.get_full_name() else user.get_username()
@@ -93,10 +94,18 @@ class EmailService:
 
         return subject, body
 
-    def _validate_and_send_email(self, receiver_email, subject, body):
+    def _validate_and_send_email(
+        self, receiver_email, subject, body, receiver_role="patient"
+    ):
         """
         Validates email address and sends the email if valid.
         """
+        if not receiver_email:
+            print_system_message(
+                f"Cannot send email to {receiver_role} because no email is set"
+            )
+            return False
+
         if not self.is_valid_email(receiver_email):
             print_system_message(
                 f"The email address '{receiver_email}' is invalid, so the email was not sent."
