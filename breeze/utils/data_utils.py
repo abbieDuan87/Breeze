@@ -1,9 +1,10 @@
 import json
-
+from datetime import datetime
 from breeze.models.admin import Admin
 from breeze.models.mhwp import MHWP
 from breeze.models.patient import Patient
 from breeze.models.appointment_entry import AppointmentEntry
+from breeze.models.journal_obj import JournalEntry
 
 
 def decode_user(user_data, appointments_data):
@@ -160,6 +161,34 @@ def create_appointments_from_data(appointments_data):
         )
 
     return appointment_entries
+
+def create_journal_entries_from_data(journal_data):
+    """Convert each journal entry (dictionary) into JournalEntry object
+
+    Args:
+       journal_data (list of dict): User specific list of journals
+
+    Returns:
+        journal_entries: JournalEntry objects
+    """
+    journal_entries = []
+
+    for entry in journal_data:
+        title = entry.get("title")
+        body = entry.get("entry")
+        dt = entry.get("datetime")
+        date = datetime.strptime(dt, "%Y-%m-%d %H:%M:%S").date()
+        time = datetime.strptime(dt, "%Y-%m-%d %H:%M:%S").time()
+        journal_entries.append(
+            JournalEntry(
+                title,
+                body,
+                date,
+                time
+            )
+        )
+
+    return journal_entries
 
 
 # for testing, to run: python -m breeze.utils.data_utils
