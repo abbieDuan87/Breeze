@@ -4,7 +4,7 @@ from breeze.models.admin import Admin
 from breeze.models.mhwp import MHWP
 from breeze.models.patient import Patient
 from breeze.models.appointment_entry import AppointmentEntry
-from breeze.models.journal_obj import JournalEntry
+from breeze.models.journal_entry import JournalEntry
 
 
 def decode_user(user_data, appointments_data):
