@@ -13,10 +13,10 @@ def confirm_user_choice(
         user_choice = input("> ").strip().lower()
         if user_choice == "y":
             on_confirm()
-            break
+            return True
         elif user_choice == "n":
             on_cancel()
-            break
+            return False
 
 
 def show_upcoming_appointments(

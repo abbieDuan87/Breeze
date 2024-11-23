@@ -181,14 +181,19 @@ def manage_appointment(user, auth_service):
                             print("\nPlease check the details for the appointment:")
                             print_appointments([requested_app])
 
-                            confirm_user_choice(
+                            is_confirmed_choice = confirm_user_choice(
                                 on_confirm=lambda: handle_confirm_appointment(
                                     user, selected_mhwp, requested_app
                                 ),
-                                on_cancel=lambda: print(
+                                on_cancel=lambda: print_system_message(
                                     "Appointment request canceled."
                                 ),
                             )
+
+                            if not is_confirmed_choice:
+                                time.sleep(1)
+                                continue
+
                             auth_service.save_data_to_file()
                             print_system_message(
                                 "Appointment request sent successfully!"
