@@ -1,7 +1,8 @@
+from breeze.models.appointment_mixin import AppointmentMixin
 from .user import User
 
 
-class Patient(User):
+class Patient(User, AppointmentMixin):
     def __init__(
         self,
         username,
@@ -47,7 +48,7 @@ class Patient(User):
 
     def set_appointments(self, appointments):
         self.__appointments = appointments
-    
+
     def add_appointment(self, appointment):
         self.__appointments.append(appointment)
 

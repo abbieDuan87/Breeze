@@ -1,3 +1,4 @@
+from breeze.models.appointment_mixin import AppointmentMixin
 from .user import User
 from ..utils.calendar_utils import (
     get_colored_status,
@@ -12,7 +13,7 @@ import datetime
 from .appointment_entry import AppointmentEntry
 
 
-class MHWP(User):
+class MHWP(User, AppointmentMixin):
     def __init__(
         self,
         username,
@@ -47,28 +48,6 @@ class MHWP(User):
     def add_appointment(self, appointment):
         self.__appointments.append(appointment)
 
-    def get_appointment_by_date_time(self, date, time):
-        """Searches for an appointment by date and time.
-
-        Args:
-            date (str/datetime): "%Y-%m-%d"
-            time (str): "%I:%M %p"
-
-        Returns:
-            AppointmentEntry/None: the founded AppointmentEntry or None
-        """
-        date_obj = (
-            datetime.datetime.strptime(date, "%Y-%m-%d").date()
-            if isinstance(date, str)
-            else date
-        )
-        time_obj = datetime.datetime.strptime(time, "%I:%M %p").time()
-
-        for app in self.get_appointments():
-            if app.get_date() == date_obj and app.get_time() == time_obj:
-                return app
-        return None
-
     def display_calendar(self, code_map=None, is_MHWP_view=True):
         """
         Displays the calendar with dates as columns and time slots as rows for this MHWP.
@@ -100,19 +79,35 @@ class MHWP(User):
         text_with_colors = f"Upcoming Calendar for \33[1m\033[34m{self.get_username()}\33[0m in the \33[1mnext five working days ({date_range})\33[0m:"
         text_without_colors = strip_ansi_codes(text_with_colors)
 
-        print(text_with_colors.center(98 + (len(text_with_colors) - len(text_without_colors))))
+        print(
+            text_with_colors.center(
+                98 + (len(text_with_colors) - len(text_without_colors))
+            )
+        )
 
         upcoming_appointments = [
             app
             for app in self.get_appointments()
             if app.get_status() != "cancelled" and app.get_date() > current_date.date()
         ]
-        requested_appointments_count = len([app for app in upcoming_appointments if app.get_status() == 'requested'])
-        confirmed_appointments_count = len([app for app in upcoming_appointments if app.get_status() == 'confirmed'])
+        requested_appointments_count = len(
+            [app for app in upcoming_appointments if app.get_status() == "requested"]
+        )
+        confirmed_appointments_count = len(
+            [app for app in upcoming_appointments if app.get_status() == "confirmed"]
+        )
 
-        print(f"Number of requested appointments: {requested_appointments_count}".center(98))
-        print(f"Number of confirmed appointments: {confirmed_appointments_count}".center(98))
-    
+        print(
+            f"Number of requested appointments: {requested_appointments_count}".center(
+                98
+            )
+        )
+        print(
+            f"Number of confirmed appointments: {confirmed_appointments_count}".center(
+                98
+            )
+        )
+
         print(f"{sub_header_line}\n")
 
         print("+", "-" * (10 + 17 * len(next_available_days)), "+")
