@@ -5,3 +5,5 @@ breeze_env/
 data/example_users.json
 data/users.json
 .idea/
+.env
+credentials.txt
