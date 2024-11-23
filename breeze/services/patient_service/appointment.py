@@ -1,5 +1,6 @@
 import time
 from breeze.models.appointment_entry import AppointmentEntry
+from breeze.services.email_service import EmailService
 from breeze.utils.appointment_utils import (
     confirm_user_choice,
     handle_appointment_action,
@@ -99,7 +100,9 @@ def manage_appointment(user, auth_service):
         show_upcoming_appointments(user)
 
         print("\nChoose one of the following options:")
-        print("\n[B] Book an appointment\n[C] Cancel an upcoming appointment\n[E] Exit\n")
+        print(
+            "\n[B] Book an appointment\n[C] Cancel an upcoming appointment\n[E] Exit\n"
+        )
         user_choice = input("> ").strip().lower()
 
         if user_choice == "b":
@@ -145,12 +148,24 @@ def manage_appointment(user, auth_service):
                         elif selected_slot in app_code_map:
                             app_date_time_tuple = app_code_map.get(selected_slot)
 
-                            checked_app = selected_mhwp.get_appointment_by_date_time(
+                            checked_mhwp_app = (
+                                selected_mhwp.get_appointment_by_date_time(
+                                    app_date_time_tuple[0], app_date_time_tuple[1]
+                                )
+                            )
+                            checked_patient_app = user.get_appointment_by_date_time(
                                 app_date_time_tuple[0], app_date_time_tuple[1]
                             )
-                            if checked_app:
+                            if checked_mhwp_app:
                                 print_system_message(
                                     "This slot has already been requested or confirmed. Please select a different one"
+                                )
+                                time.sleep(1)
+                                continue
+
+                            if checked_patient_app:
+                                print_system_message(
+                                    "You have another appointment at the same time. Please select a different one"
                                 )
                                 time.sleep(1)
                                 continue
@@ -178,7 +193,11 @@ def manage_appointment(user, auth_service):
                             print_system_message(
                                 "Appointment request sent successfully!"
                             )
-                            time.sleep(1)
+
+                            email_service = EmailService(requested_app, auth_service)
+                            email_service.send_to_one("mhwp", "request")
+                            time.sleep(3)
+
                             break
 
                         else:
@@ -192,7 +211,7 @@ def manage_appointment(user, auth_service):
             while True:
                 clear_screen_and_show_banner(PATIENT_BANNER_STRING)
                 print(f"Hi, {user.get_username()} !")
-                
+
                 upcoming_appointments = show_upcoming_appointments(user)
 
                 if not upcoming_appointments:

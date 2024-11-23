@@ -17,6 +17,41 @@ class EmailService:
         self.appointment = appointment
         self.auth_service = auth_service
 
+    def send_to_one(self, recipient_role, action):
+        """
+        Sends an email notification to either the MHWP or the patient regarding the appointment action.
+        """
+        if recipient_role.lower() not in {"mhwp", "patient"}:
+            raise ValueError("Recipient role must be 'mhwp' or 'patient'.")
+
+        if recipient_role.lower() == "mhwp":
+            recipient_username = self.appointment.mhwp_username
+        else:
+            recipient_username = self.appointment.patient_username
+
+        if not recipient_username:
+            print_system_message(
+                f"No {recipient_role} username found for the appointment."
+            )
+            return False
+
+        recipient_obj = self.auth_service.get_user_by_username(recipient_username)
+        recipient_email = recipient_obj.get_email()
+
+        email_subject, email_body = self.get_email_message(recipient_obj, action)
+
+        result = self._validate_and_send_email(
+            recipient_email,
+            email_subject,
+            email_body,
+            receiver_role=recipient_role,
+        )
+
+        if result:
+            return True
+        else:
+            return False
+
     def send_to_both(self, action):
         """
         Sends email notifications to both the MHWP and the patient regarding the appointment action.
@@ -59,9 +94,9 @@ class EmailService:
         """
         Creates the subject and body of the email based on the user's role and appointment action.
         """
-        if action not in {"cancel", "confirm"}:
+        if action not in {"cancel", "confirm", "request"}:
             raise ValueError(
-                f"Invalid action '{action}'. Must be 'cancel' or 'confirm'."
+                f"Invalid action '{action}'. Must be 'cancel', 'confirm', or 'request'."
             )
 
         subject = ""
@@ -76,21 +111,36 @@ class EmailService:
 
         appointment_time = self.appointment.get_time().strftime("%I:%M %p")
 
-        if user.get_role().lower() == "patient":
-            subject = f"Your appointment at {self.appointment.get_date()} {appointment_time} has been {action}ed"
+        if action == "request":
+            subject = f"Appointment Request for {self.appointment.get_date()} at {appointment_time}"
             body = (
-                f"Dear {patient_name},\n\nYour appointment with Dr. {mhwp_name} "
-                f"on {self.appointment.get_date()} at {appointment_time} has been {action}ed.\n\n"
-                f"Best regards,\nBreeze Team"
+                f"Dear Dr. {mhwp_name},\n\n"
+                f"A new appointment request has been made by {patient_name}.\n"
+                f"Details:\n"
+                f"Date: {self.appointment.get_date()}\n"
+                f"Time: {appointment_time}\n"
+                f"Patient: {patient_name}\n\n"
+                f"Please review and confirm the appointment at your earliest convenience.\n\n"
+                f"Best regards,\n"
+                f"Breeze Team"
             )
 
-        elif user.get_role().lower() == "mhwp":
-            subject = f"You have an appointment on {self.appointment.get_date()} at {appointment_time} that has been {action}ed"
-            body = (
-                f"Dear Dr. {mhwp_name},\n\nYou have an appointment with {patient_name} "
-                f"on {self.appointment.get_date()} at {appointment_time} that has been {action}ed.\n\n"
-                f"Best regards,\nBreeze Team"
-            )
+        else:
+            if user.get_role().lower() == "patient":
+                subject = f"Your appointment at {self.appointment.get_date()} {appointment_time} has been {action}ed"
+                body = (
+                    f"Dear {patient_name},\n\nYour appointment with Dr. {mhwp_name} "
+                    f"on {self.appointment.get_date()} at {appointment_time} has been {action}ed.\n\n"
+                    f"Best regards,\nBreeze Team"
+                )
+
+            elif user.get_role().lower() == "mhwp":
+                subject = f"You have an appointment on {self.appointment.get_date()} at {appointment_time} that has been {action}ed"
+                body = (
+                    f"Dear Dr. {mhwp_name},\n\nYou have an appointment with {patient_name} "
+                    f"on {self.appointment.get_date()} at {appointment_time} that has been {action}ed.\n\n"
+                    f"Best regards,\nBreeze Team"
+                )
 
         return subject, body
 
@@ -142,7 +192,7 @@ class EmailService:
                 server.login(sender_email, sender_password)
                 server.sendmail(sender_email, receiver_email, msg.as_string())
 
-            print_system_message(f"Email sent to '{receiver_email}' successfully!")
+            print_system_message(f"The email was successfully sent to the {receiver_role} at {receiver_email}.")
 
         except Exception as e:
             print(f"Failed to send email to {receiver_email}: {e}")
