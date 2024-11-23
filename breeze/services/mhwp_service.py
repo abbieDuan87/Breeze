@@ -155,10 +155,13 @@ class MHWPService:
                 direct_to_dashboard()
                 return
 
-            #display assigned patients
-            print("Assigned Patients:")
+            #display assigned patients in a table format
+            print("-" * 42)
+            print(f"| {'Username':<20} | {'Assigned MHWP':<15} |")
+            print("-" * 42)
             for patient in assigned_patients:
-                print(f"- {patient.get_username()}")
+                print(f"| {patient.get_username():<20} | {patient.get_assigned_mhwp():<15} |")
+            print("-" * 42)
 
             #select a patient
             while True:
