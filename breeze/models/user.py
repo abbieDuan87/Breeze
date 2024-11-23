@@ -28,6 +28,11 @@ class User:
     def get_email(self):
         return self.__email
     
+    def get_full_name(self):
+        if not self.__first_name or not self.__last_name:
+            return None
+        return f'{self.__first_name} {self.__last_name}'
+    
     def get_is_disabled(self):
         return self.__is_disabled
 
