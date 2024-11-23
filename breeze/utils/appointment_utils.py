@@ -1,6 +1,7 @@
 import time
 import datetime
 from breeze.utils.cli_utils import print_appointments, print_system_message
+from breeze.services.email_service import EmailService
 
 
 def confirm_user_choice(
@@ -75,6 +76,12 @@ def handle_appointment_action(
     print_system_message(
         f"Appointment {selected_index} has been successfully {action}ed."
     )
-    time.sleep(1)
+
+    email_service = EmailService(appointment, auth_service)
+    result = email_service.send_to_both(action)
+    time.sleep(2)
+
+    if not result:
+        time.sleep(2)
 
     return True
