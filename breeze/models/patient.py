@@ -31,7 +31,9 @@ class Patient(User, AppointmentMixin):
         self.__journal_entries = journal_entries
         self.__appointments = appointments
         self.__assigned_mhwp = assigned_MHWP
-
+        self.__conditions = {}
+        self.__prescriptions = []
+    
     def get_emergency_contact(self):
         return self.__emergency_contact_email
 
@@ -65,6 +67,19 @@ class Patient(User, AppointmentMixin):
 
     def set_assigned_mhwp(self, mhwp_username):
         self.__assigned_mhwp = mhwp_username
+    
+    def add_condition(self, condition, notes):
+        self.__conditions[condition] = notes
+
+    def add_prescription(self, medication, dosage, frequency, start_date, end_date, notes):
+        self.__prescriptions.append({
+            "medication": medication,
+            "dosage": dosage,
+            "frequency": frequency,
+            "start_date": start_date,
+            "end_date": end_date,
+            "notes": notes
+        })    
 
     def __str__(self):
         return f"Patient: {self.get_username()}, Role: {self.get_role()}"
@@ -88,4 +103,6 @@ class Patient(User, AppointmentMixin):
             "moods": self.__mood_entries,
             "journals": self.__journal_entries,
             "appointments": [app.get_id() for app in self.get_appointments()],
+            "conditions": self.__conditions,  
+            "prescriptions": self.__prescriptions
         }
