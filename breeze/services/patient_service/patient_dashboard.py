@@ -24,11 +24,12 @@ def show_patient_dashboard(user, patient_service):
         print("[S] Search for meditation and relaxation exercises")
         print("[B] Book or cancel an appointment with my MHWP")
         print("[H] History - see my past journals, moods and appointments")
+        print("[L] Learn more about mental health conditions and useful resources")
         print("[X] Log out")
 
         user_input = input("> ").strip().lower()
 
-        if user_input in ["e", "r", "j", "s", "b", "h", "x"]:
+        if user_input in ["e", "r", "j", "s", "b", "h", "l", "x"]:
             if handle_user_choice(user_input, patient_service, user):
                 return True
 
@@ -48,5 +49,7 @@ def handle_user_choice(user_input, patient_service, user):
             patient_service.manage_appointment(user)
         case "h":
             patient_service.show_history(user)
+        case "l":
+            patient_service.learn_mental_health()     
         case "x":
             return True
