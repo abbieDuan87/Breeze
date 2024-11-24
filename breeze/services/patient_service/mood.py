@@ -11,7 +11,7 @@ def record_mood(user, auth_service):
     """Records the patient's mood for the day."""
     clear_screen()
     print(PATIENT_BANNER_STRING)
-    print("Record your mood for the day. Press [X] to exit without saving.")
+    print(f"Hi, {user.get_username()}! Start record your mood for the day!")
     print("\nPlease choose a colour that best describes your mood:")
     print("[G]reen - Very Happy")
     print("[L]ight Green - Happy")
@@ -28,14 +28,14 @@ def record_mood(user, auth_service):
     }
 
     while True:
-        print("\nEnter the colour code that represents your mood today: ")
+        print("\nEnter the colour code that represents your mood today (or enter [X] to exit without saving): ")
         colour_input = (input("> ").strip().lower())
         if check_exit(colour_input):
             return
 
         if colour_input in colour_to_mood:
             mood_description = colour_to_mood[colour_input]
-            print("\nWould you like to add any additional comments about your mood today?")
+            print("\nWould you like to add any additional comments about your mood today? (or enter [X] to exit without saving):")
             comment = input("> ").strip()
             if check_exit(comment):
                 return 

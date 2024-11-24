@@ -102,20 +102,13 @@ def print_appointments(appointments=[]):
 def clear_screen_and_show_banner(banner_str):
     clear_screen()
     print(banner_str)
-    
-def return_to_previous(string, param, message=""):
-    if message:
-        print(f"\n{message}")
-    if string.strip().lower() == param:
+
+def check_exit(input_value):
+    if input_value.strip().lower() == "x":
         return True
+    return False
 
 def direct_to_dashboard(message=""):
-    """
-    Helper function to return to the dashboard with a custom message.
-
-    Args:
-        message (str): Custom message to display before the prompt.
-    """
     if message:
         print(f"\n{message}")
     print("Please press B to go back to the dashboard.")
@@ -128,17 +121,3 @@ def direct_to_dashboard(message=""):
         else:
             print("Invalid input. Please press B to go back to the dashboard.")
 
-def check_exit(input_value, exit_message="Exiting without saving changes..."):
-    """
-    Checks if the user input indicates an exit and handles it accordingly.
-
-    Args:
-        input_value (str): The user's input to check.
-        exit_message (str): The message to display when exiting. Defaults to a standard message.
-
-    Returns:
-        bool: True if the user wants to exit, otherwise False.
-    """
-    if input_value.strip().lower() == "x":
-        return True
-    return False

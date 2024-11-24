@@ -12,7 +12,7 @@ def enter_journal(user, auth_service):
     clear_screen()
     print(PATIENT_BANNER_STRING)
     print(f"Hi {user.get_username()} !")
-    print("Write your journal entry below, or enter [X] to exit without saving")
+    print("Write your journal entry below, or enter [X] to exit without saving.")
     
     # title of the journal entry
     print("\nWhat is the title of your entry?")
@@ -57,7 +57,6 @@ def enter_journal(user, auth_service):
     if hasattr(user, "add_journal_entry"):
         user.add_journal_entry(journal_title, journal_ent, date_string)
         auth_service.save_data_to_file()
-        print(PATIENT_BANNER_STRING)
         direct_to_dashboard("Journal entry saved!")
     else:
         print_system_message(f"User {user.get_username()} not found in records!")

@@ -23,11 +23,11 @@ def search_exercise():
 
     while True:
         choice = (
-            input("\nSelect an option using the first letter or [X] to exit: ")
+            input("\nSelect an option using the first letter or enter [X] to exit: ")
             .strip()
             .lower()
         )
-        if check_exit(choice, "Exit"):
+        if check_exit(choice):
             return 
         elif choice in valid_keywords:
             search_url = f"https://insighttimer.com/indiemusicbox/guided-meditations/{valid_keywords[choice]['path']}"

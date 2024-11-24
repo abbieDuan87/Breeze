@@ -8,6 +8,7 @@ from breeze.utils.appointment_utils import (
 )
 from breeze.utils.calendar_utils import generate_calendar_slot_code_map
 from breeze.utils.cli_utils import (
+    check_exit,
     clear_screen_and_show_banner,
     direct_to_dashboard,
     print_appointments,
@@ -101,9 +102,11 @@ def manage_appointment(user, auth_service):
 
         print("\nChoose one of the following options:")
         print(
-            "\n[B] Book an appointment\n[C] Cancel an upcoming appointment\n[E] Exit\n"
+            "\n[B] Book an appointment\n[C] Cancel an upcoming appointment\n[X] Exit\n"
         )
         user_choice = input("> ").strip().lower()
+        if check_exit(user_choice):
+            return
 
         if user_choice == "b":
             while True:
@@ -115,9 +118,9 @@ def manage_appointment(user, auth_service):
                     print_system_message("No available MHWPs to book an appointment.")
                     continue
 
-                print("\nEnter the MHWP's username (or press [r] to cancel):")
+                print("\nEnter the MHWP's username (or enter [X] to exit):")
                 selected_mhwp_username = input("> ").strip().lower()
-                if selected_mhwp_username == "r":
+                if check_exit(selected_mhwp_username):
                     break
 
                 selected_mhwp = next(
@@ -137,13 +140,13 @@ def manage_appointment(user, auth_service):
                         clear_screen_and_show_banner(PATIENT_BANNER_STRING)
                         selected_mhwp.display_calendar(is_MHWP_view=False)
                         print(
-                            "\nSelect the available slot from the calendar (press [r] to cancel):"
+                            "\nSelect the available slot from the calendar (or enter [X] to exit):"
                         )
                         selected_slot = (
                             input("> ").strip().upper()
                         )  # the codes are all upper case
 
-                        if selected_slot.lower() == "r":  # but the return is lower case
+                        if check_exit(selected_slot):
                             break
                         elif selected_slot in app_code_map:
                             app_date_time_tuple = app_code_map.get(selected_slot)
@@ -186,7 +189,7 @@ def manage_appointment(user, auth_service):
                                     user, selected_mhwp, requested_app
                                 ),
                                 on_cancel=lambda: print(
-                                    "Appointment request canceled."
+                                    "Appointment request cancelled."
                                 ),
                             )
                             auth_service.save_data_to_file()
@@ -202,10 +205,10 @@ def manage_appointment(user, auth_service):
 
                         else:
                             print_system_message("Invalid slot, please try again!")
-                            time.sleep(0.5)
+                            time.sleep(1)
                 else:
                     print_system_message("Cannot find this MHWP, please try again!")
-                    time.sleep(0.5)
+                    time.sleep(1)
 
         elif user_choice == "c":
             while True:
@@ -219,11 +222,11 @@ def manage_appointment(user, auth_service):
                     break
 
                 print(
-                    "\nEnter the index number of the appointment you want to cancel (or type 'r' to return):"
+                    "\nEnter the index number of the appointment you want to cancel (or enter [X] to exit):"
                 )
                 selected_appointment_index = input("> ").strip().lower()
 
-                if selected_appointment_index == "r":
+                if check_exit(selected_appointment_index):
                     break
 
                 try:
@@ -240,12 +243,8 @@ def manage_appointment(user, auth_service):
                     else:
                         print_system_message(str(ve))
 
-                    time.sleep(0.5)
+                    time.sleep(1)
                     continue
-
-        elif user_choice == "e":
-            direct_to_dashboard()
-            break
         else:
             print_system_message("Please enter a valid option.")
-            time.sleep(0.5)
+            time.sleep(1)

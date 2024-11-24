@@ -10,14 +10,14 @@ def edit_personal_information(user, auth_service):
     clear_screen()
     print(PATIENT_BANNER_STRING)
     print(
-        f"Hi {user.get_username()}! Please update your personal information or press [X] to exit without saving."
+        f"Hi {user.get_username()}! Please update your personal information here."
     )
     print("\nHere is your current information:")
     print_system_message(
-        f"First name: {user.get_first_name()}\nLast name: {user.get_last_name()}\nemail: {user.get_email()}\nemergency contact email: {user.get_emergency_contact()}"
+        f"First name: {user.get_first_name()}\nLast name: {user.get_last_name()}\nEmail: {user.get_email()}\nEmergency contact email: {user.get_emergency_contact()}"
     )
 
-    print("\nEnter the new information or leave blank to keep the current value:")
+    print("\nEnter the new information or leave blank to keep the current value (or enter [X] to exit without saving):\n")
 
     updated_first_name = input("First name: ").strip()
     if check_exit(updated_first_name):
@@ -35,7 +35,6 @@ def edit_personal_information(user, auth_service):
     if check_exit(updated_emergency_contact_email):
         return
 
-    # Update the user's information if valid inputs were provided
     if updated_first_name:
         user.set_first_name(updated_first_name)
     if updated_last_name:
@@ -45,7 +44,6 @@ def edit_personal_information(user, auth_service):
     if updated_emergency_contact_email:
         user.set_emergency_contact(updated_emergency_contact_email)
 
-    # Set the update message based on whether the user updated any fields
     update_message = (
         "\nInfo updated successfully! Here is your updated information:"
         if any([updated_first_name, updated_last_name, updated_email, updated_emergency_contact_email])

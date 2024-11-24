@@ -6,7 +6,7 @@ from breeze.services.email_service import EmailService
 
 def confirm_user_choice(
     on_confirm=lambda: print("Action confirmed."),
-    on_cancel=lambda: print("Action canceled."),
+    on_cancel=lambda: print("Action cancelled."),
 ):
     while True:
         print("\nPress [Y] for confirm and [N] for cancel:")
@@ -48,22 +48,22 @@ def handle_appointment_action(
 
     if not (1 <= selected_index <= len(upcoming_appointments)):
         print_system_message("Invalid appointment index. Please try again.")
-        time.sleep(0.5)
+        time.sleep(1)
         return False
 
     appointment = upcoming_appointments[selected_index - 1]
     if not appointment:
         print_system_message("No appointment found at the given index.")
-        time.sleep(0.5)
+        time.sleep(1)
         return False
 
     if action == "cancel" and appointment.get_status() == "cancelled":
-        print_system_message("This appointment is already canceled. No action needed.")
-        time.sleep(0.5)
+        print_system_message("This appointment is already cancelled. No action needed.")
+        time.sleep(1)
         return False
     elif action == "confirm" and appointment.get_status() == "confirmed":
         print_system_message("This appointment is already confirmed. No action needed.")
-        time.sleep(0.5)
+        time.sleep(1)
         return False
 
     if action == "cancel":
@@ -79,6 +79,6 @@ def handle_appointment_action(
 
     email_service = EmailService(appointment, auth_service)
     email_service.send_to_both(action)
-    time.sleep(3)
+    time.sleep(2.5)
 
     return True
