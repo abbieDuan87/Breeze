@@ -213,6 +213,7 @@ def create_journal_entries_from_data(journal_data):
     journal_entries = []
 
     for entry in journal_data:
+        journal_id = entry.get("id")
         title = entry.get("title")
         body = entry.get("entry")
         dt = entry.get("datetime")
@@ -223,7 +224,8 @@ def create_journal_entries_from_data(journal_data):
                 title,
                 body,
                 date,
-                time
+                time,
+                journal_id=journal_id
             )
         )
 
