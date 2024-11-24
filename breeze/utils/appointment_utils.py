@@ -73,8 +73,9 @@ def handle_appointment_action(
 
     auth_service.save_data_to_file()
 
+    corrected_action = f"{action}ed" if action != "cancel" else "cancelled"
     print_system_message(
-        f"Appointment {selected_index} has been successfully {action}ed."
+        f"Appointment {selected_index} has been successfully {corrected_action}."
     )
 
     email_service = EmailService(appointment, auth_service)

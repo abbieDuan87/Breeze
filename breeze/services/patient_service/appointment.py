@@ -158,14 +158,20 @@ def manage_appointment(user, auth_service):
                             checked_patient_app = user.get_appointment_by_date_time(
                                 app_date_time_tuple[0], app_date_time_tuple[1]
                             )
-                            if checked_mhwp_app:
+                            if (
+                                checked_mhwp_app
+                                and checked_mhwp_app.get_status() != "cancelled"
+                            ):
                                 print_system_message(
                                     "This slot has already been requested or confirmed. Please select a different one"
                                 )
                                 time.sleep(1)
                                 continue
 
-                            if checked_patient_app:
+                            if (
+                                checked_patient_app
+                                and checked_patient_app.get_status() != "cancelled"
+                            ):
                                 print_system_message(
                                     "You have another appointment at the same time. Please select a different one"
                                 )
