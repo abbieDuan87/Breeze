@@ -27,10 +27,19 @@ class JournalEntry:
             'datetime' : datetime
         }
     
+    def strip_title(self):
+        if len(self.title) > 20:
+            stripped_title = self.title[:19] + '...'
+            return stripped_title
+        else:
+            return self.title
+        
     def strip_entry(self):
-        if len(self.entry) > 100:
-            stripped_entry = self.entry[:99] + '...'
+        if len(self.entry) > 50:
+            stripped_entry = self.entry[:49] + '...'
             return stripped_entry
+        else:
+            return self.entry
     
     def __str__(self):
         return (
