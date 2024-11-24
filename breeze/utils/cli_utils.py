@@ -1,5 +1,4 @@
 import os
-
 from breeze.utils.calendar_utils import get_colored_status, strip_ansi_codes
 
 
@@ -50,31 +49,6 @@ def show_disabled_account_dashboard_menu(username):
             "Sorry, you can only log out because your account is disabled."
         )
         return False
-
-
-def direct_to_dashboard(message=""):
-    """
-    Helper function to return to the dashboard with a custom message.
-
-    Args:
-        message (str): Custom message to display before the prompt.
-    """
-    if message:
-        print(f"\n{message}")
-    print("Please press B to go back to the dashboard.")
-
-    while True:
-        user_input = input("> ").strip().lower()
-        if user_input == "b":
-            clear_screen()
-            break
-        else:
-            print("Invalid input. Please press B to go back to the dashboard.")
-
-
-def return_to_previous(string, param):
-    if string.strip().lower() == param:
-        return True
 
 
 def print_appointments(appointments=[]):
@@ -128,3 +102,22 @@ def print_appointments(appointments=[]):
 def clear_screen_and_show_banner(banner_str):
     clear_screen()
     print(banner_str)
+
+def check_exit(input_value):
+    if input_value.strip().lower() == "x":
+        return True
+    return False
+
+def direct_to_dashboard(message=""):
+    if message:
+        print(f"\n{message}")
+    print("Please press B to go back to the dashboard.")
+
+    while True:
+        user_input = input("> ").strip().lower()
+        if user_input == "b":
+            clear_screen()
+            break
+        else:
+            print("Invalid input. Please press B to go back to the dashboard.")
+

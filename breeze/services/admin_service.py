@@ -1,10 +1,7 @@
-from breeze.utils.cli_utils import print_system_message, clear_screen, direct_to_dashboard, return_to_previous
+from breeze.utils.cli_utils import check_exit, print_system_message, clear_screen, direct_to_dashboard
 from breeze.utils.constants import ADMIN_BANNER_STRING
-from breeze.services.auth_service import AuthService
 from breeze.models.patient import Patient
 from breeze.models.mhwp import  MHWP
-from breeze.models.user import User
-
 
 
 class AdminService:
@@ -79,7 +76,7 @@ class AdminService:
             while True:
                 selected_patient_username = input("> ").strip()
 
-                if return_to_previous(selected_patient_username, "r"):
+                if check_exit(selected_patient_username):
                     return
 
                 selected_patient = self.auth_service.users.get(selected_patient_username)
@@ -281,7 +278,7 @@ class AdminService:
                     print_system_message(f"The user '{user_input}' has been sucessfully deleted")
                 
                 elif confirmation == "n":
-                    print_system_message("Deletion canceled. You can enter another username or press [R] to return")
+                    print_system_message("Deletion cancelled. You can enter another username or press [R] to return")
                 
                 else:
                     print_system_message("Invalid input. Please type [Y] to confirm or [N] to cancel")        
