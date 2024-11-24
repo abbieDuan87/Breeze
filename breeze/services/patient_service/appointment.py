@@ -10,7 +10,6 @@ from breeze.utils.calendar_utils import generate_calendar_slot_code_map
 from breeze.utils.cli_utils import (
     check_exit,
     clear_screen_and_show_banner,
-    direct_to_dashboard,
     print_appointments,
     print_system_message,
 )
@@ -188,13 +187,8 @@ def manage_appointment(user, auth_service):
                                 on_confirm=lambda: handle_confirm_appointment(
                                     user, selected_mhwp, requested_app
                                 ),
-<<<<<<< HEAD
                                 on_cancel=lambda: print(
                                     "Appointment request cancelled."
-=======
-                                on_cancel=lambda: print_system_message(
-                                    "Appointment request canceled."
->>>>>>> origin/main
                                 ),
                             )
 
