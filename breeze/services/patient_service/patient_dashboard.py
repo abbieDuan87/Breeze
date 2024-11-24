@@ -20,14 +20,15 @@ def show_patient_dashboard(user, patient_service):
         print("What do you want to do today?")
         print("[E] Edit my personal information")
         print("[R] Record my mood for today")
-        print("[J] Journal - enter your journaling text")
+        print("[J] Journal - enter new journaling text")
         print("[S] Search for meditation and relaxation exercises")
         print("[B] Book or cancel an appointment with my MHWP")
+        print("[H] History - see my past journals, moods and appointments")
         print("[X] Log out")
 
         user_input = input("> ").strip().lower()
 
-        if user_input in ["e", "r", "j", "s", "b", "x"]:
+        if user_input in ["e", "r", "j", "s", "b", "h", "x"]:
             if handle_user_choice(user_input, patient_service, user):
                 return True
 
@@ -45,5 +46,7 @@ def handle_user_choice(user_input, patient_service, user):
             patient_service.search_exercise(user)
         case "b":
             patient_service.manage_appointment(user)
+        case "h":
+            patient_service.show_history(user)
         case "x":
             return True

@@ -1,3 +1,4 @@
+import os
 import re
 import smtplib
 from email.mime.multipart import MIMEMultipart
@@ -7,7 +8,7 @@ from breeze.models.appointment_entry import AppointmentEntry
 from breeze.services.auth_service import AuthService
 from breeze.utils.cli_utils import print_system_message
 
-# import os
+
 # from dotenv import load_dotenv
 
 
@@ -211,14 +212,23 @@ class EmailService:
     @staticmethod
     def load_email_credentials_from_txt():
         credentials = {}
-        with open("./credentials.txt", "r") as file:
-            for line in file:
-                line = line.strip()
-                if not line or line.startswith("#"):
-                    continue
 
-                key, value = map(str.strip, line.split("=", 1))
-                credentials[key] = value
+        curr_script_dir = os.path.dirname(os.path.abspath(__file__))
+        parent_dir = os.path.dirname(curr_script_dir)
+        grandparent_dir = os.path.dirname(parent_dir)
+        file_path = os.path.join(grandparent_dir, "credentials.txt")
+
+        try:
+            with open(file_path, "r") as file:
+                for line in file:
+                    line = line.strip()
+                    if not line or line.startswith("#"):
+                        continue
+
+                    key, value = map(str.strip, line.split("=", 1))
+                    credentials[key] = value
+        except FileNotFoundError:
+            print(f"Credentials file not found at {file_path}")
 
         return credentials
 
