@@ -193,7 +193,9 @@ class EmailService:
                 server.login(sender_email, sender_password)
                 server.sendmail(sender_email, receiver_email, msg.as_string())
 
-            print_system_message(f"An email was successfully sent to the {receiver_role} at {receiver_email}.")
+            print_system_message(
+                f"The email was successfully sent to the {receiver_role} at {receiver_email}."
+            )
 
         except Exception as e:
             print(f"Failed to send email to {receiver_email}: {e}")
