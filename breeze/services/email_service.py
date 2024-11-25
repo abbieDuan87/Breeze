@@ -27,6 +27,7 @@ class EmailService:
 
         if recipient_role.lower() == "mhwp":
             recipient_username = self.appointment.mhwp_username
+            recipient_role = "MHWP"
         else:
             recipient_username = self.appointment.patient_username
 
@@ -155,7 +156,7 @@ class EmailService:
         """
         if not receiver_email:
             print_system_message(
-                f"Cannot send email to {receiver_role} because no email is set"
+                f"Cannot send email to the {receiver_role} because no email is set"
             )
             return False
 
