@@ -127,6 +127,6 @@ class AuthService:
 
     def get_all_users(self):
         return self.users
-    
+
     def get_user_by_username(self, username):
-        return self.users[username]
+        return self.users.get(username, None)
