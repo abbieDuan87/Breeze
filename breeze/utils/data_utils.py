@@ -5,6 +5,7 @@ from breeze.models.mhwp import MHWP
 from breeze.models.patient import Patient
 from breeze.models.appointment_entry import AppointmentEntry
 from breeze.models.journal_entry import JournalEntry
+from breeze.models.mood_entry import MoodEntry
 
 
 def decode_user(user_data, appointments_data):
@@ -231,6 +232,35 @@ def create_journal_entries_from_data(journal_data):
 
     return journal_entries
 
+def create_mood_entries_from_data(mood_data):
+    """Convert each mood entry (dictionary) into MoodEntry object
+
+    Args:
+       mood_data (list of dict): User specific list of moods
+
+    Returns:
+        list of MoodEntry objects
+    """
+    mood_entries = []
+
+    for entry in mood_data:
+        mood_id = entry.get("id")
+        mood = entry.get("mood")
+        comment = entry.get("comment")
+        dt = entry.get("datetime")
+        date = datetime.strptime(dt, "%Y-%m-%d %H:%M:%S").date()
+        time = datetime.strptime(dt, "%Y-%m-%d %H:%M:%S").time()
+        mood_entries.append(
+            MoodEntry(
+                mood,
+                comment,
+                date,
+                time,
+                mood_id=mood_id
+            )
+        )
+
+    return mood_entries
 
 # for testing, to run: python -m breeze.utils.data_utils
 if __name__ == "__main__":

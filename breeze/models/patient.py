@@ -52,9 +52,9 @@ class Patient(User, AppointmentMixin):
     def add_appointment(self, appointment):
         self.__appointments.append(appointment)
 
-    def add_mood_entry(self, mood, comment, datetime):
+    def add_mood_entry(self, mood_id, mood, comment, datetime_str):
         self.__mood_entries.append(
-            {"mood": mood, "comment": comment, "datetime": datetime}
+            {"id": mood_id, "mood": mood, "comment": comment, "datetime": datetime_str}
         )
 
     def add_journal_entry(self, journal_id, title, entry, datetime_str):

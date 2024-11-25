@@ -127,19 +127,21 @@ class EmailService:
             )
 
         else:
+            corrected_action = f"{action}ed" if action != "cancel" else "cancelled"
+
             if user.get_role().lower() == "patient":
-                subject = f"Your appointment at {self.appointment.get_date()} {appointment_time} has been {action}ed"
+                subject = f"Your appointment at {self.appointment.get_date()} {appointment_time} has been {corrected_action}"
                 body = (
                     f"Dear {patient_name},\n\nYour appointment with Dr. {mhwp_name} "
-                    f"on {self.appointment.get_date()} at {appointment_time} has been {action}ed.\n\n"
+                    f"on {self.appointment.get_date()} at {appointment_time} has been {corrected_action}.\n\n"
                     f"Best regards,\nBreeze Team"
                 )
 
             elif user.get_role().lower() == "mhwp":
-                subject = f"You have an appointment on {self.appointment.get_date()} at {appointment_time} that has been {action}ed"
+                subject = f"You have an appointment on {self.appointment.get_date()} at {appointment_time} that has been {corrected_action}"
                 body = (
                     f"Dear Dr. {mhwp_name},\n\nYou have an appointment with {patient_name} "
-                    f"on {self.appointment.get_date()} at {appointment_time} that has been {action}ed.\n\n"
+                    f"on {self.appointment.get_date()} at {appointment_time} that has been {corrected_action}.\n\n"
                     f"Best regards,\nBreeze Team"
                 )
 
