@@ -86,20 +86,20 @@ def learn_mental_health():
                 print(f"Learn More About: {selected_topic['name']}")
                 print("-" * 55)
 
-                # Display topic details
+                # Display summary and resources
                 print(f"Summary:\n{selected_topic['summary']}\n")
                 print("Useful Resources:")
                 for resource in selected_topic["resources"]:
                     print(f"- {resource}")
 
                 print("\nWhat would you like to do next?")
-                print("[M] Return to Learn More menu")
+                print("[M] Return to Learn More dashboard")
                 print("[R] Return to dashboard")
 
                 next_action = input("> ").strip().lower()
 
                 if next_action == "m":
-                    break  # Go back to the "Learn More" menu
+                    break  # Go back to the "Learn More" dashboard
                 elif next_action == "r":
                     direct_to_dashboard()
                     return
