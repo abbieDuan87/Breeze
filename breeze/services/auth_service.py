@@ -80,11 +80,11 @@ class AuthService:
         Returns:
             user (Admin/Patient/MHWP): The created new user
         """
-        print("Please choose a role:\n[A]dmin\n[P]atient\n[M]HWP")
+        print("Please choose a role:\n\n[P]atient\n[M]HWP\n")
 
         while True:
-            role = input("Select a role [A/P/M]: ").strip().lower()
-            if role in ["a", "p", "m"]:
+            role = input("Select a role [P/M]: ").strip().lower()
+            if role in ["p", "m"]:
                 break
             else:
                 print_system_message("Invalid role. Please select a valid option.")
