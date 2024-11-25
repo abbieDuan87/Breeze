@@ -1,3 +1,5 @@
+import time
+
 from breeze.models.admin import Admin
 from breeze.models.patient import Patient
 from breeze.models.mhwp import MHWP
@@ -27,6 +29,7 @@ class AuthService:
         user = self.users.get(username)
         if user and user.login(password):
             print(f"Welcome, {username}")
+            time.sleep(1)
             self.current_user = user
             return user
         return None
