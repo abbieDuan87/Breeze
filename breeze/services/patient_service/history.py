@@ -28,12 +28,13 @@ def delete_journal_entry(user, journal_id):
         journal_dicts = [journal for journal in journal_dicts if journal['id'] != journal_id]
         save_attr_data('data/users.json', user.get_username(), 'journals', journal_dicts)
         print('Entry deleted successfully.')
+        data = create_journal_entries_from_data(journal_dicts)
         time.sleep(2)
     except IndexError:
         print_system_message('Invalid index. Please choose from available.')
         time.sleep(2)
         return
-
+    return data
 
 
 def filter_journal_results(data, search_term):
@@ -129,7 +130,7 @@ def show_journal_history(user):
                         entry = -(index + (page_no - 1) * 10)
                         try:
                             journal_to_delete = journal_data[entry].get_id()
-                            delete_journal_entry(user, journal_to_delete)
+                            journal_data = delete_journal_entry(user, journal_to_delete)
                         except IndexError:
                             print_system_message('Invalid index. Please choose from available.')
                             time.sleep(2)                        

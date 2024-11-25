@@ -50,7 +50,7 @@ class JournalEntry:
     def __str__(self):
         return (
             f"JournalEntry(\n"
-            f"  id={self.title},\n"
+            f"  title={self.title},\n"
             f"  entry={self.entry}"
             f"  date={self.date},\n"
             f"  time={self.time},\n"

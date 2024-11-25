@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 from breeze.utils.cli_utils import (
     check_exit,
     clear_screen,
@@ -40,7 +40,8 @@ def record_mood(user, auth_service):
             if check_exit(comment):
                 return 
 
-            date_string = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            date_string = datetime.datetime.now().strftime("%Y-%m-%d")
+            time_string = datetime.now().strftime("%H:%M:%S")
             if hasattr(user, "add_mood_entry"):
                 user.add_mood_entry(mood_description, comment, date_string)
             auth_service.save_data_to_file()
