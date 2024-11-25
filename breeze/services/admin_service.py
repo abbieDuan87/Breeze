@@ -250,6 +250,7 @@ class AdminService:
                 username = user.get_username()
                 role = user.get_role()
                 print(f"| {username:<20} | {role:<15} |")
+        print("-" * 42) 
 
        
         while True:
