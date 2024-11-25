@@ -1,4 +1,5 @@
-import datetime
+from datetime import datetime
+from breeze.models.mood_entry import MoodEntry
 from breeze.utils.cli_utils import (
     check_exit,
     clear_screen,
@@ -39,10 +40,12 @@ def record_mood(user, auth_service):
             comment = input("> ").strip()
             if check_exit(comment):
                 return 
-
-            date_string = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            datetime_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            date_string = datetime.now().strftime("%Y-%m-%d")
+            time_string = datetime.now().strftime("%H:%M:%S")
+            new_mood = MoodEntry(mood_description, comment, date_string, time_string)
             if hasattr(user, "add_mood_entry"):
-                user.add_mood_entry(mood_description, comment, date_string)
+                user.add_mood_entry(new_mood.get_mood_id(), mood_description, comment, datetime_str)
             auth_service.save_data_to_file()
 
             print_system_message("Mood recorded successfully!")

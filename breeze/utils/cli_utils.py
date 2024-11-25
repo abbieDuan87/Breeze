@@ -98,6 +98,121 @@ def print_appointments(appointments=[]):
         )
     print(separator)
 
+def print_journals(journal_data=[], page=1):
+    if not journal_data:
+        return
+    lower = (page - 1) * 10
+    if len(journal_data) > ((page - 1) * 10 + 10):
+        upper = lower + 10
+        page_data = journal_data[::-1][lower:upper]
+    elif len(journal_data) > ((page - 1) * 10):
+        page_data = journal_data[::-1][lower:]
+    else: 
+        print('No journal items on this page!')
+        return False
+
+
+    headers = ["#", "Title", "Text", "Date", "Time"]
+
+    rows = []
+    for index, entry in enumerate(page_data):
+        title = entry.strip_title()
+        stripped = entry.strip_entry()
+        rows.append([
+            index + 1,
+            title,
+            stripped,
+            entry.date,
+            entry.time,
+        ])
+
+    column_widths = [
+        max(len(strip_ansi_codes(str(row[i]))) for row in rows + [headers])
+        for i in range(len(headers))
+    ]
+
+    separator = "+".join("-" * (width + 2) for width in column_widths)
+    separator = f"+{separator}+"
+
+    print(separator)
+    print(
+        "| "
+        + " | ".join(
+            header.center(width) for header, width in zip(headers, column_widths)
+        )
+        + " |"
+    )
+    print(separator)
+    for row in rows:
+        print(
+            "| "
+            + " | ".join(
+                str(cell).ljust(width + len(str(cell)) - len(strip_ansi_codes(str(cell))))
+                for cell, width in zip(row, column_widths)
+            )
+            + " |"
+        )
+    print(separator)
+
+    return True
+
+def print_moods(mood_data=[], page=1):
+    if not mood_data:
+        return
+    lower = (page - 1) * 10
+    if len(mood_data) > ((page - 1) * 10 + 10):
+        upper = lower + 10
+        page_data = mood_data[::-1][lower:upper]
+    elif len(mood_data) > ((page - 1) * 10):
+        page_data = mood_data[::-1][lower:]
+    else: 
+        print('No journal items on this page!')
+        return False
+
+
+    headers = ["#", "Mood", "Comment", "Date", "Time"]
+
+    rows = []
+    for index, mood in enumerate(page_data):
+        comment = mood.strip_comments()
+        rows.append([
+            index + 1,
+            mood.mood,
+            comment,
+            mood.date,
+            mood.time,
+        ])
+
+    column_widths = [
+        max(len(strip_ansi_codes(str(row[i]))) for row in rows + [headers])
+        for i in range(len(headers))
+    ]
+
+    separator = "+".join("-" * (width + 2) for width in column_widths)
+    separator = f"+{separator}+"
+
+    print(separator)
+    print(
+        "| "
+        + " | ".join(
+            header.center(width) for header, width in zip(headers, column_widths)
+        )
+        + " |"
+    )
+    print(separator)
+    for row in rows:
+        print(
+            "| "
+            + " | ".join(
+                str(cell).ljust(width + len(str(cell)) - len(strip_ansi_codes(str(cell))))
+                for cell, width in zip(row, column_widths)
+            )
+            + " |"
+        )
+    print(separator)
+
+    return True
+
 
 def clear_screen_and_show_banner(banner_str):
     clear_screen()

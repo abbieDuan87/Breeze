@@ -5,6 +5,7 @@ from breeze.models.mhwp import MHWP
 from breeze.models.patient import Patient
 from breeze.models.appointment_entry import AppointmentEntry
 from breeze.models.journal_entry import JournalEntry
+from breeze.models.mood_entry import MoodEntry
 
 
 def decode_user(user_data, appointments_data):
@@ -130,6 +131,45 @@ def save_data(file_path, user_object_list):
     with open(file_path, "w") as file:
         json.dump(data_to_save, file, indent=4)
 
+def retrieve_variables_from_data(filepath, username, variable):
+    """Retrieves a list of variables (eg. all journal entries, mood entries) for a given user
+
+    Args:
+        filepath (str): Path to json file
+        user (str): username to retrieve data for
+        variable (str): variable which output will return
+
+    Returns:
+        list of dict: list of entries for given variable
+    """
+    with open (filepath, 'r') as file:
+        data = json.load(file)
+    for user in data['users']:
+        if user['username'] == username:
+            try:
+                return user[variable]
+            except KeyError:
+                return list()
+            
+def save_attr_data(filepath, username, attribute, attribute_data):
+    """Save edited attribute data (eg. journals, mood) to file
+
+    Args:
+        filepath (str): path to json
+        username (str): username
+        attribute (str): Attribute of interest
+        attribute_data (list of dict): List of attributes
+    """
+
+    with open (filepath, 'r') as file:
+        data = json.load(file)
+
+    for user in data['users']:
+        if user['username'] == username:
+            user[attribute] = attribute_data
+    
+    with open (filepath, 'w') as file:
+        json.dump(data, file, indent=4)
 
 def create_appointments_from_data(appointments_data):
     """Convert each appointment entry (dictionary) into Appoinment Entry object
@@ -174,6 +214,7 @@ def create_journal_entries_from_data(journal_data):
     journal_entries = []
 
     for entry in journal_data:
+        journal_id = entry.get("id")
         title = entry.get("title")
         body = entry.get("entry")
         dt = entry.get("datetime")
@@ -184,12 +225,42 @@ def create_journal_entries_from_data(journal_data):
                 title,
                 body,
                 date,
-                time
+                time,
+                journal_id=journal_id
             )
         )
 
     return journal_entries
 
+def create_mood_entries_from_data(mood_data):
+    """Convert each mood entry (dictionary) into MoodEntry object
+
+    Args:
+       mood_data (list of dict): User specific list of moods
+
+    Returns:
+        list of MoodEntry objects
+    """
+    mood_entries = []
+
+    for entry in mood_data:
+        mood_id = entry.get("id")
+        mood = entry.get("mood")
+        comment = entry.get("comment")
+        dt = entry.get("datetime")
+        date = datetime.strptime(dt, "%Y-%m-%d %H:%M:%S").date()
+        time = datetime.strptime(dt, "%Y-%m-%d %H:%M:%S").time()
+        mood_entries.append(
+            MoodEntry(
+                mood,
+                comment,
+                date,
+                time,
+                mood_id=mood_id
+            )
+        )
+
+    return mood_entries
 
 # for testing, to run: python -m breeze.utils.data_utils
 if __name__ == "__main__":
