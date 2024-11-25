@@ -4,6 +4,7 @@ from breeze.services.patient_service.journal import enter_journal
 from breeze.services.patient_service.mood import record_mood
 from breeze.services.patient_service.personal_info import edit_personal_information
 from breeze.services.patient_service.history import show_history
+from breeze.services.patient_service.learn_mental_health import learn_mental_health
 from .patient_dashboard import show_patient_dashboard
 
 
@@ -31,3 +32,6 @@ class PatientService:
 
     def show_history(self, user):
         show_history(user)
+
+    def learn_mental_health(self):
+        learn_mental_health()
