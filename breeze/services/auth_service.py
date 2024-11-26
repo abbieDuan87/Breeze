@@ -1,4 +1,5 @@
 import time
+from datetime import date
 
 from breeze.models.admin import Admin
 from breeze.models.patient import Patient
@@ -48,6 +49,8 @@ class AuthService:
         last_name,
         email,
         emergency_contact_email,
+        date_of_birth,
+        gender
     ):
         """Helper method to create a new user based on role.
         Args:
@@ -70,9 +73,11 @@ class AuthService:
                     last_name,
                     email,
                     emergency_contact_email,
+                    date_of_birth,
+                    gender
                 )
             case "m":
-                return MHWP(username, password, first_name, last_name, email)
+                return MHWP(username, password, first_name, last_name, email, date_of_birth, gender)
             case _:
                 print_system_message("Invalid role! Please select a valid option.")
                 return None
@@ -92,9 +97,39 @@ class AuthService:
             else:
                 print_system_message("Invalid role. Please select a valid option.")
 
+        # Gets DOB // Checks it's valid // If role is patient checks if they are 16
+        while True:
+            date_of_birth = input("Date of birth (DD/MM/YYYY): ").strip()
+            try:
+                temp_date = date(int(date_of_birth.split("/")[2]), int(date_of_birth.split("/")[1]), int(date_of_birth.split("/")[0]))
+            except:
+                print("Invalid date")
+            if role == "p":
+                if date.today().year - temp_date.year - ((date.today().month, date.today().day) < (temp_date.month, temp_date.day))>= 16:
+                    break
+                else:
+                    direct_to_dashboard("You are not old enough to register with Breeze") 
+                    return False
+                    break
+            else:
+                break
+
         first_name = input("First name: ").strip()
         last_name = input("Last name: ").strip()
-        email = input("Email: ").strip()
+
+        while True:
+            email = input("Email: ").strip()
+            if '@' and '.' not in email:
+                print("Invalid email")
+            else:
+                break
+
+        while True:
+            gender = input("Enter your gender (M/F/O): ").strip().lower()
+            if gender not in ["m", "f", "o"]:
+                print("Please enter a valid option")
+            else:
+                break
 
         while True:
             username = input("Username: ").strip()
@@ -109,8 +144,13 @@ class AuthService:
         password = input("Password: ").strip()
         emergency_contact_email = None
         if role == "p":
-            emergency_contact_email = input("Emergency contact email: ").strip()
-
+            while True:
+                emergency_contact_email = input("Emergency contact email: ").strip()
+                if '@' and '.' not in emergency_contact_email:
+                    print("Invalid email")
+                else:
+                    break
+                
         new_user = self._register_role(
             role,
             username,
@@ -119,6 +159,8 @@ class AuthService:
             last_name,
             email,
             emergency_contact_email,
+            date_of_birth,
+            gender
         )
         if new_user:
             self.users[new_user.get_username()] = new_user

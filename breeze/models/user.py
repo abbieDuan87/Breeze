@@ -1,7 +1,7 @@
 class User:
     """The basic User class
     """
-    def __init__(self, username, password, role, email=None, first_name=None, last_name=None, is_disabled=False):
+    def __init__(self, username, password, role, email=None, first_name=None, last_name=None, is_disabled=False, date_of_birth=None, gender=None):
         self.__username = username
         self.__password = password
         self.__role = role
@@ -9,7 +9,12 @@ class User:
         self.__last_name = last_name
         self.__email = email
         self.__is_disabled = is_disabled
-        
+        self.__date_of_birth = date_of_birth
+        self.__gender = gender 
+
+    def get_gender(self):
+        return self.__gender
+    
     def get_username(self):
         return self.__username
         
@@ -35,6 +40,9 @@ class User:
     
     def get_is_disabled(self):
         return self.__is_disabled
+
+    def get_date_of_birth(self):
+        return self.__date_of_birth
 
     def set_username(self, username):
         self.__username = username

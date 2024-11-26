@@ -21,6 +21,8 @@ class MHWP(User, AppointmentMixin):
         first_name=None,
         last_name=None,
         email=None,
+        date_of_birth=None,
+        gender=None,
         is_disabled=False,
         appointments=None,
         assigned_patients=None,
@@ -33,6 +35,8 @@ class MHWP(User, AppointmentMixin):
             last_name=last_name,
             email=email,
             is_disabled=is_disabled,
+            date_of_birth=date_of_birth,
+            gender=gender
         )
         self.__appointments = appointments if appointments is not None else []
         self.__assigned_patients = (
@@ -168,7 +172,8 @@ class MHWP(User, AppointmentMixin):
                 "firstName": self.get_first_name(),
                 "lastName": self.get_last_name(),
                 "email": self.get_email(),
-            },
+                "gender": self.get_gender(),
+                "dateOfBirth": self.get_date_of_birth(),},
             "appointments": [app.get_id() for app in self.get_appointments()],
             "assignedPatients": self.__assigned_patients,
         }
