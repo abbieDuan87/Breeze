@@ -24,7 +24,7 @@ class PatientService:
     def enter_journaling(self, user):
         enter_journal(user, self.auth_service)
     
-    def search_exercise(self, user):
+    def search_exercise(self):
         search_exercise()
 
     def manage_appointment(self, user):
