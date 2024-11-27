@@ -11,7 +11,9 @@ def print_system_message(message):
     lines = message.splitlines()
 
     # Determine the maximum width based on the longest line
-    max_width = max(len(line) for line in lines) + 4  # 4 for padding and borders
+    max_width = (
+        max(len(strip_ansi_codes(line)) for line in lines) + 4
+    )  # 4 for padding and borders
 
     print("-" * max_width)
 
@@ -91,12 +93,15 @@ def print_appointments(appointments=[]):
         print(
             "| "
             + " | ".join(
-                str(cell).ljust(width + len(str(cell)) - len(strip_ansi_codes(str(cell))))
+                str(cell).ljust(
+                    width + len(str(cell)) - len(strip_ansi_codes(str(cell)))
+                )
                 for cell, width in zip(row, column_widths)
             )
             + " |"
         )
     print(separator)
+
 
 def print_journals(journal_data=[], page=1):
     if not journal_data:
@@ -107,10 +112,9 @@ def print_journals(journal_data=[], page=1):
         page_data = journal_data[::-1][lower:upper]
     elif len(journal_data) > ((page - 1) * 10):
         page_data = journal_data[::-1][lower:]
-    else: 
-        print('No journal items on this page!')
+    else:
+        print("No journal items on this page!")
         return False
-
 
     headers = ["#", "Title", "Text", "Date", "Time"]
 
@@ -118,13 +122,15 @@ def print_journals(journal_data=[], page=1):
     for index, entry in enumerate(page_data):
         title = entry.strip_title()
         stripped = entry.strip_entry()
-        rows.append([
-            index + 1,
-            title,
-            stripped,
-            entry.date,
-            entry.time,
-        ])
+        rows.append(
+            [
+                index + 1,
+                title,
+                stripped,
+                entry.date,
+                entry.time,
+            ]
+        )
 
     column_widths = [
         max(len(strip_ansi_codes(str(row[i]))) for row in rows + [headers])
@@ -147,7 +153,9 @@ def print_journals(journal_data=[], page=1):
         print(
             "| "
             + " | ".join(
-                str(cell).ljust(width + len(str(cell)) - len(strip_ansi_codes(str(cell))))
+                str(cell).ljust(
+                    width + len(str(cell)) - len(strip_ansi_codes(str(cell)))
+                )
                 for cell, width in zip(row, column_widths)
             )
             + " |"
@@ -155,6 +163,7 @@ def print_journals(journal_data=[], page=1):
     print(separator)
 
     return True
+
 
 def print_moods(mood_data=[], page=1):
     if not mood_data:
@@ -165,23 +174,24 @@ def print_moods(mood_data=[], page=1):
         page_data = mood_data[::-1][lower:upper]
     elif len(mood_data) > ((page - 1) * 10):
         page_data = mood_data[::-1][lower:]
-    else: 
-        print('No journal items on this page!')
+    else:
+        print("No journal items on this page!")
         return False
-
 
     headers = ["#", "Mood", "Comment", "Date", "Time"]
 
     rows = []
     for index, mood in enumerate(page_data):
         comment = mood.strip_comments()
-        rows.append([
-            index + 1,
-            mood.mood,
-            comment,
-            mood.date,
-            mood.time,
-        ])
+        rows.append(
+            [
+                index + 1,
+                mood.mood,
+                comment,
+                mood.date,
+                mood.time,
+            ]
+        )
 
     column_widths = [
         max(len(strip_ansi_codes(str(row[i]))) for row in rows + [headers])
@@ -204,7 +214,9 @@ def print_moods(mood_data=[], page=1):
         print(
             "| "
             + " | ".join(
-                str(cell).ljust(width + len(str(cell)) - len(strip_ansi_codes(str(cell))))
+                str(cell).ljust(
+                    width + len(str(cell)) - len(strip_ansi_codes(str(cell)))
+                )
                 for cell, width in zip(row, column_widths)
             )
             + " |"
@@ -218,10 +230,12 @@ def clear_screen_and_show_banner(banner_str):
     clear_screen()
     print(banner_str)
 
+
 def check_exit(input_value):
     if input_value.strip().lower() == "x":
         return True
     return False
+
 
 def direct_to_dashboard(message=""):
     if message:
@@ -235,4 +249,3 @@ def direct_to_dashboard(message=""):
             break
         else:
             print("Invalid input. Please press B to go back to the dashboard.")
-
