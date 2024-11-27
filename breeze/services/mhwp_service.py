@@ -147,6 +147,7 @@ class MHWPService:
             print("-" * 42)
 
         def display_condition_menu(patient):                        #dislays the common conditions menu for mhwp to choose from
+            clear_screen()
             print(MHWP_BANNER_STRING)
             print(f"Adding condition for patient: {patient.get_username()}")
             print("Choose a condition or enter a custom option:")
