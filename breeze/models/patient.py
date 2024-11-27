@@ -55,14 +55,14 @@ class Patient(User, AppointmentMixin):
     def add_appointment(self, appointment):
         self.__appointments.append(appointment)
 
-    def add_mood_entry(self, mood, comment, datetime):
+    def add_mood_entry(self, mood_id, mood, comment, datetime_str):
         self.__mood_entries.append(
-            {"mood": mood, "comment": comment, "datetime": datetime}
+            {"id": mood_id, "mood": mood, "comment": comment, "datetime": datetime_str}
         )
 
-    def add_journal_entry(self, title, entry, datetime):
+    def add_journal_entry(self, journal_id, title, entry, datetime_str):
         self.__journal_entries.append(
-            {"title": title, "entry": entry, "datetime": datetime}
+            {"id": journal_id, "title": title, "entry": entry, "datetime" : datetime_str}
         )
 
     def get_assigned_mhwp(self):

@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, time, date
 from breeze.utils.cli_utils import (
     check_exit,
     clear_screen,
@@ -6,6 +6,7 @@ from breeze.utils.cli_utils import (
     print_system_message,
 )
 from breeze.utils.constants import PATIENT_BANNER_STRING
+from breeze.models.journal_entry import JournalEntry
 
 
 def enter_journal(user, auth_service):
@@ -51,11 +52,13 @@ def enter_journal(user, auth_service):
 
     # Combine all parts of the journal entry
     journal_ent = journal_body + " " + " ".join(journal_additions)
-    date_string = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
+    datetime_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    date_string = datetime.now().strftime("%Y-%m-%d")
+    time_string = datetime.now().strftime("%H:%M:%S")
+    new_entry = JournalEntry(journal_title, journal_ent, date_string, time_string)
     # Save the journal entry
     if hasattr(user, "add_journal_entry"):
-        user.add_journal_entry(journal_title, journal_ent, date_string)
+        user.add_journal_entry(new_entry.get_id(), journal_title, journal_ent, datetime_str)
         auth_service.save_data_to_file()
         direct_to_dashboard("Journal entry saved!")
     else:
