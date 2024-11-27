@@ -120,10 +120,35 @@ class AuthService:
             email,
             emergency_contact_email,
         )
+        if role == "p" and new_user:
+            mhwp = self.find_mhwp_with_fewest_patients()
+            if mhwp:
+                mhwp.add_patient(new_user.get_username())
+                new_user.set_assigned_mhwp(mhwp.get_username())
+                print_system_message(f"You have been assigned to MHWP: {mhwp.get_first_name()} {mhwp.get_last_name()}.")
+
         if new_user:
             self.users[new_user.get_username()] = new_user
             self.save_data_to_file()
             direct_to_dashboard("Account created successfully!")
+    
+    def find_mhwp_with_fewest_patients(self):
+        """Finds the MHWP with the fewest assigned patients.
+
+        Returns:
+            MHWP: The MHWP with the fewest assigned patients, or None.
+        """
+        mhwps = []
+        for user in self.users.values():
+            if isinstance(user, MHWP):
+                mhwps.append(user)
+
+        if mhwps:
+            # Find MHWP with the fewest assigned patients
+            return min(mhwps, key=lambda mhwp: len(mhwp.get_assigned_patients()))
+        else:
+            return None
+
 
     def get_all_users(self):
         return self.users
