@@ -102,18 +102,15 @@ class AdminService:
 
                 selected_mhwp = self.auth_service.users.get(selected_mhwp_username)
                 if selected_mhwp and isinstance(selected_mhwp, MHWP):
-                    if len(selected_mhwp.get_assigned_patients()) < 5:
-                        selected_patient.set_assigned_mhwp(selected_mhwp_username)
-                        selected_mhwp.add_patient(selected_patient_username)
+                    selected_patient.set_assigned_mhwp(selected_mhwp_username)
+                    selected_mhwp.add_patient(selected_patient_username)
 
-                        self.auth_service.save_data_to_file()
+                    self.auth_service.save_data_to_file()
 
-                        clear_screen()
-                        print(ADMIN_BANNER_STRING)
-                        print_system_message(f"Successfully assigned patient '{selected_patient.get_username()}' to MHWP '{selected_mhwp.get_username()}'.")
-                        break
-                    else:
-                        print_system_message(f"MHWP '{selected_mhwp.get_username()}' has already reached the maximum number of 5 patients. Please select a different MHWP.")
+                    clear_screen()
+                    print(ADMIN_BANNER_STRING)
+                    print_system_message(f"Successfully assigned patient '{selected_patient.get_username()}' to MHWP '{selected_mhwp.get_username()}'.")
+                    break
                 else:
                     print_system_message("Invalid MHWP username. Please enter a valid MHWP username.")
 
