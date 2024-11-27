@@ -1,143 +1,54 @@
 {
-    "appointments": [
-        {
-            "appointmentId": "1",
-            "date": "2024-11-21",
-            "time": "10:00 AM",
-            "status": "confirmed",
-            "mhwpUsername": "mhwp1",
-            "patientUsername": "patient1"
-        },
-        {
-            "appointmentId": "2",
-            "date": "2024-11-22",
-            "time": "02:00 PM",
-            "status": "confirmed",
-            "mhwpUsername": "mhwp2",
-            "patientUsername": "patient2"
-        }
-    ],
-    "users": [
-        {
-            "username": "patient1",
-            "password": "",
-            "role": "Patient",
-            "isDisabled": false,
-            "information": {
-                "firstName": null,
-                "lastName": null,
-                "email": null,
-                "emergencyContactEmail": null
-            },
-            "assignedMHWP": null,
-            "moods": [],
-            "journals": [],
-            "appointments": [
-                "1"
-            ],
-            "conditions": {},
-            "prescriptions": []
-        },
-        {
-            "username": "patient2",
-            "password": "",
-            "role": "Patient",
-            "isDisabled": false,
-            "information": {
-                "firstName": null,
-                "lastName": null,
-                "email": null,
-                "emergencyContactEmail": null
-            },
-            "assignedMHWP": null,
-            "moods": [],
-            "journals": [],
-            "appointments": [
-                "2"
-            ],
-            "conditions": {},
-            "prescriptions": []
-        },
-        {
-            "username": "mhwp1",
-            "password": "",
-            "role": "MHWP",
-            "isDisabled": false,
-            "information": {
-                "firstName": "Updating",
-                "lastName": "information",
-                "email": "rheatest@gmail.com"
-            },
-            "appointments": [
-                "1"
-            ],
-            "assignedPatients": [
-                "rhea"
-            ]
-        },
-        {
-            "username": "mhwp2",
-            "password": "",
-            "role": "MHWP",
-            "isDisabled": false,
-            "information": {
-                "firstName": null,
-                "lastName": null,
-                "email": null
-            },
-            "appointments": [
-                "2"
-            ],
-            "assignedPatients": [
-                "ro"
-            ]
-        },
-        {
-            "username": "admin",
-            "password": "",
-            "role": "Admin",
-            "isDisabled": false,
-            "information": {
-                "firstName": null,
-                "lastName": null,
-                "email": null
-            }
-        },
-        {
-            "username": "rhea",
-            "password": "",
-            "role": "Patient",
-            "isDisabled": false,
-            "information": {
-                "firstName": "rhea",
-                "lastName": "testing",
-                "email": "",
-                "emergencyContactEmail": ""
-            },
-            "assignedMHWP": "mhwp1",
-            "moods": [],
-            "journals": [],
-            "appointments": [],
-            "conditions": {},
-            "prescriptions": []
-        },
-        {
-            "username": "ro",
-            "password": "",
-            "role": "Patient",
-            "isDisabled": false,
-            "information": {
-                "firstName": "ro",
-                "lastName": "a",
-                "email": "",
-                "emergencyContactEmail": ""
-            },
-            "assignedMHWP": "mhwp2",
-            "moods": [],
-            "journals": [],
-            "appointments": [],
-            "conditions": {},
-            "prescriptions": []
-        }
-    ]
+	"appointments": [
+		{
+			"appointmentId": "1",
+			"date": "2024-11-21",
+			"time": "10:00 AM",
+			"status": "confirmed",
+			"mhwpUsername": "mhwp1",
+			"patientUsername": "patient1"
+		},
+		{
+			"appointmentId": "2",
+			"date": "2024-11-22",
+			"time": "2:00 PM",
+			"status": "confirmed",
+			"mhwpUsername": "mhwp2",
+			"patientUsername": "patient2"
+		}
+	],
+	"users": [
+		{
+			"username": "patient1",
+			"password": "",
+			"role": "patient",
+			"isDisabled": false,
+			"appointments": ["1"]
+		},
+		{
+			"username": "patient2",
+			"password": "",
+			"role": "patient",
+			"isDisabled": false,
+			"appointments": ["2"]
+		},
+		{
+			"username": "mhwp1",
+			"password": "",
+			"role": "mhwp",
+			"appointments": ["1"]
+		},
+		{
+			"username": "mhwp2",
+			"password": "",
+			"role": "mhwp",
+			"isDisabled": false,
+			"appointments": ["2"]
+		},
+		{
+			"username": "admin",
+			"password": "",
+			"role": "admin"
+		}
+	]
 }
