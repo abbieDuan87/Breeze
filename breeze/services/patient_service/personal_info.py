@@ -34,6 +34,9 @@ def edit_personal_information(user, auth_service):
     updated_emergency_contact_email = input("Emergency contact email: ").strip()
     if check_exit(updated_emergency_contact_email):
         return
+    
+    clear_screen()
+    print(PATIENT_BANNER_STRING)
 
     if updated_first_name:
         user.set_first_name(updated_first_name)
