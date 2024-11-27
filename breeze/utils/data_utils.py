@@ -45,6 +45,8 @@ def decode_user(user_data, appointments_data):
             journal_entries=user_data.get("journals", []),
             appointments=appointments,
             assigned_MHWP=user_data.get("assignedMHWP", None),
+            conditions=user_data.get("conditions", {}),
+            prescriptions=user_data.get("prescriptions", [])
         )
 
     elif role == "admin":

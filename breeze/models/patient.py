@@ -1,5 +1,6 @@
 from breeze.models.appointment_mixin import AppointmentMixin
 from .user import User
+from datetime import datetime
 
 
 class Patient(User, AppointmentMixin):
@@ -16,6 +17,8 @@ class Patient(User, AppointmentMixin):
         journal_entries=[],
         appointments=[],
         assigned_MHWP=None,
+        conditions= None,
+        prescriptions= None
     ):
         super().__init__(
             username,
@@ -31,8 +34,8 @@ class Patient(User, AppointmentMixin):
         self.__journal_entries = journal_entries
         self.__appointments = appointments
         self.__assigned_mhwp = assigned_MHWP
-        self.__conditions = {}
-        self.__prescriptions = []
+        self.__conditions = conditions or {}
+        self.__prescriptions = prescriptions or []
     
     def get_emergency_contact(self):
         return self.__emergency_contact_email
@@ -69,7 +72,12 @@ class Patient(User, AppointmentMixin):
         self.__assigned_mhwp = mhwp_username
     
     def add_condition(self, condition, notes):
-        self.__conditions[condition] = notes
+        timestamp = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+        if condition not in self.__conditions:
+            self.__conditions[condition] = []  
+        self.__conditions[condition].append({"note": notes, "timestamp": timestamp})  # Add note with timestamp
+
+
 
     def add_prescription(self, medication, dosage, frequency, start_date, end_date, notes):
         self.__prescriptions.append({
