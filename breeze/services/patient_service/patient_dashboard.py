@@ -1,5 +1,4 @@
 from breeze.utils.cli_utils import (
-    print_system_message,
     show_disabled_account_dashboard_menu,
     clear_screen
 )

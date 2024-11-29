@@ -236,6 +236,10 @@ def check_exit(input_value):
         return True
     return False
 
+def check_previous(input_value):
+    if input_value.strip().lower() == "r":
+        return True
+    return False
 
 def direct_to_dashboard(message=""):
     if message:
