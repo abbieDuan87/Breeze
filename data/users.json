@@ -1,49 +1,24 @@
 {
-	"appointments": [
-		{
-			"appointmentId": "1",
-			"date": "2024-11-21",
-			"time": "10:00 AM",
-			"status": "confirmed",
-			"mhwpUsername": "mhwp1",
-			"patientUsername": "patient1"
-		},
-		{
-			"appointmentId": "2",
-			"date": "2024-11-22",
-			"time": "2:00 PM",
-			"status": "confirmed",
-			"mhwpUsername": "mhwp2",
-			"patientUsername": "patient2"
-		}
-	],
 	"users": [
 		{
 			"username": "patient1",
 			"password": "",
-			"role": "patient",
-			"isDisabled": false,
-			"appointments": ["1"]
+			"role": "patient"
 		},
 		{
 			"username": "patient2",
 			"password": "",
-			"role": "patient",
-			"isDisabled": false,
-			"appointments": ["2"]
+			"role": "patient"
 		},
 		{
 			"username": "mhwp1",
 			"password": "",
-			"role": "mhwp",
-			"appointments": ["1"]
+			"role": "mhwp"
 		},
 		{
 			"username": "mhwp2",
 			"password": "",
-			"role": "mhwp",
-			"isDisabled": false,
-			"appointments": ["2"]
+			"role": "mhwp"
 		},
 		{
 			"username": "admin",
