@@ -126,17 +126,17 @@ class MHWPService:
                 break
 
             print("\nChoose one of the following options:")
-            print("\n[C] Cancel appointments\n[F] Confirm appointments\n[E] Exit\n")
+            print("\n[C] Cancel appointments\n[F] Confirm appointments\n[X] Exit\n")
 
             selected_action = input("> ").strip().lower()
+            
+            if check_exit(selected_action):
+                break
 
             if selected_action == "c":
                 handle_action(upcoming_appointments, "cancel", "Cancel")
             elif selected_action == "f":
                 handle_action(upcoming_appointments, "confirm", "Confirm")
-            elif selected_action == "e":
-                direct_to_dashboard()
-                break
             else:
                 print_system_message("Please enter a valid option.")
                 time.sleep(0.5)

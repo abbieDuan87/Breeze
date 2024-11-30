@@ -9,6 +9,7 @@ from breeze.utils.appointment_utils import (
 from breeze.utils.calendar_utils import generate_calendar_slot_code_map
 from breeze.utils.cli_utils import (
     check_exit,
+    check_previous,
     clear_screen_and_show_banner,
     print_appointments,
     print_system_message,
@@ -68,13 +69,13 @@ def manage_appointment(user, auth_service):
 
                     assigned_mhwp_object.display_calendar(is_MHWP_view=False)
                     print(
-                        "\nSelect the available slot from the calendar (or enter [X] to exit):"
+                        "\nSelect the available slot from the calendar (or enter [R] to return to previous menu):"
                     )
                     selected_slot = (
                         input("> ").strip().upper()
                     )  # the codes are all upper case
 
-                    if check_exit(selected_slot):
+                    if check_previous(selected_slot):
                         break
                     elif selected_slot in app_code_map:
                         app_date_time_tuple = app_code_map.get(selected_slot)
@@ -154,11 +155,11 @@ def manage_appointment(user, auth_service):
                     break
 
                 print(
-                    "\nEnter the index number of the appointment you want to cancel (or enter [X] to exit):"
+                    "\nEnter the index number of the appointment you want to cancel (or enter [R] to return to previous menu):"
                 )
                 selected_appointment_index = input("> ").strip().lower()
 
-                if check_exit(selected_appointment_index):
+                if check_previous(selected_appointment_index):
                     break
 
                 try:
