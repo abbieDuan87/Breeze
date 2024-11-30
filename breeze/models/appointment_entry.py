@@ -65,6 +65,15 @@ class AppointmentEntry:
         Marks the appointment as requested and updates status.
         """
         self.status = "requested"
+    
+    def is_confirmed(self):
+        """
+        Checks if the appointment status is confirmed.
+
+        Returns:
+            bool: True if the appointment is confirmed, False otherwise.
+        """
+        return self.status == "confirmed"
 
     def __str__(self):
         return (
