@@ -34,6 +34,7 @@ def view_summary(auth_service):
     print("-" * 101)
 
     print("\nMHWP Summary:")
+    print("(Note: Confirmed Bookings are bookings confirmed for the current week.)")
     print("-" * 124)
     print(f"| {'Username':<15} | {'First Name':<15} | {'Last Name':<15} | {'Email':<25} | {'Assigned Patients':<17} | {'Confirmed Bookings':<18} |")
     print("-" * 124)
