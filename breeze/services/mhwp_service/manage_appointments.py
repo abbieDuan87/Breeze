@@ -21,7 +21,7 @@ def manage_appointments(user, auth_service):
                 )
 
                 print(
-                    f"\nEnter the index number of the appointment you want to {action} (or type [R] to return):"
+                    f"\nEnter the index number of the appointment you want to {action} (or enter [R] to return to previous menu):"
                 )
                 selected_index_input = input("> ").strip().lower()
 
