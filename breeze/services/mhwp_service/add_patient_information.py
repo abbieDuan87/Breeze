@@ -1,147 +1,10 @@
-import time
 from datetime import datetime
-from breeze.utils.appointment_utils import (
-    handle_appointment_action,
-    show_upcoming_appointments,
-)
-from breeze.utils.cli_utils import (
-    clear_screen_and_show_banner,
-    print_system_message,
-    clear_screen,
-    direct_to_dashboard,
-    show_disabled_account_dashboard_menu,
-    check_exit
-)
-from breeze.utils.constants import MHWP_BANNER_STRING
 from breeze.models.patient import Patient
+from breeze.utils.cli_utils import clear_screen, direct_to_dashboard, print_system_message
+from breeze.utils.constants import MHWP_BANNER_STRING
 
 
-class MHWPService:
-    def __init__(self, auth_service):
-        self.auth_service = auth_service
-
-    def show_mhwp_dashboard(self, user):
-        """
-        Displays the MWHP dashboard and processes user actions.
-
-        Args:
-            user (User): _The logged-in user
-
-        Returns:
-            bool: True if the user chose to log out, otherwise False
-        """
-
-        while True:
-            clear_screen()
-            print(MHWP_BANNER_STRING)
-
-            if user.get_is_disabled():
-                return show_disabled_account_dashboard_menu(user.get_username())
-
-            print(f"Hi", user.get_username(), "!")
-            print("What do you want to do today?")
-            print("[C] View Calendar of Appointments")
-            print("[M] Manage Appointments (Confirm or Cancel)")
-            print("[A] Add Patient Information (Condition, Notes)")
-            print("[D] Display Patient Summary with Mood Chart")
-            print("[E] Edit Personal Information")
-            print("[X] Log out")
-
-            user_input = input("> ").strip().lower()
-
-            if user_input in ["c", "m", "a", "d","e", "x"]:
-                match user_input:
-                    case "c":
-                        self.view_calendar(user)
-                    case "m":
-                        self.manage_appointments(user)
-                    case "a":
-                        self.add_patient_information(user)
-                    case "d":
-                        self.display_patient_summary(user)
-                    case "e":
-                        self.edit_personal_information(user)
-                    case "x":
-                        return True
-                
-
-    def view_calendar(self, user):
-        clear_screen_and_show_banner(MHWP_BANNER_STRING)
-        user.display_calendar()
-        print()
-
-        direct_to_dashboard()
-
-    def manage_appointments(self, user):
-        def handle_action(upcoming_appointments, action, prompt):
-            """Reusable logic to handle appointment actions (cancel or confirm)."""
-            while True:
-                clear_screen_and_show_banner(MHWP_BANNER_STRING)
-                upcoming_appointments = show_upcoming_appointments(
-                    user,
-                    (
-                        lambda app: (
-                            app.get_date(),
-                            app.get_time(),
-                            app.patient_username,
-                        )
-                    ),
-                )
-
-                print(
-                    f"\nEnter the index number of the appointment you want to {action} (or type [R] to return):"
-                )
-                selected_index_input = input("> ").strip().lower()
-
-                if selected_index_input == "r":
-                    break
-
-                try:
-                    selected_index = int(selected_index_input)
-
-                    if not handle_appointment_action(
-                        upcoming_appointments, selected_index, self.auth_service, action
-                    ):
-                        print_system_message("Action could not be completed.")
-
-                except ValueError as ve:
-                    if "invalid literal for int()" in str(ve):
-                        print_system_message("Please enter a valid number.")
-                    else:
-                        print_system_message(str(ve))
-
-                    time.sleep(0.5)
-                    continue
-
-        while True:
-            clear_screen_and_show_banner(MHWP_BANNER_STRING)
-            print(f"Hi, {user.get_username()} !")
-            upcoming_appointments = show_upcoming_appointments(
-                user,
-                (lambda app: (app.get_date(), app.get_time(), app.patient_username)),
-            )
-            
-            if not upcoming_appointments:
-                time.sleep(1)
-                break
-
-            print("\nChoose one of the following options:")
-            print("\n[C] Cancel appointments\n[F] Confirm appointments\n[X] Exit\n")
-
-            selected_action = input("> ").strip().lower()
-            
-            if check_exit(selected_action):
-                break
-
-            if selected_action == "c":
-                handle_action(upcoming_appointments, "cancel", "Cancel")
-            elif selected_action == "f":
-                handle_action(upcoming_appointments, "confirm", "Confirm")
-            else:
-                print_system_message("Please enter a valid option.")
-                time.sleep(0.5)
-
-    def add_patient_information(self, user):
+def add_patient_information(user, auth_service):
         def display_patient_menu(patients):                         #List of assigned patients
             print("-" * 42)
             print(f"| {'Username':<20} | {'Assigned MHWP':<15} |")
@@ -202,7 +65,7 @@ class MHWPService:
             print(MHWP_BANNER_STRING)
             print(f"Hi {user.get_username()}! Let's add patient information.")
 
-            all_users = self.auth_service.get_all_users()
+            all_users = auth_service.get_all_users()
 
             # Patients assigned to the MHWP
             assigned_patients = [
@@ -254,7 +117,7 @@ class MHWPService:
                         print(f"Selected Condition: {condition}")
                         notes = input("Enter notes about the condition: ").strip()
                         patient.add_condition(condition, notes)
-                        self.auth_service.save_data_to_file()
+                        auth_service.save_data_to_file()
                         print_system_message(f"Condition '{condition}' with notes saved successfully.")
                         direct_to_dashboard()
                         return
@@ -321,7 +184,7 @@ class MHWPService:
 
                     prescription_notes = input("Notes: ").strip()
                     patient.add_prescription(medication, f"{dosage} {unit}", frequency, start_date, end_date, prescription_notes)
-                    self.auth_service.save_data_to_file()
+                    auth_service.save_data_to_file()
                     print_system_message(f"Prescription '{medication}' added and saved successfully.")
                     direct_to_dashboard()
                     return
@@ -337,56 +200,3 @@ class MHWPService:
                     print("[P] Add a prescription")
                     print("[X] Exit")  
                     print_system_message("Invalid option. Please select [C], [P], or [X].")
-
-
-
-    def display_patient_summary(self, user):
-        pass
-
-    def edit_personal_information(self, user):
-        """
-        Allows the MHWP to edit their personal information.
-        """
-        clear_screen()
-        print(MHWP_BANNER_STRING)
-        print(f"Hi {user.get_username()}! Please update your personal information here.")
-        print("\nHere is your current information:")
-        print_system_message(
-            f"First name: {user.get_first_name()}\nLast name: {user.get_last_name()}\nEmail: {user.get_email()}"
-        )
-
-        print("\nEnter the new information or leave blank to keep the current value (or enter [X] to exit without saving):\n")
-
-        updated_first_name = input("First name: ").strip()
-        if check_exit(updated_first_name):
-            return
-
-        updated_last_name = input("Last name: ").strip()
-        if check_exit(updated_last_name):
-            return
-
-        updated_email = input("Email: ").strip()
-        if check_exit(updated_email):
-            return
-        
-        clear_screen()
-        print(MHWP_BANNER_STRING)
-
-        if updated_first_name:
-            user.set_first_name(updated_first_name)
-        if updated_last_name:
-            user.set_last_name(updated_last_name)
-        if updated_email:
-            user.set_email(updated_email)
-
-        if updated_first_name or updated_last_name or updated_email:
-            update_message = "\nInfo updated successfully! Here is your updated information:"
-        else:
-            update_message = "\nHere is your updated information (no changes made):"
-
-        print(update_message)
-        print_system_message(f"First name: {user.get_first_name()}\nLast name: {user.get_last_name()}\nemail: {user.get_email()}")
-
-        self.auth_service.save_data_to_file()
-        direct_to_dashboard()
-
