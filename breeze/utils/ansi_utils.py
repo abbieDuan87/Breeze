@@ -85,3 +85,4 @@ if __name__ == "__main__":
         mood_chart_scale.append(colorise("\U0001F60A", color=color))
     print(" ".join(mood_chart_scale))
     print("\033[92m\u25CF\033[0m - Very Happy")
+    print_color_palette()
