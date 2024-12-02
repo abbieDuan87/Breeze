@@ -1,5 +1,5 @@
 from breeze.services.admin_service.admin_user_printer import print_users_with_disabled_status
-from breeze.utils.cli_utils import check_exit, clear_screen, print_system_message
+from breeze.utils.cli_utils import check_exit, clear_screen, print_system_message, direct_to_dashboard
 from breeze.utils.constants import ADMIN_BANNER_STRING
 
 
@@ -15,9 +15,9 @@ def disable_user(auth_service):
     print(ADMIN_BANNER_STRING)
     print_system_message("Toggle User Status (Enable/Disable)")
 
+    print_users_with_disabled_status(auth_service)
+
     while True:
-        print_users_with_disabled_status(auth_service)
-        
         print("\nEnter the username of the account to toggle status (or press [X] to exit):")
         username = input("> ").strip().lower()
 
@@ -42,5 +42,9 @@ def disable_user(auth_service):
 
         auth_service.save_data_to_file()
         clear_screen()
+        print(ADMIN_BANNER_STRING)
+        print_system_message("Toggle User Status (Enable/Disable)")
+        print_users_with_disabled_status(auth_service)
         print_system_message(f"Account '{username}' has been successfully {action}.")
-        continue
+        direct_to_dashboard()
+        return
