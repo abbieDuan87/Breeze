@@ -65,18 +65,18 @@ def edit_user_information(auth_service):
         current_info += f"Emergency contact email: {user.get_emergency_contact()}\n"
         print_system_message(current_info)
 
-    print("\nEnter new information or leave blank to keep current values")
+    print("\nEnter new information or leave blank to keep current values (or enter [X] to exit):")
 
     updated_first_name = input("First name: ").strip()
     if check_exit(updated_first_name):
         return
         
     updated_last_name = input("Last name: ").strip()
-    if check_exit(updated_first_name):
+    if check_exit(updated_last_name):
         return
         
     updated_email = input("Email: ").strip()
-    if check_exit(updated_first_name):
+    if check_exit(updated_email):
         return
         
     updated_emergency_contact_email = None
