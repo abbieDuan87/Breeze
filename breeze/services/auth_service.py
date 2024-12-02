@@ -1,4 +1,6 @@
 import time
+import re
+from datetime import datetime as dt
 
 from breeze.models.admin import Admin
 from breeze.models.patient import Patient
@@ -48,7 +50,9 @@ class AuthService:
         first_name,
         last_name,
         email,
-        emergency_contact_email,
+        emergency_contact_email=None,
+        date_of_birth=None,
+        gender=None
     ):
         """Helper method to create a new user based on role.
         Args:
@@ -58,6 +62,8 @@ class AuthService:
             first_name (str)
             last_name (str)
             email (str)
+            gender (str, optional)
+            date_of_birth (str, optional)
             emergency_contact_email (str, optional)
         """
         match role.strip().lower():
@@ -70,7 +76,9 @@ class AuthService:
                     first_name,
                     last_name,
                     email,
-                    emergency_contact_email,
+                    gender,
+                    date_of_birth,
+                    emergency_contact_email
                 )
             case "m":
                 return MHWP(username, password, first_name, last_name, email)
@@ -104,9 +112,45 @@ class AuthService:
             break
 
         password = input("Password: ").strip()
+        
+        gender = None
+        date_of_birth = None
         emergency_contact_email = None
         
         if role == "p":
+            print("Gender Options:\n[M] Male\n[F] Female\n[N] Non-binary\n[T] Transgender\n[O] Other")
+            gender_dict = {
+                'm' : 'Male',
+                'f' : 'Female',
+                'n' : 'Non-binary',
+                't' : 'Transgender',
+                'o' : 'Other'
+            }
+            while True:
+                gender = input("> ").strip().lower()
+                if gender not in gender_dict.keys():
+                    print_system_message("Please select a valid option.")
+                else:
+                    gender = gender_dict[gender]
+                    break
+
+            date_regex = "^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/([0-9]{4})$"
+            while True:
+                date_of_birth = input("Date of Birth (DD/MM/YYYY): ")
+                if re.match(date_regex, date_of_birth):
+                    # secondary check for invalid dates eg. 31 Sep, 31 Feb
+                    try:
+                        dob_check = dt.strptime(date_of_birth, "%d/%m/%Y")
+                        sixteenth = dt(dob_check.year + 16, dob_check.month, dob_check.day)
+                        if dt.now() > sixteenth:
+                            break
+                        else:
+                            print_system_message("You must be over 16 to use the Breeze service!")                
+                    except ValueError:
+                        print_system_message("Date is invalid! Please enter a existing date of birth.")
+                else:
+                    print_system_message("Date is incorrectly formulated! Please try again.")
+
             emergency_contact_email = input("Emergency contact email: ").strip()
 
         while True:
@@ -115,7 +159,8 @@ class AuthService:
             if role == 'p':
                 print_system_message(
                     f"First name: {first_name}\nLast name: {last_name}\nEmail: {email}\n"
-                    f"Username: {username}\nPassword: {password}\nEmergency Contact Email: {emergency_contact_email}"
+                    f"Username: {username}\nPassword: {password}\nGender: {gender}\n"
+                    f"Date of Birth: {date_of_birth}\nEmergency Contact Email: {emergency_contact_email}"
                 )
             else: 
                 print_system_message(
@@ -132,7 +177,7 @@ class AuthService:
                         f"First name: {first_name}\nLast name: {last_name}\nEmail: {email}\n"
                         f"Username: {username}\nPassword: {password}\nEmergency Contact Email: {emergency_contact_email}"
                     )
-                    print('Enter the value of the data you wish to edit (1-6), or type any other key to confirm:')
+                    print('Enter the value of the data you wish to edit (1-8), or type any other key to confirm:')
                 
                 else: 
                     print_system_message(
@@ -143,8 +188,38 @@ class AuthService:
                 
                 print('[1] First Name\n[2] Last Name\n[3] Email\n[4] Username\n[5] Password')
                 if role == 'p':
-                    print('[6] Emergency Contact Email')
+                    print('[6] Gender\n[7] Date of Birth\n[8] Emergency Contact Email')
                 to_edit = input('> ').strip().lower()
+                if role == 'p':
+                    match to_edit:
+                        case '6':
+                            while True:
+                                gender = input("> ").strip().lower()
+                                if gender not in gender_dict.keys():
+                                    print_system_message("Please select a valid option.")
+                                else:
+                                    gender = gender_dict[gender]
+                                    break
+                        case '7':
+                            while True:
+                                date_of_birth = input("Date of Birth (DD/MM/YYYY): ")
+                                if re.match(date_regex, date_of_birth):
+                                    # secondary check for invalid dates eg. 31 Sep, 31 Feb
+                                    try:
+                                        dob_check = dt.strptime(date_of_birth, "%d/%m/%Y")
+                                        sixteenth = dt(dob_check.year + 16, dob_check.month, dob_check.day)
+                                        if dt.now() > sixteenth:
+                                            break
+                                        else:
+                                            print_system_message("You must be over 16 to use the Breeze service!")
+                                    except ValueError:
+                                        print_system_message("Date is invalid! Please enter a existing date of birth.")
+                                else:
+                                    print_system_message("Date is incorrectly formulated! Please try again.")
+                        case '8':
+                            emergency_contact_email = input("Emergency Contact Email: ").strip()
+                        case _:
+                            break
                 match to_edit:
                     case '1':
                         first_name = input("First name: ").strip()
@@ -161,11 +236,6 @@ class AuthService:
                             break
                     case '5':
                         password = input("Password: ").strip()
-                    case '6':
-                        if role == 'p':
-                            emergency_contact_email = input ("Emergency Contact Email: ").strip()
-                        else:
-                            break
                     case _:
                         break
             else:
@@ -178,6 +248,8 @@ class AuthService:
             first_name,
             last_name,
             email,
+            gender,
+            date_of_birth,
             emergency_contact_email,
         )
         if role == "p" and new_user:

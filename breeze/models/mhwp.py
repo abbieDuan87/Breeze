@@ -131,11 +131,14 @@ class MHWP(User, AppointmentMixin):
                         else "\u25CB"
                     )
                 else:
-                    placeholder = (
-                        get_colored_status(app.get_status())
-                        if app and app.get_status() != "cancelled"
-                        else code
-                    )
+                    if app and app.get_status() == "confirmed":
+                        placeholder = get_colored_status("unavailable")
+                    else:
+                        placeholder = (
+                            get_colored_status(app.get_status())
+                            if app and app.get_status() != "cancelled"
+                            else code
+                        )
 
                 visible_placeholder = strip_ansi_codes(placeholder)
                 padding_width = 14 - len(visible_placeholder) + len(placeholder)
