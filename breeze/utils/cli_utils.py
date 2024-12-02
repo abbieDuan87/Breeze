@@ -1,4 +1,6 @@
 import os
+import re
+from datetime import datetime as dt
 from breeze.utils.calendar_utils import get_colored_status, strip_ansi_codes
 
 
@@ -164,15 +166,15 @@ def print_journals(journal_data=[], page=1):
 
     return True
 
-def invalid_username(username, users):
+def is_invalid_username(username, users):
     if not username:
         print_system_message("Username cannot be empty. Please try again.")
         return True
     elif username in users:
         print_system_message("Username already taken! Please choose another.")
         return True
-    elif len(username) < 2 or len(username) > 10:
-        print_system_message("Username must be between two and ten characters! Please try again.")
+    elif username.lower() != username or len(username) < 2 or len(username) > 10:
+        print_system_message("Username must be in lowercase and be between two and ten characters! Please try again.")
         return True
     elif len(username.split(' ')) > 1:     
         print_system_message("Username cannot include spaces! Please try again.")
@@ -180,6 +182,33 @@ def invalid_username(username, users):
     else:
         return False
     
+def is_invalid_date(date):
+    date_regex = "^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/([0-9]{4})$"
+    if re.match(date_regex, date):
+        # secondary check for invalid dates eg. 31 Sep, 31 Feb
+        try:
+            dob_check = dt.strptime(date, "%d/%m/%Y")
+            sixteenth = dt(dob_check.year + 16, dob_check.month, dob_check.day)
+            if dt.now() > sixteenth:
+                return False
+            else:
+                print_system_message("You must be over 16 to use the Breeze service!")  
+                return True              
+        except ValueError:
+            print_system_message("Date is invalid! Please enter a existing date of birth.")
+            return True
+    else:
+        print_system_message("Date is incorrectly formulated! Please try again.")
+        return True
+
+def is_invalid_email(email):
+    email_regex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+    if re.match(email_regex, email):
+        return False
+    else:
+        print_system_message("Email is formatted incorrectly! Please try again.")
+        return True
+
 def print_moods(mood_data=[], page=1):
     if not mood_data:
         return

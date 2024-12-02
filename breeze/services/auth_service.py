@@ -1,12 +1,10 @@
 import time
-import re
-from datetime import datetime as dt
 
 from breeze.models.admin import Admin
 from breeze.models.patient import Patient
 from breeze.models.mhwp import MHWP
 
-from breeze.utils.cli_utils import print_system_message, direct_to_dashboard, clear_screen, invalid_username
+from breeze.utils.cli_utils import print_system_message, direct_to_dashboard, clear_screen, is_invalid_username, is_invalid_date, is_invalid_email
 from breeze.utils.data_utils import load_data, save_data
 from breeze.utils.constants import REGISTER_BANNER_STRING
 
@@ -103,11 +101,16 @@ class AuthService:
 
         first_name = input("First name: ").strip()
         last_name = input("Last name: ").strip()
-        email = input("Email: ").strip()
-        print('Username must be between two and ten characters, and is converted to lowercase.')
+
+        while True:
+            email = input("Email: ").strip()
+            if is_invalid_email(email):
+                continue
+            break
+
         while True:
             username = input("Username: ").strip().lower()
-            if invalid_username(username, self.users):
+            if is_invalid_username(username, self.users):
                 continue
             break
 
@@ -134,24 +137,17 @@ class AuthService:
                     gender = gender_dict[gender]
                     break
 
-            date_regex = "^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/([0-9]{4})$"
             while True:
                 date_of_birth = input("Date of Birth (DD/MM/YYYY): ")
-                if re.match(date_regex, date_of_birth):
-                    # secondary check for invalid dates eg. 31 Sep, 31 Feb
-                    try:
-                        dob_check = dt.strptime(date_of_birth, "%d/%m/%Y")
-                        sixteenth = dt(dob_check.year + 16, dob_check.month, dob_check.day)
-                        if dt.now() > sixteenth:
-                            break
-                        else:
-                            print_system_message("You must be over 16 to use the Breeze service!")                
-                    except ValueError:
-                        print_system_message("Date is invalid! Please enter a existing date of birth.")
-                else:
-                    print_system_message("Date is incorrectly formulated! Please try again.")
+                if is_invalid_date(date_of_birth):
+                    continue
+                break
 
-            emergency_contact_email = input("Emergency contact email: ").strip()
+            while True:
+                emergency_contact_email = input("Emergency contact email (optional): ").strip()
+                if emergency_contact_email and is_invalid_email(emergency_contact_email):
+                    continue
+                break
 
         while True:
             clear_screen()
@@ -189,7 +185,9 @@ class AuthService:
                 print('[1] First Name\n[2] Last Name\n[3] Email\n[4] Username\n[5] Password')
                 if role == 'p':
                     print('[6] Gender\n[7] Date of Birth\n[8] Emergency Contact Email')
+
                 to_edit = input('> ').strip().lower()
+
                 if role == 'p':
                     match to_edit:
                         case '6':
@@ -203,35 +201,32 @@ class AuthService:
                         case '7':
                             while True:
                                 date_of_birth = input("Date of Birth (DD/MM/YYYY): ")
-                                if re.match(date_regex, date_of_birth):
-                                    # secondary check for invalid dates eg. 31 Sep, 31 Feb
-                                    try:
-                                        dob_check = dt.strptime(date_of_birth, "%d/%m/%Y")
-                                        sixteenth = dt(dob_check.year + 16, dob_check.month, dob_check.day)
-                                        if dt.now() > sixteenth:
-                                            break
-                                        else:
-                                            print_system_message("You must be over 16 to use the Breeze service!")
-                                    except ValueError:
-                                        print_system_message("Date is invalid! Please enter a existing date of birth.")
-                                else:
-                                    print_system_message("Date is incorrectly formulated! Please try again.")
+                                if is_invalid_date(date_of_birth):
+                                    continue
+                                break
                         case '8':
-                            emergency_contact_email = input("Emergency Contact Email: ").strip()
+                            while True:
+                                emergency_contact_email = input("Emergency Contact Email (Optional): ").strip()
+                                if emergency_contact_email and is_invalid_email(emergency_contact_email):
+                                    continue
+                                break
                         case _:
-                            break
+                            pass
                 match to_edit:
                     case '1':
                         first_name = input("First name: ").strip()
                     case '2':
                         last_name = input("Last name: ").strip()
                     case '3':
-                        email = input("Email: ").strip()
+                        while True:
+                            email = input("Email: ").strip()
+                            if is_invalid_email(email):
+                                continue
+                            break
                     case '4':
-                        print('Username must be between two and ten characters, and is converted to lowercase.')
                         while True:
                             username = input("Username: ").strip().lower()
-                            if invalid_username(username, self.users):
+                            if is_invalid_username(username, self.users):
                                 continue
                             break
                     case '5':
