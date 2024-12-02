@@ -43,7 +43,7 @@ def handle_user_choice(user_input, patient_service, user):
         case "j":
             patient_service.enter_journaling(user)
         case "s":
-            patient_service.search_exercise(user)
+            patient_service.search_exercise()
         case "b":
             patient_service.manage_appointment(user)
         case "h":
