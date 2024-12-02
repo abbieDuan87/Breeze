@@ -53,7 +53,7 @@ def show_disabled_account_dashboard_menu(username):
         return False
 
 
-def print_appointments(appointments=[]):
+def print_appointments(appointments=[], is_own_view=True):
     if not appointments:
         print("No upcoming appointments.")
         return
@@ -65,7 +65,15 @@ def print_appointments(appointments=[]):
             index + 1,
             app.date,
             app.time,
-            get_colored_status(app.status),
+            (
+                get_colored_status(app.status)
+                if is_own_view
+                else (
+                    get_colored_status("unavailable")
+                    if app.status == "confirmed"
+                    else get_colored_status(app.status)
+                )
+            ),
             app.patient_username,
             app.mhwp_username,
         ]
@@ -236,10 +244,12 @@ def check_exit(input_value):
         return True
     return False
 
+
 def check_previous(input_value):
     if input_value.strip().lower() == "r":
         return True
     return False
+
 
 def direct_to_dashboard(message=""):
     if message:

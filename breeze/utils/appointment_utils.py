@@ -20,7 +20,7 @@ def confirm_user_choice(
 
 
 def show_upcoming_appointments(
-    user, key=(lambda app: (app.get_date(), app.get_time()))
+    user, key=(lambda app: (app.get_date(), app.get_time())), is_own_view=True
 ):
     """Displays the user's upcoming appointments."""
     upcoming_appointments = sorted(
@@ -33,7 +33,7 @@ def show_upcoming_appointments(
     )
     if upcoming_appointments:
         print("\nHere are your upcoming appointments:")
-        print_appointments(upcoming_appointments)
+        print_appointments(upcoming_appointments, is_own_view)
         return upcoming_appointments
     else:
         print("You have no upcoming appointment.")

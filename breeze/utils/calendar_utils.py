@@ -1,6 +1,8 @@
 import datetime
 import re
 
+from breeze.utils.ansi_utils import colorise
+
 
 def get_next_available_days(num_days=5):
     """Returns a list of the next available weekdays, excluding weekends.
@@ -61,7 +63,7 @@ def generate_calendar_slot_code_map(next_available_days=None, time_slots=None):
         next_available_days = get_next_available_days()
     if not time_slots:
         time_slots = generate_time_slots()
-        
+
     codes = {}
     for i, slot in enumerate(time_slots):
         col_code = chr(ord("A") + i)
@@ -72,16 +74,20 @@ def generate_calendar_slot_code_map(next_available_days=None, time_slots=None):
 
 
 def get_colored_status(status):
-    if status == 'confirmed':
-        return '\x1b[6;30;42m' + status + '\x1b[0m'
-    elif status == 'requested':
-        return '\x1b[6;30;43m' + status + '\x1b[0m'
+    if status == "confirmed":
+        return colorise(status, "white", "green")
+    elif status == "requested":
+        return colorise(status, "white", "yellow")
+    elif status == "unavailable":
+        return colorise(status, "white", "blue")
     else:
         return status
 
+
 def strip_ansi_codes(text):
-    ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
-    return ansi_escape.sub('', text)
+    ansi_escape = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
+    return ansi_escape.sub("", text)
+
 
 if __name__ == "__main__":
     # days = get_next_available_days()
@@ -89,5 +95,5 @@ if __name__ == "__main__":
     # codes = generate_calendar_slot_code_map(days, slots)
     # print(codes)
     # print(len(slots))
-    placeholder = get_colored_status('status')
+    placeholder = get_colored_status("status")
     print(f"{placeholder:<14}", end=" | ")
