@@ -4,8 +4,9 @@ from breeze.models.admin import Admin
 from breeze.models.patient import Patient
 from breeze.models.mhwp import MHWP
 
-from breeze.utils.cli_utils import print_system_message, direct_to_dashboard
+from breeze.utils.cli_utils import print_system_message, direct_to_dashboard, clear_screen
 from breeze.utils.data_utils import load_data, save_data
+from breeze.utils.constants import REGISTER_BANNER_STRING
 
 
 class AuthService:
@@ -95,22 +96,95 @@ class AuthService:
         first_name = input("First name: ").strip()
         last_name = input("Last name: ").strip()
         email = input("Email: ").strip()
-
+        print('Username must be between two and ten characters, and is converted to lowercase.')
         while True:
-            username = input("Username: ").strip()
+            username = input("Username: ").strip().lower()
             if not username:
                 print_system_message("Username cannot be empty. Please try again.")
                 continue
             if username in self.users:
                 print_system_message("Username already taken! Please choose another.")
                 continue
+            if len(username) < 2 or len(username) > 10:
+                print_system_message("Username must be between two and ten characters! Please try again.")
+                continue
             break
 
         password = input("Password: ").strip()
         emergency_contact_email = None
+        
         if role == "p":
             emergency_contact_email = input("Emergency contact email: ").strip()
 
+        while True:
+            clear_screen()
+            print(REGISTER_BANNER_STRING)
+            if role == 'p':
+                print_system_message(
+                    f"First name: {first_name}\nLast name: {last_name}\nEmail: {email}\n"
+                    f"Username: {username}\nPassword: {password}\nEmergency Contact Email: {emergency_contact_email}"
+                )
+            else: 
+                print_system_message(
+                    f"First name: {first_name}\nLast name: {last_name}\nEmail: {email}\n"
+                    f"Username: {username}\nPassword: {password}"
+                )
+            print("Would you like to edit any of the information? Enter [E] to edit, or type any other key to confirm details.")
+            response = input("> ").strip().lower()
+            if response == 'e':
+                clear_screen()
+                print(REGISTER_BANNER_STRING)
+                if role == 'p':
+                    print_system_message(
+                        f"First name: {first_name}\nLast name: {last_name}\nEmail: {email}\n"
+                        f"Username: {username}\nPassword: {password}\nEmergency Contact Email: {emergency_contact_email}"
+                    )
+                    print('Enter the value of the data you wish to edit (1-6), or type any other key to confirm:')
+                
+                else: 
+                    print_system_message(
+                        f"First name: {first_name}\nLast name: {last_name}\nEmail: {email}\n"
+                        f"Username: {username}\nPassword: {password}"
+                    )
+                    print('Enter the value of the data you wish to edit (1-5), or type any other key to confirm:')
+                
+                print('[1] First Name\n[2] Last Name\n[3] Email\n[4] Username\n[5] Password')
+                if role == 'p':
+                    print('[6] Emergency Contact Email')
+                to_edit = input('> ').strip().lower()
+                match to_edit:
+                    case '1':
+                        first_name = input("First name: ").strip()
+                    case '2':
+                        last_name = input("Last name: ").strip()
+                    case '3':
+                        email = input("Email: ").strip()
+                    case '4':
+                        print('Username must be between two and ten characters, and is converted to lowercase.')
+                        while True:
+                            username = input("Username: ").strip().lower()
+                            if not username:
+                                print_system_message("Username cannot be empty. Please try again.")
+                                continue
+                            if username in self.users:
+                                print_system_message("Username already taken! Please choose another.")
+                                continue 
+                            if len(username) < 2 or len(username) > 10:
+                                print_system_message("Username must be between two and ten characters! Please try again.")
+                                continue
+                            break
+                    case '5':
+                        password = input("Password: ").strip()
+                    case '6':
+                        if role == 'p':
+                            emergency_contact_email = input ("Emergency Contact Email: ").strip()
+                        else:
+                            break
+                    case _:
+                        break
+            else:
+                break
+        
         new_user = self._register_role(
             role,
             username,
