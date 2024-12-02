@@ -2,7 +2,6 @@ import time
 from breeze.utils.cli_utils import (
     clear_screen,
     print_system_message,
-    direct_to_dashboard,
 )
 from breeze.utils.constants import PATIENT_BANNER_STRING
 

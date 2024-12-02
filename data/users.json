@@ -1,29 +1,78 @@
 {
+	"appointments": [],
 	"users": [
 		{
 			"username": "patient1",
 			"password": "",
-			"role": "patient"
+			"role": "Patient",
+			"isDisabled": false,
+			"information": {
+				"firstName": null,
+				"lastName": null,
+				"email": null,
+				"emergencyContactEmail": null
+			},
+			"assignedMHWP": "mhwp1",
+			"moods": [],
+			"journals": [],
+			"appointments": [],
+			"conditions": {},
+			"prescriptions": []
 		},
 		{
 			"username": "patient2",
 			"password": "",
-			"role": "patient"
+			"role": "Patient",
+			"isDisabled": false,
+			"information": {
+				"firstName": null,
+				"lastName": null,
+				"email": null,
+				"emergencyContactEmail": null
+			},
+			"assignedMHWP": "mhwp2",
+			"moods": [],
+			"journals": [],
+			"appointments": [],
+			"conditions": {},
+			"prescriptions": []
 		},
 		{
 			"username": "mhwp1",
 			"password": "",
-			"role": "mhwp"
+			"role": "MHWP",
+			"isDisabled": false,
+			"information": {
+				"firstName": null,
+				"lastName": null,
+				"email": null
+			},
+			"appointments": [],
+			"assignedPatients": ["patient1"]
 		},
 		{
 			"username": "mhwp2",
 			"password": "",
-			"role": "mhwp"
+			"role": "MHWP",
+			"isDisabled": false,
+			"information": {
+				"firstName": null,
+				"lastName": null,
+				"email": null
+			},
+			"appointments": [],
+			"assignedPatients": ["patient2"]
 		},
 		{
 			"username": "admin",
 			"password": "",
-			"role": "admin"
+			"role": "Admin",
+			"isDisabled": false,
+			"information": {
+				"firstName": null,
+				"lastName": null,
+				"email": null
+			}
 		}
 	]
 }
