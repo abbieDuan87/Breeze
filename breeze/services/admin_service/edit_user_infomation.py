@@ -46,9 +46,8 @@ def edit_user_information(auth_service):
             return
 
         user = auth_service.users.get(username)
-        if user:
-            if (user_input == "p" and isinstance(user, Patient)) or (user_input == "m" and isinstance(user, MHWP)):
-                break
+        if user and ((user_input == "p" and isinstance(user, Patient)) or (user_input == "m" and isinstance(user, MHWP))):
+            break
         else:
             print_system_message("Invalid username. Please try again.")
 
