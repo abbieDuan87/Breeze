@@ -164,7 +164,22 @@ def print_journals(journal_data=[], page=1):
 
     return True
 
-
+def invalid_username(username, users):
+    if not username:
+        print_system_message("Username cannot be empty. Please try again.")
+        return True
+    elif username in users:
+        print_system_message("Username already taken! Please choose another.")
+        return True
+    elif len(username) < 2 or len(username) > 10:
+        print_system_message("Username must be between two and ten characters! Please try again.")
+        return True
+    elif len(username.split(' ')) > 1:     
+        print_system_message("Username cannot include spaces! Please try again.")
+        return True
+    else:
+        return False
+    
 def print_moods(mood_data=[], page=1):
     if not mood_data:
         return

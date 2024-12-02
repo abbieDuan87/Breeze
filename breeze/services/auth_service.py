@@ -4,7 +4,7 @@ from breeze.models.admin import Admin
 from breeze.models.patient import Patient
 from breeze.models.mhwp import MHWP
 
-from breeze.utils.cli_utils import print_system_message, direct_to_dashboard, clear_screen
+from breeze.utils.cli_utils import print_system_message, direct_to_dashboard, clear_screen, invalid_username
 from breeze.utils.data_utils import load_data, save_data
 from breeze.utils.constants import REGISTER_BANNER_STRING
 
@@ -99,14 +99,7 @@ class AuthService:
         print('Username must be between two and ten characters, and is converted to lowercase.')
         while True:
             username = input("Username: ").strip().lower()
-            if not username:
-                print_system_message("Username cannot be empty. Please try again.")
-                continue
-            if username in self.users:
-                print_system_message("Username already taken! Please choose another.")
-                continue
-            if len(username) < 2 or len(username) > 10:
-                print_system_message("Username must be between two and ten characters! Please try again.")
+            if invalid_username(username, self.users):
                 continue
             break
 
@@ -163,14 +156,7 @@ class AuthService:
                         print('Username must be between two and ten characters, and is converted to lowercase.')
                         while True:
                             username = input("Username: ").strip().lower()
-                            if not username:
-                                print_system_message("Username cannot be empty. Please try again.")
-                                continue
-                            if username in self.users:
-                                print_system_message("Username already taken! Please choose another.")
-                                continue 
-                            if len(username) < 2 or len(username) > 10:
-                                print_system_message("Username must be between two and ten characters! Please try again.")
+                            if invalid_username(username, self.users):
                                 continue
                             break
                     case '5':
