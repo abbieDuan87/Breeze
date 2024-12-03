@@ -46,11 +46,12 @@ def add_patient_information(user, auth_service):
             }
             display_condition_menu(patient)
             while True:
-                choice = input("\nSelect a condition by entering a number, [O] for other condition and [X] to exit: ").strip().lower()
+                print("\nSelect a condition by entering a number, [O] for other condition and [X] to exit: ")
+                choice = input("> ").strip().lower()
 
                 if choice in predefined_conditions:
                     return predefined_conditions[choice]
-                elif choice == "o":
+                elif choice in ["o","0"]:
                     return input("Enter the patient's custom condition: ").strip()
                 elif choice == "x":
                     return 
@@ -59,6 +60,19 @@ def add_patient_information(user, auth_service):
                     print(MHWP_BANNER_STRING)
                     display_condition_menu(patient)
                     print_system_message("Invalid choice. Please try again.")
+
+        def display_prescription_menu(patient):
+                clear_screen()
+                print(MHWP_BANNER_STRING)
+                print(f"Adding Prescription for Patient: {patient.get_username()}")
+                print("Please select a medication or enter a custom prescription:")
+                preset_prescriptions = ["Paracetamol", "Ibuprofen", "Aspirin", "Codeine", "Morphine", "Amoxicillin", 
+                                        "Penicillin", "Sertraline", "Citalopram", "Diazepam"]
+                for number, med in enumerate(preset_prescriptions, 1):
+                    print(f"[{number}] {med}")
+                print("[O] Other prescription")
+                print("[X] Exit")    
+                return preset_prescriptions
 
         while True:
             clear_screen()
@@ -83,7 +97,8 @@ def add_patient_information(user, auth_service):
 
             # Select a patient
             while True:
-                patient_username = input("\nEnter the patient's username to add information, or [X] to exit: ").strip().lower()
+                print("\nEnter the patient's username to add information, or [X] to exit:")
+                patient_username = input("> ").strip().lower()
                 if patient_username == "x":
                     return
                 patient = next((p for p in assigned_patients if p.get_username() == patient_username), None)
@@ -106,7 +121,8 @@ def add_patient_information(user, auth_service):
             print("[P] Add a prescription")
             print("[X] Exit")           
             while True:
-                option = input("Enter your choice: ").strip().lower()
+                print("\nEnter your choice: ")
+                option = input("> ").strip().lower()
 
                 if option == "c":
                     while True:
@@ -126,29 +142,50 @@ def add_patient_information(user, auth_service):
                     clear_screen()
                     print(MHWP_BANNER_STRING)
                     print(f"Adding Prescription for Patient: {patient.get_username()}")
-                    medication = input("\nMedication: ").strip()
+                    prescriptions = display_prescription_menu(patient)
+                    while True:
+                        print("\nPlease select a medication for the prescription, [O] for other and [X] to exit: ")
+                        prescription_choice = input("> ").strip().lower()
+                        if prescription_choice.isdigit() and 1 <= int(prescription_choice) <= len(prescriptions):
+                            medication = prescriptions[int(prescription_choice) - 1]
+                            print(f"Selected Medication: {medication}")
+                            break
+                        elif prescription_choice in ["o", "0"]:
+                            medication = input("Enter the custom prescription: ").strip()
+                            break
+                        elif prescription_choice == "x":
+                            return  
+                        else:      
+                            clear_screen()
+                            print(MHWP_BANNER_STRING)
+                            print(f"Adding Prescription for Patient: {patient.get_username()}")
+                            prescriptions = display_prescription_menu(patient)
+                            print_system_message("Invalid unit selection. Please try again.")   
 
                     # Ask for units for dosage
                     print("\nPlease select a unit for the medications dosage or enter a custom unit:")
-                    predefined_units = ["mg", "ml", "tablets", "capsules", "drops"]
+                    predefined_units = ["mg", "mcg", "ng", "ml", "tablets", "capsules", "drops", "injections"]
                     for i, unit in enumerate(predefined_units, 1):
                         print(f"[{i}] {unit}")
                     print("[O] Other")
 
                     while True:
-                        unit_choice = input("\nSelect a unit by selecting a number or [O] for other: ").strip().lower()
+                        print("\nSelect a unit by selecting a number or [O] for other: ")
+                        unit_choice = input("> ").strip().lower()
                         if unit_choice.isdigit() and 1 <= int(unit_choice) <= len(predefined_units):
                             unit = predefined_units[int(unit_choice) - 1]
                             break
-                        elif unit_choice == "o":
-                            unit = input("Enter a custom unit: ").strip()
+                        elif unit_choice in ["o","0"]:
+                            print("Enter a custom unit: ")
+                            unit = input("> ").strip()
                             break
                         else:
                             clear_screen()
                             print(MHWP_BANNER_STRING)
+                            print(f"Adding Prescription for Patient: {patient.get_username()}")
                             print(f"Recorded Medication: {medication}")
-                            print("\nnSelect a unit by number or [O] for other::")
-                            predefined_units = ["mg", "ml", "tablets", "capsules", "drops"]
+                            print("\nSelect a unit by number or [O] for other::")
+                            predefined_units = ["mg", "mcg", "ng", "ml", "tablets", "capsules", "drops", "injections"]
                             for i, unit in enumerate(predefined_units, 1):
                                 print(f"[{i}] {unit}")
                             print("[O] Other")
@@ -161,6 +198,7 @@ def add_patient_information(user, auth_service):
                             break
                         clear_screen()
                         print(MHWP_BANNER_STRING)
+                        print(f"Adding Prescription for Patient: {patient.get_username()}")
                         print(f"Recorded Medication: {medication}")
                         print_system_message("Invalid dosage. Please enter a positive number.")
 
@@ -176,10 +214,14 @@ def add_patient_information(user, auth_service):
                                 break
                             clear_screen()
                             print(MHWP_BANNER_STRING)
+                            print(f"Adding Prescription for Patient: {patient.get_username()}")
+                            print(f"Recorded Medication: {medication}")
                             print_system_message("Start date must be before end date.")
                         except ValueError:
                             clear_screen()
                             print(MHWP_BANNER_STRING)
+                            print(f"Adding Prescription for Patient: {patient.get_username()}")
+                            print(f"Recorded Medication: {medication}")
                             print_system_message("Invalid date format. Use DD-MM-YYYY.")
 
                     prescription_notes = input("Notes: ").strip()
