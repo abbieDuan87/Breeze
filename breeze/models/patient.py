@@ -48,10 +48,15 @@ class Patient(User, AppointmentMixin):
     def set_emergency_contact(self, email):
         self.__emergency_contact_email = email
 
-    
+    def set_gender(self, gender):
+        self.__gender = gender
+
     def get_gender(self):
         return self.__gender
     
+    def set_date_of_birth(self, date_of_birth):
+        self.__date_of_birth = date_of_birth
+
     def get_date_of_birth(self):
         return self.__date_of_birth
 
