@@ -1,6 +1,6 @@
 from datetime import datetime
 from breeze.models.patient import Patient
-from breeze.utils.cli_utils import clear_screen_and_show_banner, direct_to_dashboard, print_system_message
+from breeze.utils.cli_utils import check_exit, check_previous, clear_screen_and_show_banner, direct_to_dashboard, print_system_message
 from breeze.utils.constants import MHWP_BANNER_STRING
 from breeze.utils.mood_chart_utils import plot_mood_chart
 
@@ -12,14 +12,15 @@ def display_patient_summary(user, auth_service):
         user: The MHWP user.
         auth_service: The authentication service instance.
     """
+    
     clear_screen_and_show_banner(MHWP_BANNER_STRING)
     
     def show_assigned_patients_table(patients):
         """Displays a table of assigned patients."""
         print("\nAssigned Patients:")
-        print("-" * 125)
-        print(f"| {'Username':<15} | {'First Name':<15} | {'Last Name':<15} | {'Gender':<8} | {'DOB':<13} | {'Condition':<20} | {'Medication':<15} |")
-        print("-" * 125)
+        print("-" * 118)
+        print(f"| {'Username':<15} | {'First Name':<15} | {'Last Name':<15} | {'Gender':<8} | {'DOB':<13} | {'Condition':<15} | {'Medication':<15} |")
+        print("-" * 118)
         for patient in patients:
             # Get the most recent condition and prescription if there are multiple ones
             conditions = patient.get_conditions()
@@ -48,10 +49,10 @@ def display_patient_summary(user, auth_service):
                 f"{patient.get_last_name() or 'N/A':<15} | "
                 f"{patient.get_gender() or 'N/A':<8} | "
                 f"{patient.get_date_of_birth() or 'N/A':<13} | "
-                f"{condition_name or 'N/A':<20} | "
+                f"{condition_name or 'N/A':<15} | "
                 f"{medication_name or 'N/A':<15} |"
             )
-        print("-" * 125)
+        print("-" * 118)
 
     def show_patient_details(patient):
         """Displays detailed information for a selected patient."""
@@ -70,17 +71,16 @@ def display_patient_summary(user, auth_service):
         print("\nAppointment History:")
         appointments = patient.get_appointments()
         if appointments:
-            print("-" * 90)
-            print(f"| {'Date':<15} | {'Time':<10} | {'Status':<15} | {'MHWP':<15} | {'Notes':<30} |")
-            print("-" * 90)
+            print("-" * 50)
+            print(f"| {'Date':<15} | {'Time':<10} | {'Status':<15} |")
+            print("-" * 50)
             for appointment in appointments:
                 print(
                     f"| {appointment.get_date().strftime('%Y-%m-%d'):<15} | "
                     f"{appointment.get_time().strftime('%I:%M %p'):<10} | "
                     f"{appointment.get_status():<15} | "
-                    f"{appointment.mhwp_username or 'N/A':<15} | "
                 )
-            print("-" * 90)
+            print("-" * 50)
         else:
             print("  No appointment history available.")
 
@@ -97,13 +97,17 @@ def display_patient_summary(user, auth_service):
         else:
             print("  No prescriptions available.")
 
-        print("\nMood Chart")
         mood_entries = patient.get_mood_entries()
         if mood_entries:
             plot_mood_chart(mood_entries)
         else:
             print("  No mood records available.")
-    
+        
+        navigation = input("\nEnter [R] to return to the patient summary.\n >")
+        
+        if check_previous(navigation):
+            clear_screen_and_show_banner(MHWP_BANNER_STRING)
+            show_assigned_patients_table(assigned_patients)
 
     # Main Summary Logic
     clear_screen_and_show_banner(MHWP_BANNER_STRING)
@@ -122,9 +126,10 @@ def display_patient_summary(user, auth_service):
     show_assigned_patients_table(assigned_patients)
 
     while True:
+
         print("\nEnter the username of the patient to view details (or press [X] to exit):")
         selected_username = input("> ").strip().lower()
-        if selected_username == "x":
+        if check_exit(selected_username):
             break
 
         selected_patient = next(
@@ -136,4 +141,4 @@ def display_patient_summary(user, auth_service):
         else:
             print_system_message("Invalid username. Please try again.")
 
-    direct_to_dashboard()
+    

@@ -159,28 +159,26 @@ def generate_patients(num_patients, mhwp_usernames):
     patients = []
     for i in range(1, num_patients + 1):
         assigned_mhwp = mhwp_usernames[(i - 1) % len(mhwp_usernames)]
-        patients.append(
-            {
-                "username": f"patient{i}",
-                "password": "",
-                "role": "Patient",
-                "isDisabled": False,
-                "information": {
-                    "firstName": f"Patient{i}First",
-                    "lastName": f"Patient{i}Last",
-                    "email": f"patient{i}@example.com",
-                    "emergencyContactEmail": f"emergency.patient{i}@example.com",
-                    "gender": random.choice(genders),
-                    "dateOfBirth": random_date_of_birth(),
-                },
-                "assignedMHWP": assigned_mhwp,
-                "moods": generate_mood_entries(random.randint(2, 5)),
-                "journals": generate_journals(random.randint(1, 3)),
-                "appointments": [],
-                "conditions": generate_conditions(),
-                "prescriptions": generate_prescriptions(),
-            }
-        )
+        patients.append({
+            "username": f"patient{i}",
+            "password": "",
+            "role": "Patient",
+            "isDisabled": False,
+            "information": {
+                "firstName": f"Patient{i}First",
+                "lastName": f"Patient{i}Last",
+                "email": f"patient{i}@example.com",
+                "emergencyContactEmail": f"emergency.patient{i}@example.com",
+                "gender": random.choice(genders),
+                "dateOfBirth": random_date_of_birth(),
+            },
+            "assignedMHWP": assigned_mhwp,
+            "moods": generate_mood_entries(random.randint(2, 15)),
+            "journals": generate_journals(random.randint(1, 5)),
+            "appointments": [],
+            "conditions": generate_conditions(),
+            "prescriptions": generate_prescriptions(),
+        })
     return patients
 
 
