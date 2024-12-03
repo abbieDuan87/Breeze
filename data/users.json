@@ -1,82 +1,107 @@
 {
-	"appointments": [],
-	"users": [
-		{
-			"username": "patient1",
-			"password": "",
-			"role": "Patient",
-			"isDisabled": false,
-			"information": {
-				"firstName": null,
-				"lastName": null,
-				"email": null,
-				"emergencyContactEmail": null,
-                "gender": null, 
+    "appointments": [],
+    "users": [
+        {
+            "username": "patient1",
+            "password": "",
+            "role": "Patient",
+            "isDisabled": false,
+            "information": {
+                "firstName": null,
+                "lastName": null,
+                "email": null,
+                "emergencyContactEmail": null,
+                "gender": null,
                 "dateOfBirth": null
-			},
-			"assignedMHWP": "mhwp1",
-			"moods": [],
-			"journals": [],
-			"appointments": [],
-			"conditions": {},
-			"prescriptions": []
-		},
-		{
-			"username": "patient2",
-			"password": "",
-			"role": "Patient",
-			"isDisabled": false,
-			"information": {
-				"firstName": null,
-				"lastName": null,
-				"email": null,
-				"emergencyContactEmail": null,
-                "gender": null, 
+            },
+            "assignedMHWP": "mhwp1",
+            "moods": [],
+            "journals": [],
+            "appointments": [],
+            "conditions": {},
+            "prescriptions": []
+        },
+        {
+            "username": "patient2",
+            "password": "",
+            "role": "Patient",
+            "isDisabled": false,
+            "information": {
+                "firstName": null,
+                "lastName": null,
+                "email": null,
+                "emergencyContactEmail": null,
+                "gender": null,
                 "dateOfBirth": null
-			},
-			"assignedMHWP": "mhwp2",
-			"moods": [],
-			"journals": [],
-			"appointments": [],
-			"conditions": {},
-			"prescriptions": []
-		},
-		{
-			"username": "mhwp1",
-			"password": "",
-			"role": "MHWP",
-			"isDisabled": false,
-			"information": {
-				"firstName": null,
-				"lastName": null,
-				"email": null
-			},
-			"appointments": [],
-			"assignedPatients": ["patient1"]
-		},
-		{
-			"username": "mhwp2",
-			"password": "",
-			"role": "MHWP",
-			"isDisabled": false,
-			"information": {
-				"firstName": null,
-				"lastName": null,
-				"email": null
-			},
-			"appointments": [],
-			"assignedPatients": ["patient2"]
-		},
-		{
-			"username": "admin",
-			"password": "",
-			"role": "Admin",
-			"isDisabled": false,
-			"information": {
-				"firstName": null,
-				"lastName": null,
-				"email": null
-			}
-		}
-	]
+            },
+            "assignedMHWP": "mhwp2",
+            "moods": [],
+            "journals": [],
+            "appointments": [],
+            "conditions": {},
+            "prescriptions": []
+        },
+        {
+            "username": "mhwp1",
+            "password": "",
+            "role": "MHWP",
+            "isDisabled": false,
+            "information": {
+                "firstName": null,
+                "lastName": null,
+                "email": null
+            },
+            "appointments": [],
+            "assignedPatients": [
+                "patient1",
+                "sd"
+            ]
+        },
+        {
+            "username": "mhwp2",
+            "password": "",
+            "role": "MHWP",
+            "isDisabled": false,
+            "information": {
+                "firstName": null,
+                "lastName": null,
+                "email": null
+            },
+            "appointments": [],
+            "assignedPatients": [
+                "patient2"
+            ]
+        },
+        {
+            "username": "admin",
+            "password": "",
+            "role": "Admin",
+            "isDisabled": false,
+            "information": {
+                "firstName": null,
+                "lastName": null,
+                "email": null
+            }
+        },
+        {
+            "username": "sd",
+            "password": "",
+            "role": "Patient",
+            "isDisabled": false,
+            "information": {
+                "firstName": "",
+                "lastName": "",
+                "email": "1@1.com",
+                "emergencyContactEmail": "",
+                "gender": "Non-binary",
+                "dateOfBirth": "30/09/2001"
+            },
+            "assignedMHWP": "mhwp1",
+            "moods": [],
+            "journals": [],
+            "appointments": [],
+            "conditions": {},
+            "prescriptions": []
+        }
+    ]
 }

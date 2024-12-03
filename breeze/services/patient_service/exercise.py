@@ -1,3 +1,4 @@
+from breeze.utils.ansi_utils import colorise
 from breeze.utils.cli_utils import check_exit, clear_screen, print_system_message
 from breeze.utils.constants import PATIENT_BANNER_STRING
 
@@ -28,12 +29,12 @@ def search_exercise():
             .lower()
         )
         if check_exit(choice):
-            return 
+            return
         elif choice in valid_keywords:
             search_url = f"https://insighttimer.com/indiemusicbox/guided-meditations/{valid_keywords[choice]['path']}"
             print(
                 f"Here is your selected meditation for '{valid_keywords[choice]['name']}':"
             )
-            print_system_message(search_url)
+            print_system_message(colorise(text=search_url, color=63, underline=True))
         else:
             print_system_message("Invalid choice. Please select a valid option.")
