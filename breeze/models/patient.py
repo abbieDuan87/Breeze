@@ -12,6 +12,8 @@ class Patient(User, AppointmentMixin):
         last_name=None,
         email=None,
         emergency_contact_email=None,
+        date_of_birth=None,
+        gender=None,
         is_disabled=False,
         mood_entries=[],
         journal_entries=[],
@@ -30,6 +32,9 @@ class Patient(User, AppointmentMixin):
             is_disabled=is_disabled,
         )
         self.__emergency_contact_email = emergency_contact_email
+        self.__gender = gender
+        self.__date_of_birth = date_of_birth
+    
         self.__mood_entries = mood_entries
         self.__journal_entries = journal_entries
         self.__appointments = appointments
@@ -42,6 +47,13 @@ class Patient(User, AppointmentMixin):
 
     def set_emergency_contact(self, email):
         self.__emergency_contact_email = email
+
+    
+    def get_gender(self):
+        return self.__gender
+    
+    def get_date_of_birth(self):
+        return self.__date_of_birth
 
     def get_mood_entries(self):
         return self.__mood_entries
@@ -106,6 +118,8 @@ class Patient(User, AppointmentMixin):
                 "lastName": self.get_last_name(),
                 "email": self.get_email(),
                 "emergencyContactEmail": self.get_emergency_contact(),
+                "gender": self.get_gender(),
+                "dateOfBirth": self.get_date_of_birth()
             },
             "assignedMHWP": self.get_assigned_mhwp(),
             "moods": self.__mood_entries,

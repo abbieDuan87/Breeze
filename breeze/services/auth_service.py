@@ -4,8 +4,9 @@ from breeze.models.admin import Admin
 from breeze.models.patient import Patient
 from breeze.models.mhwp import MHWP
 
-from breeze.utils.cli_utils import print_system_message, direct_to_dashboard
+from breeze.utils.cli_utils import print_system_message, direct_to_dashboard, clear_screen, is_invalid_username, is_invalid_date, is_invalid_email
 from breeze.utils.data_utils import load_data, save_data
+from breeze.utils.constants import REGISTER_BANNER_STRING
 
 
 class AuthService:
@@ -47,7 +48,9 @@ class AuthService:
         first_name,
         last_name,
         email,
-        emergency_contact_email,
+        emergency_contact_email=None,
+        date_of_birth=None,
+        gender=None
     ):
         """Helper method to create a new user based on role.
         Args:
@@ -57,6 +60,8 @@ class AuthService:
             first_name (str)
             last_name (str)
             email (str)
+            gender (str, optional)
+            date_of_birth (str, optional)
             emergency_contact_email (str, optional)
         """
         match role.strip().lower():
@@ -69,7 +74,9 @@ class AuthService:
                     first_name,
                     last_name,
                     email,
-                    emergency_contact_email,
+                    gender,
+                    date_of_birth,
+                    emergency_contact_email
                 )
             case "m":
                 return MHWP(username, password, first_name, last_name, email)
@@ -94,23 +101,141 @@ class AuthService:
 
         first_name = input("First name: ").strip()
         last_name = input("Last name: ").strip()
-        email = input("Email: ").strip()
 
         while True:
-            username = input("Username: ").strip()
-            if not username:
-                print_system_message("Username cannot be empty. Please try again.")
+            email = input("Email: ").strip()
+            if is_invalid_email(email):
                 continue
-            if username in self.users:
-                print_system_message("Username already taken! Please choose another.")
+            break
+
+        while True:
+            username = input("Username: ").strip().lower()
+            if is_invalid_username(username, self.users):
                 continue
             break
 
         password = input("Password: ").strip()
+        
+        gender = None
+        date_of_birth = None
         emergency_contact_email = None
+        
         if role == "p":
-            emergency_contact_email = input("Emergency contact email: ").strip()
+            print("Gender Options:\n[M] Male\n[F] Female\n[N] Non-binary\n[T] Transgender\n[O] Other")
+            gender_dict = {
+                'm' : 'Male',
+                'f' : 'Female',
+                'n' : 'Non-binary',
+                't' : 'Transgender',
+                'o' : 'Other'
+            }
+            while True:
+                gender = input("> ").strip().lower()
+                if gender not in gender_dict.keys():
+                    print_system_message("Please select a valid option.")
+                else:
+                    gender = gender_dict[gender]
+                    break
 
+            while True:
+                date_of_birth = input("Date of Birth (DD/MM/YYYY): ")
+                if is_invalid_date(date_of_birth):
+                    continue
+                break
+
+            while True:
+                emergency_contact_email = input("Emergency contact email (optional): ").strip()
+                if emergency_contact_email and is_invalid_email(emergency_contact_email):
+                    continue
+                break
+
+        while True:
+            clear_screen()
+            print(REGISTER_BANNER_STRING)
+            if role == 'p':
+                print_system_message(
+                    f"First name: {first_name}\nLast name: {last_name}\nEmail: {email}\n"
+                    f"Username: {username}\nPassword: {password}\nGender: {gender}\n"
+                    f"Date of Birth: {date_of_birth}\nEmergency Contact Email: {emergency_contact_email}"
+                )
+            else: 
+                print_system_message(
+                    f"First name: {first_name}\nLast name: {last_name}\nEmail: {email}\n"
+                    f"Username: {username}\nPassword: {password}"
+                )
+            print("Would you like to edit any of the information? Enter [E] to edit, or type any other key to confirm details.")
+            response = input("> ").strip().lower()
+            if response == 'e':
+                clear_screen()
+                print(REGISTER_BANNER_STRING)
+                if role == 'p':
+                    print_system_message(
+                        f"First name: {first_name}\nLast name: {last_name}\nEmail: {email}\n"
+                        f"Username: {username}\nPassword: {password}\nEmergency Contact Email: {emergency_contact_email}"
+                    )
+                    print('Enter the value of the data you wish to edit (1-8), or type any other key to confirm:')
+                
+                else: 
+                    print_system_message(
+                        f"First name: {first_name}\nLast name: {last_name}\nEmail: {email}\n"
+                        f"Username: {username}\nPassword: {password}"
+                    )
+                    print('Enter the value of the data you wish to edit (1-5), or type any other key to confirm:')
+                
+                print('[1] First Name\n[2] Last Name\n[3] Email\n[4] Username\n[5] Password')
+                if role == 'p':
+                    print('[6] Gender\n[7] Date of Birth\n[8] Emergency Contact Email')
+
+                to_edit = input('> ').strip().lower()
+
+                if role == 'p':
+                    match to_edit:
+                        case '6':
+                            while True:
+                                gender = input("> ").strip().lower()
+                                if gender not in gender_dict.keys():
+                                    print_system_message("Please select a valid option.")
+                                else:
+                                    gender = gender_dict[gender]
+                                    break
+                        case '7':
+                            while True:
+                                date_of_birth = input("Date of Birth (DD/MM/YYYY): ")
+                                if is_invalid_date(date_of_birth):
+                                    continue
+                                break
+                        case '8':
+                            while True:
+                                emergency_contact_email = input("Emergency Contact Email (Optional): ").strip()
+                                if emergency_contact_email and is_invalid_email(emergency_contact_email):
+                                    continue
+                                break
+                        case _:
+                            pass
+                match to_edit:
+                    case '1':
+                        first_name = input("First name: ").strip()
+                    case '2':
+                        last_name = input("Last name: ").strip()
+                    case '3':
+                        while True:
+                            email = input("Email: ").strip()
+                            if is_invalid_email(email):
+                                continue
+                            break
+                    case '4':
+                        while True:
+                            username = input("Username: ").strip().lower()
+                            if is_invalid_username(username, self.users):
+                                continue
+                            break
+                    case '5':
+                        password = input("Password: ").strip()
+                    case _:
+                        break
+            else:
+                break
+        
         new_user = self._register_role(
             role,
             username,
@@ -118,6 +243,8 @@ class AuthService:
             first_name,
             last_name,
             email,
+            gender,
+            date_of_birth,
             emergency_contact_email,
         )
         if role == "p" and new_user:
