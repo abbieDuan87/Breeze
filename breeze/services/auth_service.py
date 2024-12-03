@@ -29,7 +29,7 @@ class AuthService:
         password = input("Password: ")
         user = self.users.get(username)
         if user and user.login(password):
-            print(f"Welcome, {username}")
+            print_system_message(f"Welcome, {username}")
             time.sleep(1)
             self.current_user = user
             return user
