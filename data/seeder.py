@@ -4,16 +4,35 @@ import random
 import uuid
 from datetime import datetime, timedelta
 
+
 def random_datetime_within_week():
     today = datetime.now()
     start_of_week = today - timedelta(days=today.weekday())  # Monday
     end_of_week = start_of_week + timedelta(days=6)  # Sunday
     return random_datetime(start_of_week, end_of_week)
 
+
+def random_datetime_next_weekdays():
+    today = datetime.now()
+
+    weekdays = []
+    for i in range(1, 6):
+        next_day = today + timedelta(days=i)
+        if next_day.weekday() == 5:
+            next_day += timedelta(days=2)
+        elif next_day.weekday() == 6:
+            next_day += timedelta(days=1)
+        weekdays.append(next_day)
+
+    random_weekday = random.choice(weekdays)
+    return random_weekday
+
+
 def random_datetime(start, end):
     delta = end - start
     random_second = random.randint(0, int(delta.total_seconds()))
     return start + timedelta(seconds=random_second)
+
 
 def random_date_of_birth(min_age=18, max_age=80):
     today = datetime.now()
@@ -22,17 +41,21 @@ def random_date_of_birth(min_age=18, max_age=80):
     birth_day = random.randint(1, 28)  # Avoid invalid dates
     return datetime(birth_year, birth_month, birth_day).strftime("%Y-%m-%d")
 
+
 def generate_mood_entries(num_entries):
     moods = ["Very Happy", "Happy", "Neutral", "Sad", "Very Sad"]
     return [
         {
             "id": str(uuid.uuid4()),
             "mood": random.choice(moods),
-            "comment": random.choice(["Feeling good.", "Tired.", "Stressed.", "Relaxed."]),
+            "comment": random.choice(
+                ["Feeling good.", "Tired.", "Stressed.", "Relaxed."]
+            ),
             "datetime": random_datetime_within_week().strftime("%Y-%m-%d %H:%M:%S"),
         }
         for _ in range(num_entries)
     ]
+
 
 def generate_journals(num_entries):
     return [
@@ -45,6 +68,7 @@ def generate_journals(num_entries):
         for i in range(num_entries)
     ]
 
+
 def generate_conditions():
     conditions = ["Anxiety", "Depression", "PTSD", "Bipolar Disorder"]
     return {
@@ -55,6 +79,7 @@ def generate_conditions():
             }
         ]
     }
+
 
 def generate_prescriptions():
     medications = ["Sertraline", "Fluoxetine", "Clonazepam", "Paracetamol"]
@@ -69,18 +94,28 @@ def generate_prescriptions():
         }
     ]
 
+
 def generate_appointments(patients, mhwps):
     statuses = ["requested", "confirmed", "cancelled"]
     appointments = []
-    time_slots = [f"{hour}:{minute} {am_pm}" for hour in range(1, 13)
-                  for minute in ["00", "30"] for am_pm in ["AM", "PM"]]
+    time_slots = []
+    for hour in range(9, 17):
+        for minute in ["00", "30"]:
+            am_pm = "AM" if hour < 12 else "PM"
+
+            display_hour = hour if hour <= 12 else hour - 12
+            display_hour = 12 if hour == 12 else display_hour
+
+            time_slots.append(f"{display_hour}:{minute} {am_pm}")
 
     for patient in patients:
         assigned_mhwp = patient["assignedMHWP"]
         if assigned_mhwp:
-            num_appointments = random.randint(1, 3)  # Generate 1-3 appointments per patient
+            num_appointments = random.randint(
+                1, 3
+            )  # Generate 1-3 appointments per patient
             for _ in range(num_appointments):
-                appointment_date = random_datetime_within_week().strftime("%Y-%m-%d")
+                appointment_date = random_datetime_next_weekdays().strftime("%Y-%m-%d")
                 appointment_time = random.choice(time_slots)
 
                 appointment = {
@@ -110,51 +145,58 @@ def generate_appointments(patients, mhwps):
 
     return appointments
 
+
 def generate_patients(num_patients, mhwp_usernames):
     genders = ["Male", "Female", "Non-binary", "Other"]
     patients = []
     for i in range(1, num_patients + 1):
         assigned_mhwp = mhwp_usernames[(i - 1) % len(mhwp_usernames)]
-        patients.append({
-            "username": f"patient{i}",
-            "password": "",
-            "role": "Patient",
-            "isDisabled": False,
-            "information": {
-                "firstName": f"Patient{i}First",
-                "lastName": f"Patient{i}Last",
-                "email": f"patient{i}@example.com",
-                "emergencyContactEmail": f"emergency.patient{i}@example.com",
-                "gender": random.choice(genders),
-                "dateOfBirth": random_date_of_birth(),
-            },
-            "assignedMHWP": assigned_mhwp,
-            "moods": generate_mood_entries(random.randint(2, 5)),
-            "journals": generate_journals(random.randint(1, 3)),
-            "appointments": [],
-            "conditions": generate_conditions(),
-            "prescriptions": generate_prescriptions(),
-        })
+        patients.append(
+            {
+                "username": f"patient{i}",
+                "password": "",
+                "role": "Patient",
+                "isDisabled": False,
+                "information": {
+                    "firstName": f"Patient{i}First",
+                    "lastName": f"Patient{i}Last",
+                    "email": f"patient{i}@example.com",
+                    "emergencyContactEmail": f"emergency.patient{i}@example.com",
+                    "gender": random.choice(genders),
+                    "dateOfBirth": random_date_of_birth(),
+                },
+                "assignedMHWP": assigned_mhwp,
+                "moods": generate_mood_entries(random.randint(2, 5)),
+                "journals": generate_journals(random.randint(1, 3)),
+                "appointments": [],
+                "conditions": generate_conditions(),
+                "prescriptions": generate_prescriptions(),
+            }
+        )
     return patients
+
 
 def generate_mhwps(num_mhwps):
     mhwps = []
     for i in range(1, num_mhwps + 1):
         mhwp_username = f"mhwp{i}"
-        mhwps.append({
-            "username": mhwp_username,
-            "password": "",
-            "role": "MHWP",
-            "isDisabled": False,
-            "information": {
-                "firstName": f"MHWP{i}First",
-                "lastName": f"MHWP{i}Last",
-                "email": f"mhwp{i}@example.com",
-            },
-            "appointments": [],
-            "assignedPatients": [],
-        })
+        mhwps.append(
+            {
+                "username": mhwp_username,
+                "password": "",
+                "role": "MHWP",
+                "isDisabled": False,
+                "information": {
+                    "firstName": f"MHWP{i}First",
+                    "lastName": f"MHWP{i}Last",
+                    "email": f"mhwp{i}@example.com",
+                },
+                "appointments": [],
+                "assignedPatients": [],
+            }
+        )
     return mhwps
+
 
 def generate_admin():
     return {
@@ -168,6 +210,7 @@ def generate_admin():
             "email": "admin@example.com",
         },
     }
+
 
 def main():
     num_patients = 10
@@ -195,6 +238,7 @@ def main():
         json.dump(data, file, indent=4)
 
     print("Dummy data has been generated and saved to 'data/users.json'.")
+
 
 if __name__ == "__main__":
     main()
