@@ -1,7 +1,7 @@
 class User:
     """The basic User class
     """
-    def __init__(self, username, password, role, email=None, first_name=None, last_name=None, is_disabled=False):
+    def __init__(self, username, password, role, email=None, first_name=None, last_name=None, date_of_birth=None, gender=None, is_disabled=False):
         self.__username = username
         self.__password = password
         self.__role = role

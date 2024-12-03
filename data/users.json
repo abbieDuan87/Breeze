@@ -10,7 +10,9 @@
 				"firstName": null,
 				"lastName": null,
 				"email": null,
-				"emergencyContactEmail": null
+				"emergencyContactEmail": null,
+                "gender": null, 
+                "dateOfBirth": null
 			},
 			"assignedMHWP": "mhwp1",
 			"moods": [],
@@ -28,7 +30,9 @@
 				"firstName": null,
 				"lastName": null,
 				"email": null,
-				"emergencyContactEmail": null
+				"emergencyContactEmail": null,
+                "gender": null, 
+                "dateOfBirth": null
 			},
 			"assignedMHWP": "mhwp2",
 			"moods": [],
