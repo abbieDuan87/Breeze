@@ -178,7 +178,7 @@ def add_patient_information(user, auth_service):
                             print(MHWP_BANNER_STRING)
                             print(f"Adding Prescription for Patient: {patient.get_username()}")
                             print(f"Recorded Medication: {medication}")
-                            print("\nnSelect a unit by number or [O] for other::")
+                            print("\nSelect a unit by number or [O] for other::")
                             predefined_units = ["mg", "mcg", "ng", "ml", "tablets", "capsules", "drops", "injections"]
                             for i, unit in enumerate(predefined_units, 1):
                                 print(f"[{i}] {unit}")
