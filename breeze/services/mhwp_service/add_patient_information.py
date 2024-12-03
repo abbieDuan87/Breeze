@@ -176,6 +176,7 @@ def add_patient_information(user, auth_service):
                         else:
                             clear_screen()
                             print(MHWP_BANNER_STRING)
+                            print(f"Adding Prescription for Patient: {patient.get_username()}")
                             print(f"Recorded Medication: {medication}")
                             print("\nnSelect a unit by number or [O] for other::")
                             predefined_units = ["mg", "mcg", "ng", "ml", "tablets", "capsules", "drops", "injections"]
@@ -191,6 +192,7 @@ def add_patient_information(user, auth_service):
                             break
                         clear_screen()
                         print(MHWP_BANNER_STRING)
+                        print(f"Adding Prescription for Patient: {patient.get_username()}")
                         print(f"Recorded Medication: {medication}")
                         print_system_message("Invalid dosage. Please enter a positive number.")
 
@@ -206,10 +208,14 @@ def add_patient_information(user, auth_service):
                                 break
                             clear_screen()
                             print(MHWP_BANNER_STRING)
+                            print(f"Adding Prescription for Patient: {patient.get_username()}")
+                            print(f"Recorded Medication: {medication}")
                             print_system_message("Start date must be before end date.")
                         except ValueError:
                             clear_screen()
                             print(MHWP_BANNER_STRING)
+                            print(f"Adding Prescription for Patient: {patient.get_username()}")
+                            print(f"Recorded Medication: {medication}")
                             print_system_message("Invalid date format. Use DD-MM-YYYY.")
 
                     prescription_notes = input("Notes: ").strip()
