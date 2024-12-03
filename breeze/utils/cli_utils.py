@@ -12,16 +12,11 @@ def print_system_message(message):
     """
     lines = message.splitlines()
 
-    # Determine the maximum width based on the longest line
-    max_width = (
-        max(len(strip_ansi_codes(line)) for line in lines) + 4
-    )  # 4 for padding and borders
-
+    max_width = max(len(strip_ansi_codes(line)) for line in lines) + 4
     print("-" * max_width)
 
-    # Print each line with padding
     for line in lines:
-        print(f"| {line.ljust(max_width - 4)} |")  # Align text to the left with padding
+        print(f"| {line.ljust(max_width - 4)} |")
 
     print("-" * max_width)
 
@@ -174,6 +169,7 @@ def print_journals(journal_data=[], page=1):
 
     return True
 
+
 def is_invalid_username(username, users):
     if not username:
         print_system_message("Username cannot be empty. Please try again.")
@@ -182,14 +178,17 @@ def is_invalid_username(username, users):
         print_system_message("Username already taken! Please choose another.")
         return True
     elif username.lower() != username or len(username) < 2 or len(username) > 10:
-        print_system_message("Username must be in lowercase and be between two and ten characters! Please try again.")
+        print_system_message(
+            "Username must be in lowercase and be between two and ten characters! Please try again."
+        )
         return True
-    elif len(username.split(' ')) > 1:     
+    elif len(username.split(" ")) > 1:
         print_system_message("Username cannot include spaces! Please try again.")
         return True
     else:
         return False
-    
+
+
 def is_invalid_date(date):
     date_regex = "^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/([0-9]{4})$"
     if re.match(date_regex, date):
@@ -200,14 +199,17 @@ def is_invalid_date(date):
             if dt.now() > sixteenth:
                 return False
             else:
-                print_system_message("You must be over 16 to use the Breeze service!")  
-                return True              
+                print_system_message("You must be over 16 to use the Breeze service!")
+                return True
         except ValueError:
-            print_system_message("Date is invalid! Please enter a existing date of birth.")
+            print_system_message(
+                "Date is invalid! Please enter a existing date of birth."
+            )
             return True
     else:
         print_system_message("Date is incorrectly formulated! Please try again.")
         return True
+
 
 def is_invalid_email(email):
     email_regex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
@@ -216,6 +218,7 @@ def is_invalid_email(email):
     else:
         print_system_message("Email is formatted incorrectly! Please try again.")
         return True
+
 
 def print_moods(mood_data=[], page=1):
     if not mood_data:
