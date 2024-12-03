@@ -12,7 +12,7 @@ def show_default_layout(user, addon=0):
     )
     print("\nHere is your current information:")
     print_system_message(
-        f"First name: {user.get_first_name()}\nLast name: {user.get_last_name()}\nEmail: {user.get_email()}\nGender: {user.get_gender()}\nEmergency contact email: {user.get_emergency_contact()}"
+        f"First name: {user.get_first_name()}\nLast name: {user.get_last_name()}\nEmail: {user.get_email()}\nGender: {user.get_gender()}\nDOB: {user.get_date_of_birth()}\nEmergency contact email: {user.get_emergency_contact()}"
     )
     print("\nEnter the new information or leave blank to keep the current value (or enter [X] to exit without saving):\n")
     if addon:
