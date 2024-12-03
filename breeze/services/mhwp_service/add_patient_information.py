@@ -46,7 +46,8 @@ def add_patient_information(user, auth_service):
             }
             display_condition_menu(patient)
             while True:
-                choice = input("\nSelect a condition by entering a number, [O] for other condition and [X] to exit: ").strip().lower()
+                print("\nSelect a condition by entering a number, [O] for other condition and [X] to exit: ")
+                choice = input(">").strip().lower()
 
                 if choice in predefined_conditions:
                     return predefined_conditions[choice]
@@ -96,7 +97,8 @@ def add_patient_information(user, auth_service):
 
             # Select a patient
             while True:
-                patient_username = input("\nEnter the patient's username to add information, or [X] to exit: ").strip().lower()
+                print("\nEnter the patient's username to add information, or [X] to exit:")
+                patient_username = input(">").strip().lower()
                 if patient_username == "x":
                     return
                 patient = next((p for p in assigned_patients if p.get_username() == patient_username), None)
@@ -119,7 +121,8 @@ def add_patient_information(user, auth_service):
             print("[P] Add a prescription")
             print("[X] Exit")           
             while True:
-                option = input("Enter your choice: ").strip().lower()
+                print("\nEnter your choice: ")
+                option = input(">").strip().lower()
 
                 if option == "c":
                     while True:
@@ -141,7 +144,8 @@ def add_patient_information(user, auth_service):
                     print(f"Adding Prescription for Patient: {patient.get_username()}")
                     prescriptions = display_prescription_menu(patient)
                     while True:
-                        prescription_choice = input("\nPlease select a medication for the prescription, [O] for other and [X] to exit: ").strip().lower()
+                        print("\nPlease select a medication for the prescription, [O] for other and [X] to exit: ")
+                        prescription_choice = input(">").strip().lower()
                         if prescription_choice.isdigit() and 1 <= int(prescription_choice) <= len(prescriptions):
                             medication = prescriptions[int(prescription_choice) - 1]
                             print(f"Selected Medication: {medication}")
@@ -166,12 +170,14 @@ def add_patient_information(user, auth_service):
                     print("[O] Other")
 
                     while True:
-                        unit_choice = input("\nSelect a unit by selecting a number or [O] for other: ").strip().lower()
+                        print("\nSelect a unit by selecting a number or [O] for other: ")
+                        unit_choice = input(">").strip().lower()
                         if unit_choice.isdigit() and 1 <= int(unit_choice) <= len(predefined_units):
                             unit = predefined_units[int(unit_choice) - 1]
                             break
                         elif unit_choice in ["o","0"]:
-                            unit = input("Enter a custom unit: ").strip()
+                            print("Enter a custom unit: ")
+                            unit = input(">").strip()
                             break
                         else:
                             clear_screen()
