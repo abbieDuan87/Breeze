@@ -92,9 +92,10 @@ class Patient(User, AppointmentMixin):
         timestamp = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
         if condition not in self.__conditions:
             self.__conditions[condition] = []  
-        self.__conditions[condition].append({"note": notes, "timestamp": timestamp})  # Add note with timestamp
-
-
+        self.__conditions[condition].append({"note": notes, "timestamp": timestamp})
+    
+    def get_conditions(self):
+        return self.__conditions
 
     def add_prescription(self, medication, dosage, frequency, start_date, end_date, notes):
         self.__prescriptions.append({
