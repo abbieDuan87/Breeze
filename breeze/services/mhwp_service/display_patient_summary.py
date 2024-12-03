@@ -2,6 +2,7 @@ from datetime import datetime
 from breeze.models.patient import Patient
 from breeze.utils.cli_utils import clear_screen_and_show_banner, direct_to_dashboard, print_system_message
 from breeze.utils.constants import MHWP_BANNER_STRING
+from breeze.utils.mood_chart_utils import plot_mood_chart
 
 def display_patient_summary(user, auth_service):
     """
@@ -20,19 +21,35 @@ def display_patient_summary(user, auth_service):
         print(f"| {'Username':<15} | {'First Name':<15} | {'Last Name':<15} | {'Gender':<8} | {'DOB':<13} | {'Condition':<20} | {'Medication':<15} |")
         print("-" * 125)
         for patient in patients:
-            conditions = list(patient.get_conditions().keys())
-            medications = [
-                prescription["medication"]
-                for prescription in patient.to_dict()["prescriptions"]
-            ]
+            # Get the most recent condition and prescription if there are multiple ones
+            conditions = patient.get_conditions()
+            if conditions:
+                recent_condition = max(
+                    conditions.items(),
+                    key=lambda item: max(entry["timestamp"] for entry in item[1])
+                )
+                condition_name = recent_condition[0]
+            else:
+                condition_name = "N/A"
+                
+            prescriptions = patient.to_dict()["prescriptions"]
+            if prescriptions:
+                recent_prescription = max(
+                    prescriptions,
+                    key=lambda p: datetime.strptime(p["start_date"], "%Y-%m-%d")
+                )
+                medication_name = recent_prescription["medication"]
+            else:
+                medication_name = "N/A"
+
             print(
                 f"| {patient.get_username():<15} | "
                 f"{patient.get_first_name() or 'N/A':<15} | "
                 f"{patient.get_last_name() or 'N/A':<15} | "
-                f"{patient.get_gender():<8} | "
-                f"{patient.get_date_of_birth():<13} | "
-                f"{', '.join(conditions) or 'N/A':<20} | "
-                f"{', '.join(medications) or 'N/A':<15} |"
+                f"{patient.get_gender() or 'N/A':<8} | "
+                f"{patient.get_date_of_birth() or 'N/A':<13} | "
+                f"{condition_name or 'N/A':<20} | "
+                f"{medication_name or 'N/A':<15} |"
             )
         print("-" * 125)
 
@@ -40,8 +57,8 @@ def display_patient_summary(user, auth_service):
         """Displays detailed information for a selected patient."""
         clear_screen_and_show_banner(MHWP_BANNER_STRING)
         print(f"Details for {selected_patient.get_first_name()} {selected_patient.get_last_name()} (Username: {selected_patient.get_username()}):\n")
-        print(f"Gender: {selected_patient.get_information().get('gender', 'N/A')}")
-        print(f"Date of Birth: {selected_patient.get_information().get('dateOfBirth', 'N/A')}")
+        print(f"Gender: {selected_patient.get_gender()}")
+        print(f"Date of Birth: {selected_patient.get_date_of_birth()}")
         
         print("\nConditions:")
         for condition, notes in selected_patient.get_conditions().items():
@@ -49,7 +66,7 @@ def display_patient_summary(user, auth_service):
             for note in notes:
                 print(f"    - {note['note']} (Added on: {note['timestamp']})")
 
-        # Appointment History
+
         print("\nAppointment History:")
         appointments = patient.get_appointments()
         if appointments:
@@ -62,13 +79,11 @@ def display_patient_summary(user, auth_service):
                     f"{appointment.get_time().strftime('%I:%M %p'):<10} | "
                     f"{appointment.get_status():<15} | "
                     f"{appointment.mhwp_username or 'N/A':<15} | "
-                    f"{appointment.get_notes() or 'N/A':<30} |"
                 )
             print("-" * 90)
         else:
             print("  No appointment history available.")
 
-        # Prescription Details
         print("\nPrescription Details:")
         prescriptions = patient.to_dict().get("prescriptions", [])
         if prescriptions:
@@ -82,29 +97,17 @@ def display_patient_summary(user, auth_service):
         else:
             print("  No prescriptions available.")
 
-        # Mood Chart
         print("\nMood Chart")
         mood_entries = patient.get_mood_entries()
         if mood_entries:
-            print("-" * 70)
-            print(f"| {'Date':<25} | {'Mood':<15} | {'Comment':<25} |")
-            print("-" * 70)
-            for entry in mood_entries:
-                print(
-                    f"| {datetime.strptime(entry['datetime'], '%Y-%m-%d %H:%M:%S'):<25} | "
-                    f"{entry['mood']:<15} | "
-                    f"{entry.get('comment', 'N/A'):<25} |"
-                )
-            print("-" * 70)
+            plot_mood_chart(mood_entries)
         else:
             print("  No mood records available.")
-
-        input("\nPress Enter to return to the patient list.")
+    
 
     # Main Summary Logic
     clear_screen_and_show_banner(MHWP_BANNER_STRING)
 
-    # Retrieve all users and filter patients assigned to the MHWP
     all_users = auth_service.get_all_users()
     assigned_patients = [
         patient for patient in all_users.values()
@@ -116,10 +119,8 @@ def display_patient_summary(user, auth_service):
         direct_to_dashboard()
         return
 
-    # Display Table of Assigned Patients
     show_assigned_patients_table(assigned_patients)
 
-    # Prompt User to Select a Patient for Detailed View
     while True:
         print("\nEnter the username of the patient to view details (or press [X] to exit):")
         selected_username = input("> ").strip().lower()
