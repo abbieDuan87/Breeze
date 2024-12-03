@@ -169,7 +169,17 @@ def print_journals(journal_data=[], page=1):
 
     return True
 
-
+def is_invalid_name(name):
+    if name == "" or name == " ":
+        print_system_message("Name cannot be empty. Please try again.")
+        return False
+    else: 
+        for i in name:
+            if i.isalpha() == False:
+                print_system_message("Name cannot contain non-alphabetic characters.")
+                return False
+        return True
+        
 def is_invalid_username(username, users):
     if not username:
         print_system_message("Username cannot be empty. Please try again.")
