@@ -102,7 +102,7 @@ def edit_personal_information(user, auth_service):
 
     print(update_message)
     print_system_message(
-        f"First name: {user.get_first_name()}\nLast name: {user.get_last_name()}\nEmail: {user.get_email()}\nGender: {user.get_gender}\nEmergency contact email: {user.get_emergency_contact()}"
+        f"First name: {user.get_first_name()}\nLast name: {user.get_last_name()}\nEmail: {user.get_email()}\nGender: {user.get_gender()}\nEmergency contact email: {user.get_emergency_contact()}"
     )
 
     auth_service.save_data_to_file()
