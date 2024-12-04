@@ -17,6 +17,12 @@ def show_default_layout(user, addon=0):
     if addon:
         print(addon)
 
+def edit_personal_information(user, auth_service):
+    """
+    Allows the user to edit their personal information.
+    The user can press [X] at any time to exit without saving changes.
+    """
+    show_default_layout(user)
     while True:
         updated_first_name = input("First name: ").strip()
         if is_valid_name(updated_first_name):
@@ -37,31 +43,9 @@ def show_default_layout(user, addon=0):
             continue
         elif check_exit(updated_email):
             return
-        else:
-            break
-
-    while True:
-        updated_emergency_contact_email = input("Emergency contact email: ").strip()
-        if is_invalid_email(updated_emergency_contact_email):
-            continue
-        elif check_exit(updated_emergency_contact_email):
-            return
-        else:
-            break
+        break
     
-    addon = f"First name: {updated_first_name}\nLast name: {updated_last_name}"  
-
-    while True:
-        show_default_layout(user, addon=addon)
-        updated_email = input("Email: ").strip()
-        if check_exit(updated_email):
-            return
-        if updated_email and is_invalid_email(updated_email):
-            time.sleep(1)
-            continue
-        else:
-            addon = addon + f'\nEmail: {updated_email}'
-            break
+    addon = f"First name: {updated_first_name}\nLast name: {updated_last_name}\nEmail: {updated_email}"  
     
     gender_dict = {
         'm' : 'Male',
@@ -89,11 +73,10 @@ def show_default_layout(user, addon=0):
     while True:
         show_default_layout(user, addon=addon)
         updated_emergency_contact_email = input("Emergency contact email: ").strip()
-        if check_exit(updated_emergency_contact_email):
-            return
-        if updated_emergency_contact_email and is_invalid_email(updated_emergency_contact_email):
-            time.sleep(1)
+        if is_invalid_email(updated_emergency_contact_email):
             continue
+        elif check_exit(updated_emergency_contact_email):
+            return
         else:
             break
 
