@@ -114,9 +114,17 @@ def generate_appointments(patients, mhwps):
             num_appointments = random.randint(
                 1, 3
             )  # Generate 1-3 appointments per patient
+            generated_appointments = set()  # prevent generated overlap appointment
             for _ in range(num_appointments):
                 appointment_date = random_datetime_next_weekdays().strftime("%Y-%m-%d")
                 appointment_time = random.choice(time_slots)
+
+                appointment_key = (appointment_date, appointment_time)
+
+                if appointment_key in generated_appointments:
+                    break
+                else:
+                    generated_appointments.add(appointment_key)
 
                 appointment = {
                     "appointmentId": str(uuid.uuid4()),
