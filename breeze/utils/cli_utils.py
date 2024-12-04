@@ -168,13 +168,26 @@ def print_journals(journal_data=[], page=1):
     print(separator)
 
     return True
-
-
-def is_invalid_username(username, users):
-    if not username:
-        print_system_message("Username cannot be empty. Please try again.")
+def is_empty(input):
+        if not input:
+            print_system_message("Field cannot be empty. Please try again.")
+            return True
+        
+def is_valid_name(name):
+        if len(name) == 1 and name.isalpha() == False:
+            print_system_message("Name must be longer than one character and contain only alphabetic characters. Please try again.")
+            return False
+        elif len(name) == 1:
+            print_system_message("Name must be longer than one character. Please try again.")
+            return False
+        for i in name:
+            if i.isalpha() == False:
+                print_system_message("Name cannot contain non-alphabetic characters.")
+                return False
         return True
-    elif username in users:
+        
+def is_invalid_username(username, users):
+    if username in users:
         print_system_message("Username already taken! Please choose another.")
         return True
     elif username.lower() != username or len(username) < 2 or len(username) > 10:
@@ -213,11 +226,12 @@ def is_invalid_date(date):
 
 def is_invalid_email(email):
     email_regex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-    if re.match(email_regex, email):
-        return False
-    else:
-        print_system_message("Email is formatted incorrectly! Please try again.")
-        return True
+    if email != "":
+        if re.match(email_regex, email):
+            return False
+        else:
+            print_system_message("Email is formatted incorrectly! Please try again.")
+            return True
 
 
 def print_moods(mood_data=[], page=1):

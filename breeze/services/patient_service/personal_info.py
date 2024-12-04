@@ -1,7 +1,6 @@
-import time
-
-from breeze.utils.cli_utils import check_exit, clear_screen, direct_to_dashboard, print_system_message, is_invalid_email
+from breeze.utils.cli_utils import check_exit, clear_screen, direct_to_dashboard, print_system_message, is_valid_name, is_invalid_email
 from breeze.utils.constants import PATIENT_BANNER_STRING
+import time
 
 
 def show_default_layout(user, addon=0):
@@ -24,27 +23,29 @@ def edit_personal_information(user, auth_service):
     The user can press [X] at any time to exit without saving changes.
     """
     show_default_layout(user)
-    updated_first_name = input("First name: ").strip()
-    if check_exit(updated_first_name):
-        return
-
-    updated_last_name = input("Last name: ").strip()
-    if check_exit(updated_last_name):
-        return
-    
-    addon = f"First name: {updated_first_name}\nLast name: {updated_last_name}"  
+    while True:
+        updated_first_name = input("First name: ").strip()
+        if is_valid_name(updated_first_name):
+            break
+        elif check_exit(updated_first_name):
+            return
 
     while True:
-        show_default_layout(user, addon=addon)
-        updated_email = input("Email: ").strip()
-        if check_exit(updated_email):
-            return
-        if updated_email and is_invalid_email(updated_email):
-            time.sleep(1)
-            continue
-        else:
-            addon = addon + f'\nEmail: {updated_email}'
+        updated_last_name = input("Last name: ").strip()
+        if is_valid_name(updated_last_name):
             break
+        elif check_exit(updated_last_name):
+            return
+        
+    while True:
+        updated_email = input("Email: ").strip()
+        if is_invalid_email(updated_email):
+            continue
+        elif check_exit(updated_email):
+            return
+        break
+    
+    addon = f"First name: {updated_first_name}\nLast name: {updated_last_name}\nEmail: {updated_email}"  
     
     gender_dict = {
         'm' : 'Male',
@@ -72,11 +73,10 @@ def edit_personal_information(user, auth_service):
     while True:
         show_default_layout(user, addon=addon)
         updated_emergency_contact_email = input("Emergency contact email: ").strip()
-        if check_exit(updated_emergency_contact_email):
-            return
-        if updated_emergency_contact_email and is_invalid_email(updated_emergency_contact_email):
-            time.sleep(1)
+        if is_invalid_email(updated_emergency_contact_email):
             continue
+        elif check_exit(updated_emergency_contact_email):
+            return
         else:
             break
 
