@@ -1,11 +1,6 @@
-<<<<<<< HEAD
-from breeze.utils.cli_utils import check_exit, clear_screen, direct_to_dashboard, print_system_message, is_valid_name, is_invalid_email, is_empty
-=======
-import time
-
-from breeze.utils.cli_utils import check_exit, clear_screen, direct_to_dashboard, print_system_message, is_invalid_email
->>>>>>> main
+from breeze.utils.cli_utils import check_exit, clear_screen, direct_to_dashboard, print_system_message, is_valid_name, is_invalid_email
 from breeze.utils.constants import PATIENT_BANNER_STRING
+import time
 
 
 def show_default_layout(user, addon=0):
@@ -22,7 +17,6 @@ def show_default_layout(user, addon=0):
     if addon:
         print(addon)
 
-<<<<<<< HEAD
     while True:
         updated_first_name = input("First name: ").strip()
         if is_valid_name(updated_first_name):
@@ -54,21 +48,6 @@ def show_default_layout(user, addon=0):
             return
         else:
             break
-=======
-def edit_personal_information(user, auth_service):
-    """
-    Allows the user to edit their personal information.
-    The user can press [X] at any time to exit without saving changes.
-    """
-    show_default_layout(user)
-    updated_first_name = input("First name: ").strip()
-    if check_exit(updated_first_name):
-        return
-
-    updated_last_name = input("Last name: ").strip()
-    if check_exit(updated_last_name):
-        return
->>>>>>> main
     
     addon = f"First name: {updated_first_name}\nLast name: {updated_last_name}"  
 
