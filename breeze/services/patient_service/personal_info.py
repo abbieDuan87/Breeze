@@ -1,4 +1,4 @@
-from breeze.utils.cli_utils import check_exit, clear_screen, direct_to_dashboard, print_system_message
+from breeze.utils.cli_utils import check_exit, clear_screen, direct_to_dashboard, print_system_message, is_invalid_name, is_invalid_email, is_empty
 from breeze.utils.constants import PATIENT_BANNER_STRING
 
 
@@ -19,21 +19,41 @@ def edit_personal_information(user, auth_service):
 
     print("\nEnter the new information or leave blank to keep the current value (or enter [X] to exit without saving):\n")
 
-    updated_first_name = input("First name: ").strip()
-    if check_exit(updated_first_name):
-        return
+    while True:
+        updated_first_name = input("First name: ").strip()
+        if is_empty(updated_first_name):
+            continue
+        elif is_invalid_name(updated_first_name):
+            break
+        elif check_exit(updated_first_name):
+            return
 
-    updated_last_name = input("Last name: ").strip()
-    if check_exit(updated_last_name):
-        return
+    while True:
+        updated_last_name = input("Last name: ").strip()
+        if is_empty(updated_last_name):
+            continue
+        elif is_invalid_name(updated_last_name):
+            break
+        elif check_exit(updated_last_name):
+            return
+        
+    while True:
+        updated_email = input("Email: ").strip()
+        if is_invalid_email(updated_email):
+            continue
+        elif check_exit(updated_email):
+            return
+        else:
+            break
 
-    updated_email = input("Email: ").strip()
-    if check_exit(updated_email):
-        return
-
-    updated_emergency_contact_email = input("Emergency contact email: ").strip()
-    if check_exit(updated_emergency_contact_email):
-        return
+    while True:
+        updated_emergency_contact_email = input("Emergency contact email: ").strip()
+        if is_invalid_email(updated_emergency_contact_email):
+            continue
+        elif check_exit(updated_emergency_contact_email):
+            return
+        else:
+            break
     
     clear_screen()
     print(PATIENT_BANNER_STRING)
