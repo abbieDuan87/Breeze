@@ -55,7 +55,7 @@ class AppointmentEntry:
         if "\n" in stripped:
             stripped = stripped.replace("\n", "  ")
         if len(self.summary) > 50:
-            stripped = stripped[:50]
+            stripped = stripped[:50] + '...'
         return stripped
 
     def cancel_appointment(self):
