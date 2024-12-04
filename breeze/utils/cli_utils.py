@@ -173,7 +173,7 @@ def is_empty(input):
             print_system_message("Field cannot be empty. Please try again.")
             return True
         
-def is_invalid_name(name):
+def is_valid_name(name):
         if len(name) == 1 and name.isalpha() == False:
             print_system_message("Name must be longer than one character and contain only alphabetic characters. Please try again.")
             return False

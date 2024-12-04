@@ -168,7 +168,7 @@
             "role": "Patient",
             "isDisabled": false,
             "information": {
-                "firstName": "Patient1First",
+                "firstName": "lu",
                 "lastName": "Patient1Last",
                 "email": "patient1@example.com",
                 "emergencyContactEmail": "emergency.patient1@example.com",

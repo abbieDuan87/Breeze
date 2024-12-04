@@ -1,4 +1,4 @@
-from breeze.utils.cli_utils import check_exit, clear_screen, direct_to_dashboard, print_system_message, is_invalid_name, is_invalid_email, is_empty
+from breeze.utils.cli_utils import check_exit, clear_screen, direct_to_dashboard, print_system_message, is_valid_name, is_invalid_email, is_empty
 from breeze.utils.constants import PATIENT_BANNER_STRING
 
 
@@ -21,14 +21,14 @@ def edit_personal_information(user, auth_service):
 
     while True:
         updated_first_name = input("First name: ").strip()
-        if is_invalid_name(updated_first_name):
+        if is_valid_name(updated_first_name):
             break
         elif check_exit(updated_first_name):
             return
 
     while True:
         updated_last_name = input("Last name: ").strip()
-        if is_invalid_name(updated_last_name):
+        if is_valid_name(updated_last_name):
             break
         elif check_exit(updated_last_name):
             return
