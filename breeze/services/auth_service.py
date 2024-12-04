@@ -235,7 +235,7 @@ class AuthService:
                         while True:
                             last_name = input("Last name: ").strip()
                             if is_valid_name(last_name):
-                                continue
+                                break
                     case '3':
                         while True:
                             email = input("Email: ").strip()
