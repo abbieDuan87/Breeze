@@ -27,7 +27,7 @@ def show_upcoming_appointments(
         [
             app
             for app in user.get_appointments()
-            if app.get_date() > datetime.datetime.now().date()
+            if app.get_date() >= datetime.datetime.now().date()
         ],
         key=key,
     )
@@ -83,3 +83,30 @@ def handle_appointment_action(
     time.sleep(2.5)
 
     return True
+
+
+def can_book_today(app_date_time_tuple):
+    slot_date, slot_time_str = app_date_time_tuple
+    slot_time = datetime.datetime.strptime(slot_time_str, "%I:%M %p").time()
+    slot_datetime = datetime.datetime.combine(slot_date, slot_time)
+
+    now = datetime.datetime.now()
+
+    if slot_date == now.date():
+        two_hours_ahead = slot_datetime - datetime.timedelta(hours=2)
+
+        if now >= slot_datetime:
+            return False
+        return now < two_hours_ahead
+
+    elif slot_date < now.date():
+        return False
+    else:
+        return True
+
+
+if __name__ == "__main__":
+    print(can_book_today((datetime.date(2024, 12, 6), "01:30 PM")))
+    print(can_book_today((datetime.date(2024, 12, 4), "01:30 PM")))
+    print(can_book_today((datetime.date(2024, 12, 4), "09:30 AM")))
+    print(can_book_today((datetime.date(2024, 12, 3), "01:30 PM")))

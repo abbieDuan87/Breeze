@@ -4,7 +4,7 @@ import re
 from breeze.utils.ansi_utils import colorise
 
 
-def get_next_available_days(num_days=5):
+def get_next_available_days(num_days=5, include_today=False):
     """Returns a list of the next available weekdays, excluding weekends.
 
     Args:
@@ -13,8 +13,8 @@ def get_next_available_days(num_days=5):
     Returns:
         list of datetime.date: A list of dates representing the next available weekdays.
     """
-    available_days = []
     today = datetime.date.today()
+    available_days = [] if not include_today else [today]
     days_count = 0
 
     while days_count < num_days:
@@ -49,18 +49,21 @@ def generate_time_slots(start="09:00", end="17:00", interval_minutes=30):
     return slots
 
 
-def generate_calendar_slot_code_map(next_available_days=None, time_slots=None):
+def generate_calendar_slot_code_map(
+    next_available_days=None, time_slots=None, include_today=False
+):
     """Generates a dictionary mapping unique codes to (date, time) pairs.
 
     Args:
         next_available_days (list): List of upcoming weekdays.
         time_slots (list): List of time slots for each day.
+        include_today (bool): if the next available days include today
 
     Returns:
         dict: A dictionary where each key is a code (e.g., "A1") and each value is a (date, time) tuple.
     """
     if not next_available_days:
-        next_available_days = get_next_available_days()
+        next_available_days = get_next_available_days(include_today=include_today)
     if not time_slots:
         time_slots = generate_time_slots()
 
@@ -90,10 +93,10 @@ def strip_ansi_codes(text):
 
 
 if __name__ == "__main__":
-    # days = get_next_available_days()
-    # slots = generate_time_slots()
-    # codes = generate_calendar_slot_code_map(days, slots)
-    # print(codes)
+    days = get_next_available_days()
+    slots = generate_time_slots()
+    codes = generate_calendar_slot_code_map(days, slots)
+    print(codes)
     # print(len(slots))
-    placeholder = get_colored_status("status")
-    print(f"{placeholder:<14}", end=" | ")
+    # placeholder = get_colored_status("status")
+    # print(f"{placeholder:<14}", end=" | ")

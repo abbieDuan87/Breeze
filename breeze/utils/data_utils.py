@@ -41,6 +41,8 @@ def decode_user(user_data, appointments_data):
             emergency_contact_email=user_data.get("information", {}).get(
                 "emergencyContactEmail"
             ),
+            gender=user_data.get("information", {}).get("gender"),
+            date_of_birth=user_data.get("information", {}).get("dateOfBirth"),
             mood_entries=user_data.get("moods", []),
             journal_entries=user_data.get("journals", []),
             appointments=appointments,
