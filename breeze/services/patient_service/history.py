@@ -5,35 +5,51 @@ from breeze.utils.data_utils import create_journal_entries_from_data, create_moo
 from breeze.utils.cli_utils import clear_screen, print_system_message, print_journals, print_moods, check_exit
 from breeze.utils.constants import PATIENT_BANNER_STRING
 
+def edit_journal_database(user, journal_data, edit_delete, page_no):
+    try:                      
+        journal_ind = input("> ").strip().lower()
+        index = int(journal_ind)
+        if not 0 < index <= 10:
+            print_system_message('Invalid index. Please choose from available.')
+            time.sleep(2)
+            return journal_data, True
+        entry = -(index + (page_no - 1) * 10)
+        try:
+            journal = journal_data[entry].get_id()
+            if edit_delete == 'e':
+                journal_data = edit_journal_data(user, journal)
+            else:
+                journal_data = delete_journal_entry(user, journal)
+        except IndexError:
+            print_system_message('Invalid index. Please choose from available.')
+            time.sleep(2)
+            return journal_data, True                        
+        return journal_data, True
+    except ValueError:
+        if journal_ind == "x":
+            return journal_data, True
+        print_system_message("An error occurred - invalid input.")
+        time.sleep(1)
+        return journal_data, True
+
 def edit_journal_data(user, entry, page):
-    pass
-    # if not 0 < entry <= 10:
-    #     print('Invalid index. Please choose from available.')
-    #     return
-    # entry = -(entry + (page - 1) * 10)
-    # print(entry)
-    # journal_dicts = retrieve_variables_from_data('data/users.json', user.get_username(), 'journals')
-    # journal_data = create_journal_entries_from_data(journal_dicts)
-    # try:
-    #     journal = journal_data[::-1][entry]
-    # except IndexError:
-    #     print('Invalid index. Please choose from available.')
-    #     return
-    # print(journal)
-    # time.sleep(5)
+    if not 0 < entry <= 10:
+        print('Invalid index. Please choose from available.')
+        return
+    entry = -(entry + (page - 1) * 10)
+    journal_dicts = retrieve_variables_from_data('data/users.json', user.get_username(), 'journals')
+    journal_data = create_journal_entries_from_data(journal_dicts)
+    journal = journal_data[::-1][entry]
+    print(journal)
+    time.sleep(5)
 
 def delete_journal_entry(user, journal_id):
     journal_dicts = retrieve_variables_from_data('data/users.json', user.get_username(), 'journals')
-    try:
-        journal_dicts = [journal for journal in journal_dicts if journal['id'] != journal_id]
-        save_attr_data('data/users.json', user.get_username(), 'journals', journal_dicts)
-        print('Entry deleted successfully.')
-        data = create_journal_entries_from_data(journal_dicts)
-        time.sleep(2)
-    except IndexError:
-        print_system_message('Invalid index. Please choose from available.')
-        time.sleep(2)
-        return
+    journal_dicts = [journal for journal in journal_dicts if journal['id'] != journal_id]
+    save_attr_data('data/users.json', user.get_username(), 'journals', journal_dicts)
+    print('Entry deleted successfully.')
+    data = create_journal_entries_from_data(journal_dicts)
+    time.sleep(2)
     return data
 
 def delete_mood_entry(user, mood_id):
@@ -120,11 +136,13 @@ def show_journal_history(user):
             continue
         match user_input:
             case "s":
-                print("Type a term to search by or quit using [X]:")
+                print("Type a term to search by or quit using [X] (type 'X/' to filter by string 'X'):")
                 while True:
                     search_filter = input("> ").strip().lower()
                     if search_filter == 'x':
                         break
+                    elif search_filter == 'x/':
+                        search_filter = 'x'
                     else:
                         page_no = 1
                         filtered = True
@@ -132,39 +150,36 @@ def show_journal_history(user):
             case "e":
                 print("Enter the input of the entry you want to edit, or type X to exit")
                 while True:
-                    journal_ind = input("> ").strip().lower()
-                    try:
-                        index = int(journal_ind)
-                        edit_journal_data(user, index, page_no)
-                    except ValueError:
-                        if journal_ind == "x":
-                            break
-                        print_system_message("An error occurred - invalid input.")
-                        time.sleep(1)
+                    journal_data, continue_bool = edit_journal_database(user, journal_data, 'd', page_no)
+                    if continue_bool:
                         break
+                    
             case "d":
                 print("Enter the input of the entry you want to delete, or type X to exit")
                 while True:
-                    try:
-                        journal_ind = input("> ").strip().lower()
-                        index = int(journal_ind)
-                        if not 0 < index <= 10:
-                            print_system_message('Invalid index. Please choose from available.')
-                            continue
-                        entry = -(index + (page_no - 1) * 10)
-                        try:
-                            journal_to_delete = journal_data[entry].get_id()
-                            journal_data = delete_journal_entry(user, journal_to_delete)
-                        except IndexError:
-                            print_system_message('Invalid index. Please choose from available.')
-                            time.sleep(2)                        
+                    journal_data, continue_bool = edit_journal_database(user, journal_data, 'd', page_no)
+                    if continue_bool:
                         break
-                    except ValueError:
-                        if journal_ind == "x":
-                            break
-                        print_system_message("An error occurred - invalid input.")
-                        time.sleep(1)
-                        break
+                    # try:
+                    #     journal_ind = input("> ").strip().lower()
+                    #     index = int(journal_ind)
+                    #     if not 0 < index <= 10:
+                    #         print_system_message('Invalid index. Please choose from available.')
+                    #         continue
+                    #     entry = -(index + (page_no - 1) * 10)
+                    #     try:
+                    #         journal_to_delete = journal_data[entry].get_id()
+                    #         journal_data = delete_journal_entry(user, journal_to_delete)
+                    #     except IndexError:
+                    #         print_system_message('Invalid index. Please choose from available.')
+                    #         time.sleep(2)                        
+                    #     break
+                    # except ValueError:
+                    #     if journal_ind == "x":
+                    #         break
+                    #     print_system_message("An error occurred - invalid input.")
+                    #     time.sleep(1)
+                    #     break
             case "n":
                 if "n" in valid_inputs:
                     page_no += 1

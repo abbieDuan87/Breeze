@@ -220,8 +220,9 @@ def create_journal_entries_from_data(journal_data):
     for entry in journal_data:
         journal_id = entry.get("id")
         title = entry.get("title")
-        body = entry.get("entry")
-        dt = entry.get("datetime")
+        body = entry.get("text")
+        dt = entry.get("date")
+        last_update = entry.get("last_update")
         date = datetime.strptime(dt, "%Y-%m-%d %H:%M:%S").date()
         time = datetime.strptime(dt, "%Y-%m-%d %H:%M:%S").time()
         journal_entries.append(
@@ -230,7 +231,8 @@ def create_journal_entries_from_data(journal_data):
                 body,
                 date,
                 time,
-                journal_id=journal_id
+                journal_id=journal_id,
+                last_update=last_update
             )
         )
 

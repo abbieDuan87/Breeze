@@ -79,7 +79,7 @@ class Patient(User, AppointmentMixin):
 
     def add_journal_entry(self, journal_id, title, entry, datetime_str):
         self.__journal_entries.append(
-            {"id": journal_id, "title": title, "entry": entry, "datetime" : datetime_str}
+            {"id": journal_id, "title": title, "text": entry, "date" : datetime_str}
         )
 
     def get_assigned_mhwp(self):
