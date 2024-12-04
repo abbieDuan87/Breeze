@@ -229,12 +229,16 @@ class AuthService:
                     case '1':
                         while True:
                             first_name = input("First name: ").strip()
-                            if is_valid_name(first_name):
+                            if is_empty(first_name):
+                                continue
+                            elif is_valid_name(first_name):
                                 break
                     case '2':
                         while True:
                             last_name = input("Last name: ").strip()
-                            if is_valid_name(last_name):
+                            if is_empty(last_name):
+                                continue
+                            elif is_valid_name(last_name):
                                 break
                     case '3':
                         while True:
