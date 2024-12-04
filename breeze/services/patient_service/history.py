@@ -12,36 +12,62 @@ def edit_journal_database(user, journal_data, edit_delete, page_no):
         if not 0 < index <= 10:
             print_system_message('Invalid index. Please choose from available.')
             time.sleep(2)
-            return journal_data, True
+            return journal_data
         entry = -(index + (page_no - 1) * 10)
         try:
-            journal = journal_data[entry].get_id()
+            journal_id = journal_data[::-1][entry].get_id()
             if edit_delete == 'e':
-                journal_data = edit_journal_data(user, journal)
+                journal_data = edit_journal_data(user, journal_id, entry)
             else:
-                journal_data = delete_journal_entry(user, journal)
+                journal_data = delete_journal_entry(user, journal_id)
         except IndexError:
             print_system_message('Invalid index. Please choose from available.')
             time.sleep(2)
-            return journal_data, True                        
-        return journal_data, True
+            return journal_data
+        return journal_data
     except ValueError:
         if journal_ind == "x":
-            return journal_data, True
+            return journal_data
         print_system_message("An error occurred - invalid input.")
         time.sleep(1)
-        return journal_data, True
+        return journal_data
 
-def edit_journal_data(user, entry, page):
-    if not 0 < entry <= 10:
-        print('Invalid index. Please choose from available.')
-        return
-    entry = -(entry + (page - 1) * 10)
+def edit_journal_data(user, id, entry):
     journal_dicts = retrieve_variables_from_data('data/users.json', user.get_username(), 'journals')
     journal_data = create_journal_entries_from_data(journal_dicts)
     journal = journal_data[::-1][entry]
-    print(journal)
-    time.sleep(5)
+    print_system_message(f"Title: {journal.title}\nText: {journal.entry}")
+    time.sleep(7)
+
+def view_entry(data, page_no):
+    try:
+        journal_ind = input("> ").strip().lower()
+        index = int(journal_ind)
+        if not 0 < index <= 10:
+            print_system_message('Invalid index. Please choose from available.')
+            time.sleep(2)
+        entry = -(index + (page_no - 1) * 10)
+        try:
+            viewed = data[entry]        
+            while True:
+                clear_screen()
+                print(PATIENT_BANNER_STRING)
+                print_system_message(f"{viewed.title}\n{viewed.entry}")        
+                print("Enter [X] to return to the previous page.")
+                return_val= input("> ").strip().lower()
+                if return_val == 'x': 
+                    break
+        except IndexError:
+            print_system_message('Invalid index. Please choose from available.')
+            time.sleep(2)
+    except ValueError:
+        if journal_ind == "x":
+            return
+        print_system_message("An error occurred - invalid input.")
+        time.sleep(1)
+        return
+
+
 
 def delete_journal_entry(user, journal_id):
     journal_dicts = retrieve_variables_from_data('data/users.json', user.get_username(), 'journals')
@@ -109,10 +135,11 @@ def show_journal_history(user):
                 journal_data = create_journal_entries_from_data(journal_dicts)
             if print_journals(journal_data, page_no):
                 print(f'Page [{page_no}] of [{ceil(len(journal_data)/10)}]\n')
+                print("[V] View a journal entry on this page")
                 print("[E] Edit a journal entry on this page")
                 print("[D] Delete a journal entry on this page")
             
-        valid_inputs = ["e", "d", "x"]
+        valid_inputs = ["v", "e", "d", "x"]
         
         if not filtered:
             print("[S] Search by title or text content")
@@ -141,45 +168,21 @@ def show_journal_history(user):
                     search_filter = input("> ").strip().lower()
                     if search_filter == 'x':
                         break
-                    elif search_filter == 'x/':
-                        search_filter = 'x'
                     else:
+                        if search_filter == 'x/':
+                            search_filter = 'x'
                         page_no = 1
                         filtered = True
                         break
+            case "v":
+                print("Enter the input of the entry you want to view, or type [X] to exit")
+                view_entry(journal_data, page_no)
             case "e":
-                print("Enter the input of the entry you want to edit, or type X to exit")
-                while True:
-                    journal_data, continue_bool = edit_journal_database(user, journal_data, 'd', page_no)
-                    if continue_bool:
-                        break
-                    
+                print("Enter the input of the entry you want to edit, or type [X] to exit")    
+                journal_data = edit_journal_database(user, journal_data, 'e', page_no)
             case "d":
-                print("Enter the input of the entry you want to delete, or type X to exit")
-                while True:
-                    journal_data, continue_bool = edit_journal_database(user, journal_data, 'd', page_no)
-                    if continue_bool:
-                        break
-                    # try:
-                    #     journal_ind = input("> ").strip().lower()
-                    #     index = int(journal_ind)
-                    #     if not 0 < index <= 10:
-                    #         print_system_message('Invalid index. Please choose from available.')
-                    #         continue
-                    #     entry = -(index + (page_no - 1) * 10)
-                    #     try:
-                    #         journal_to_delete = journal_data[entry].get_id()
-                    #         journal_data = delete_journal_entry(user, journal_to_delete)
-                    #     except IndexError:
-                    #         print_system_message('Invalid index. Please choose from available.')
-                    #         time.sleep(2)                        
-                    #     break
-                    # except ValueError:
-                    #     if journal_ind == "x":
-                    #         break
-                    #     print_system_message("An error occurred - invalid input.")
-                    #     time.sleep(1)
-                    #     break
+                print("Enter the input of the entry you want to delete, or type [X] to exit")
+                journal_data = edit_journal_database(user, journal_data, 'd', page_no)
             case "n":
                 if "n" in valid_inputs:
                     page_no += 1
@@ -264,7 +267,7 @@ def show_mood_history(user):
                         filtered = True
                         break
             case "d":
-                print("Enter the input of the entry you want to delete, or type X to exit")
+                print("Enter the input of the entry you want to delete, or type [X] to exit")
                 while True:
                     try:
                         mood_ind = input("> ").strip().lower()
@@ -278,7 +281,7 @@ def show_mood_history(user):
                             mood_data = delete_mood_entry(user, mood_to_delete)
                         except IndexError:
                             print_system_message('Invalid index. Please choose from available.')
-                            time.sleep(2)                        
+                            time.sleep(2)
                         break
                     except ValueError:
                         if mood_ind == "x":
