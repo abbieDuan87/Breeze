@@ -65,7 +65,7 @@ class AppointmentEntry:
         Marks the appointment as requested and updates status.
         """
         self.status = "requested"
-    
+
     def is_confirmed(self):
         """
         Checks if the appointment status is confirmed.
@@ -86,6 +86,9 @@ class AppointmentEntry:
             f"  mhwp={self.mhwp_username}\n"
             f")"
         )
+
+    def __repr__(self):
+        return self.__str__()
 
     def to_dict(self):
         """
