@@ -140,6 +140,14 @@ class MHWP(User, AppointmentMixin):
                         else "\u25CB"
                     )
                 else:
+                    if app and app.get_status() == "confirmed":
+                        placeholder = get_colored_status("unavailable")
+                    else:
+                        if app and app.get_status() != "cancelled":
+                            placeholder = get_colored_status(app.get_status())
+                        else:
+                            placeholder = code
+
                     if day == datetime.date.today():
                         day_slot_time_obj = datetime.datetime.strptime(
                             day_slot[1], "%I:%M %p"
@@ -157,23 +165,8 @@ class MHWP(User, AppointmentMixin):
                             hours=2
                         )
 
-                        if now < two_hours_ahead:
-                            if app and app.get_status() != "cancelled":
-                                placeholder = get_colored_status(app.get_status())
-                            else:
-                                placeholder = code
-                        else:
+                        if now >= two_hours_ahead:
                             placeholder = "\u25CB"
-
-                    else:
-                        if app and app.get_status() == "confirmed":
-                            placeholder = get_colored_status("unavailable")
-                        else:
-                            placeholder = (
-                                get_colored_status(app.get_status())
-                                if app and app.get_status() != "cancelled"
-                                else code
-                            )
 
                 visible_placeholder = strip_ansi_codes(placeholder)
                 padding_width = 14 - len(visible_placeholder) + len(placeholder)
