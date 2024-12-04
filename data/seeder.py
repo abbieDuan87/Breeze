@@ -15,7 +15,7 @@ def random_datetime_within_week():
 def random_datetime_next_weekdays():
     today = datetime.now()
 
-    weekdays = []
+    weekdays = [today]
     for i in range(1, 6):
         next_day = today + timedelta(days=i)
         if next_day.weekday() == 5:

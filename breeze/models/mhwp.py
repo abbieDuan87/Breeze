@@ -1,4 +1,5 @@
 from breeze.models.appointment_mixin import AppointmentMixin
+from breeze.utils.ansi_utils import colorise
 from .user import User
 from ..utils.calendar_utils import (
     get_colored_status,
@@ -52,7 +53,9 @@ class MHWP(User, AppointmentMixin):
         """
         Displays the calendar with dates as columns and time slots as rows for this MHWP.
         """
-        next_available_days = get_next_available_days()
+        HEADER_WIDTH = 116
+
+        next_available_days = get_next_available_days(include_today=True)
         time_slots = generate_time_slots()
         code_map = (
             generate_calendar_slot_code_map(next_available_days, time_slots)
@@ -70,25 +73,28 @@ class MHWP(User, AppointmentMixin):
         current_date = datetime.datetime.now()
         formatted_date = current_date.strftime("%Y-%m-%d %a")
 
-        header_line = "=" * 98
-        sub_header_line = "-" * 98
+        header_line = "=" * HEADER_WIDTH
+        sub_header_line = "-" * HEADER_WIDTH
 
         print(f"\n{header_line}")
-        print(f"Today is {formatted_date}".center(98))
+        print(f"Today is {formatted_date}".center(HEADER_WIDTH))
 
-        text_with_colors = f"Upcoming Calendar for \33[1m\033[34m{self.get_username()}\33[0m in the \33[1mnext five working days ({date_range})\33[0m:"
+        text_with_colors = (
+            f"Upcoming calendar for {colorise(self.get_username(), color=63)} {colorise("today", bold=True)}, and for the "
+            f"{colorise(f'next five working days ({date_range})', bold=True)}:"
+        )
         text_without_colors = strip_ansi_codes(text_with_colors)
 
         print(
             text_with_colors.center(
-                98 + (len(text_with_colors) - len(text_without_colors))
+                HEADER_WIDTH + (len(text_with_colors) - len(text_without_colors))
             )
         )
 
         upcoming_appointments = [
             app
             for app in self.get_appointments()
-            if app.get_status() != "cancelled" and app.get_date() > current_date.date()
+            if app.get_status() != "cancelled" and app.get_date() >= current_date.date()
         ]
         requested_appointments_count = len(
             [app for app in upcoming_appointments if app.get_status() == "requested"]
@@ -99,12 +105,12 @@ class MHWP(User, AppointmentMixin):
 
         print(
             f"Number of requested appointments: {requested_appointments_count}".center(
-                98
+                HEADER_WIDTH
             )
         )
         print(
             f"Number of confirmed appointments: {confirmed_appointments_count}".center(
-                98
+                HEADER_WIDTH
             )
         )
 
@@ -113,7 +119,10 @@ class MHWP(User, AppointmentMixin):
         print("+", "-" * (10 + 17 * len(next_available_days)), "+")
         print(f"| {'Time':<10}", end=" | ")
         for day in next_available_days:
-            print(f"{day.strftime('%Y-%m-%d %a'):<14}", end=" | ")
+            if day == datetime.date.today():
+                print(f"{'Today':<14}", end=" | ")
+            else:
+                print(f"{day.strftime('%Y-%m-%d %a'):<14}", end=" | ")
         print()
         print("+", "-" * (10 + 17 * len(next_available_days)), "+")
 
@@ -131,14 +140,40 @@ class MHWP(User, AppointmentMixin):
                         else "\u25CB"
                     )
                 else:
-                    if app and app.get_status() == "confirmed":
-                        placeholder = get_colored_status("unavailable")
-                    else:
-                        placeholder = (
-                            get_colored_status(app.get_status())
-                            if app and app.get_status() != "cancelled"
-                            else code
+                    if day == datetime.date.today():
+                        day_slot_time_obj = datetime.datetime.strptime(
+                            day_slot[1], "%I:%M %p"
                         )
+                        now = datetime.datetime.now()
+
+                        day_slot_time_obj = now.replace(
+                            hour=day_slot_time_obj.hour,
+                            minute=day_slot_time_obj.minute,
+                            second=0,
+                            microsecond=0,
+                        )
+
+                        two_hours_ahead = day_slot_time_obj - datetime.timedelta(
+                            hours=2
+                        )
+
+                        if now < two_hours_ahead:
+                            if app and app.get_status() != "cancelled":
+                                placeholder = get_colored_status(app.get_status())
+                            else:
+                                placeholder = code
+                        else:
+                            placeholder = "\u25CB"
+
+                    else:
+                        if app and app.get_status() == "confirmed":
+                            placeholder = get_colored_status("unavailable")
+                        else:
+                            placeholder = (
+                                get_colored_status(app.get_status())
+                                if app and app.get_status() != "cancelled"
+                                else code
+                            )
 
                 visible_placeholder = strip_ansi_codes(placeholder)
                 padding_width = 14 - len(visible_placeholder) + len(placeholder)
