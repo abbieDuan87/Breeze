@@ -80,7 +80,7 @@ class MHWP(User, AppointmentMixin):
         print(f"Today is {formatted_date}".center(HEADER_WIDTH))
 
         text_with_colors = (
-            f"Upcoming calendar for {colorise(self.get_username(), color=63)} {colorise("today", bold=True)}, and for the "
+            f"Upcoming calendar for {colorise(self.get_username(), color=63)} {colorise('today', bold=True)}, and for the "
             f"{colorise(f'next five working days ({date_range})', bold=True)}:"
         )
         text_without_colors = strip_ansi_codes(text_with_colors)
