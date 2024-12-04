@@ -27,7 +27,7 @@ def show_upcoming_appointments(
         [
             app
             for app in user.get_appointments()
-            if app.get_date() > datetime.datetime.now().date()
+            if app.get_date() >= datetime.datetime.now().date()
         ],
         key=key,
     )
