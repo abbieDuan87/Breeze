@@ -3,7 +3,7 @@
         {
             "appointmentId": "bfa6c322-112a-470e-91fe-043f74e112e0",
             "date": "2024-12-05",
-            "time": "8:00 AM",
+            "time": "08:00 AM",
             "status": "confirmed",
             "mhwpUsername": "mhwp1",
             "patientUsername": "patient1"
@@ -11,7 +11,7 @@
         {
             "appointmentId": "d2449566-6efb-4d47-b4cf-bc69f25f0732",
             "date": "2024-12-05",
-            "time": "6:00 AM",
+            "time": "06:00 AM",
             "status": "requested",
             "mhwpUsername": "mhwp1",
             "patientUsername": "patient1"
@@ -19,7 +19,7 @@
         {
             "appointmentId": "4808064e-efe5-40b2-bae2-3b2d70cd44a9",
             "date": "2024-12-03",
-            "time": "5:00 AM",
+            "time": "05:00 AM",
             "status": "cancelled",
             "mhwpUsername": "mhwp1",
             "patientUsername": "patient1"
@@ -27,7 +27,7 @@
         {
             "appointmentId": "de214b21-7e8b-42f3-bae0-3e75184c1be5",
             "date": "2024-12-06",
-            "time": "3:00 AM",
+            "time": "03:00 AM",
             "status": "requested",
             "mhwpUsername": "mhwp2",
             "patientUsername": "patient2"
@@ -35,7 +35,7 @@
         {
             "appointmentId": "00aa091f-0885-4218-ba64-0ba87fbb413c",
             "date": "2024-12-04",
-            "time": "9:30 AM",
+            "time": "09:30 AM",
             "status": "confirmed",
             "mhwpUsername": "mhwp2",
             "patientUsername": "patient2"
@@ -51,7 +51,7 @@
         {
             "appointmentId": "5fb02107-8b4a-40fe-85bb-7aed3b69355b",
             "date": "2024-12-04",
-            "time": "2:30 PM",
+            "time": "02:30 PM",
             "status": "requested",
             "mhwpUsername": "mhwp3",
             "patientUsername": "patient3"
@@ -59,7 +59,7 @@
         {
             "appointmentId": "4206d12d-fb0b-4587-98d8-f89485e51e92",
             "date": "2024-12-04",
-            "time": "5:00 PM",
+            "time": "05:00 PM",
             "status": "cancelled",
             "mhwpUsername": "mhwp1",
             "patientUsername": "patient4"
@@ -67,7 +67,7 @@
         {
             "appointmentId": "566a4280-34ae-42a6-9f48-9a9861621553",
             "date": "2024-12-07",
-            "time": "1:00 PM",
+            "time": "01:00 PM",
             "status": "requested",
             "mhwpUsername": "mhwp1",
             "patientUsername": "patient4"
@@ -75,7 +75,7 @@
         {
             "appointmentId": "19797a59-8091-4152-8951-944b12c2ecff",
             "date": "2024-12-03",
-            "time": "7:00 PM",
+            "time": "07:00 PM",
             "status": "requested",
             "mhwpUsername": "mhwp1",
             "patientUsername": "patient4"
@@ -83,7 +83,7 @@
         {
             "appointmentId": "799b16a2-5a23-44cb-997b-f6884b65c8b2",
             "date": "2024-12-03",
-            "time": "4:00 AM",
+            "time": "04:00 AM",
             "status": "confirmed",
             "mhwpUsername": "mhwp2",
             "patientUsername": "patient5"
@@ -91,7 +91,7 @@
         {
             "appointmentId": "6436208d-9fe2-44a2-a67a-b8a9132b3c1f",
             "date": "2024-12-03",
-            "time": "7:30 AM",
+            "time": "07:30 AM",
             "status": "cancelled",
             "mhwpUsername": "mhwp3",
             "patientUsername": "patient6"
@@ -99,7 +99,7 @@
         {
             "appointmentId": "fbd5f063-b34c-4301-a661-989263244eff",
             "date": "2024-12-05",
-            "time": "3:30 PM",
+            "time": "03:30 PM",
             "status": "requested",
             "mhwpUsername": "mhwp1",
             "patientUsername": "patient7"
@@ -107,7 +107,7 @@
         {
             "appointmentId": "115088d7-eb56-4ec9-97a7-1d719d0aa7b9",
             "date": "2024-12-05",
-            "time": "4:00 PM",
+            "time": "04:00 PM",
             "status": "cancelled",
             "mhwpUsername": "mhwp1",
             "patientUsername": "patient7"
@@ -115,7 +115,7 @@
         {
             "appointmentId": "4023d7c2-cde4-4548-a940-34074607ba17",
             "date": "2024-12-04",
-            "time": "6:30 AM",
+            "time": "06:30 AM",
             "status": "cancelled",
             "mhwpUsername": "mhwp2",
             "patientUsername": "patient8"
@@ -123,7 +123,7 @@
         {
             "appointmentId": "7b32a8e7-a6a4-4892-a74b-e5e28838c95c",
             "date": "2024-12-05",
-            "time": "3:00 AM",
+            "time": "03:00 AM",
             "status": "cancelled",
             "mhwpUsername": "mhwp3",
             "patientUsername": "patient9"
@@ -131,7 +131,7 @@
         {
             "appointmentId": "446770fe-0684-47f2-a8b9-3db6e45830f2",
             "date": "2024-12-07",
-            "time": "1:30 PM",
+            "time": "01:30 PM",
             "status": "cancelled",
             "mhwpUsername": "mhwp3",
             "patientUsername": "patient9"
@@ -139,7 +139,7 @@
         {
             "appointmentId": "6429c04c-cee5-4651-99ca-cb90c3e31ab0",
             "date": "2024-12-04",
-            "time": "6:00 PM",
+            "time": "06:00 PM",
             "status": "confirmed",
             "mhwpUsername": "mhwp1",
             "patientUsername": "patient10"
@@ -155,7 +155,7 @@
         {
             "appointmentId": "853ce5d6-02a1-4c3b-bbb6-dcf1b75a4b45",
             "date": "2024-12-05",
-            "time": "4:30 PM",
+            "time": "04:30 PM",
             "status": "requested",
             "mhwpUsername": "mhwp1",
             "patientUsername": "patient10"
@@ -172,8 +172,8 @@
                 "lastName": "Patient1Last",
                 "email": "patient1@example.com",
                 "emergencyContactEmail": "emergency.patient1@example.com",
-                "gender": "Non-binary",
-                "dateOfBirth": "1953-01-06"
+                "gender": null,
+                "dateOfBirth": null
             },
             "assignedMHWP": "mhwp1",
             "moods": [
@@ -238,8 +238,8 @@
                 "lastName": "Patient2Last",
                 "email": "patient2@example.com",
                 "emergencyContactEmail": "emergency.patient2@example.com",
-                "gender": "Other",
-                "dateOfBirth": "1960-11-11"
+                "gender": null,
+                "dateOfBirth": null
             },
             "assignedMHWP": "mhwp2",
             "moods": [
@@ -321,8 +321,8 @@
                 "lastName": "Patient3Last",
                 "email": "patient3@example.com",
                 "emergencyContactEmail": "emergency.patient3@example.com",
-                "gender": "Male",
-                "dateOfBirth": "1968-12-26"
+                "gender": null,
+                "dateOfBirth": null
             },
             "assignedMHWP": "mhwp3",
             "moods": [
@@ -398,8 +398,8 @@
                 "lastName": "Patient4Last",
                 "email": "patient4@example.com",
                 "emergencyContactEmail": "emergency.patient4@example.com",
-                "gender": "Female",
-                "dateOfBirth": "1990-01-05"
+                "gender": null,
+                "dateOfBirth": null
             },
             "assignedMHWP": "mhwp1",
             "moods": [
@@ -464,8 +464,8 @@
                 "lastName": "Patient5Last",
                 "email": "patient5@example.com",
                 "emergencyContactEmail": "emergency.patient5@example.com",
-                "gender": "Female",
-                "dateOfBirth": "1983-07-13"
+                "gender": null,
+                "dateOfBirth": null
             },
             "assignedMHWP": "mhwp2",
             "moods": [
@@ -540,8 +540,8 @@
                 "lastName": "Patient6Last",
                 "email": "patient6@example.com",
                 "emergencyContactEmail": "emergency.patient6@example.com",
-                "gender": "Female",
-                "dateOfBirth": "1959-06-27"
+                "gender": null,
+                "dateOfBirth": null
             },
             "assignedMHWP": "mhwp3",
             "moods": [
@@ -610,8 +610,8 @@
                 "lastName": "Patient7Last",
                 "email": "patient7@example.com",
                 "emergencyContactEmail": "emergency.patient7@example.com",
-                "gender": "Male",
-                "dateOfBirth": "1985-06-02"
+                "gender": null,
+                "dateOfBirth": null
             },
             "assignedMHWP": "mhwp1",
             "moods": [
@@ -681,8 +681,8 @@
                 "lastName": "Patient8Last",
                 "email": "patient8@example.com",
                 "emergencyContactEmail": "emergency.patient8@example.com",
-                "gender": "Non-binary",
-                "dateOfBirth": "2005-02-26"
+                "gender": null,
+                "dateOfBirth": null
             },
             "assignedMHWP": "mhwp2",
             "moods": [
@@ -751,8 +751,8 @@
                 "lastName": "Patient9Last",
                 "email": "patient9@example.com",
                 "emergencyContactEmail": "emergency.patient9@example.com",
-                "gender": "Female",
-                "dateOfBirth": "1972-07-25"
+                "gender": null,
+                "dateOfBirth": null
             },
             "assignedMHWP": "mhwp3",
             "moods": [
@@ -822,8 +822,8 @@
                 "lastName": "Patient10Last",
                 "email": "patient10@example.com",
                 "emergencyContactEmail": "emergency.patient10@example.com",
-                "gender": "Other",
-                "dateOfBirth": "1971-11-18"
+                "gender": null,
+                "dateOfBirth": null
             },
             "assignedMHWP": "mhwp1",
             "moods": [

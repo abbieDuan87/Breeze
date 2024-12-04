@@ -115,6 +115,8 @@ class AuthService:
             
         while True:
             email = input("Email: ").strip()
+            if is_empty(email):
+                continue
             if is_invalid_email(email):
                 continue
             break

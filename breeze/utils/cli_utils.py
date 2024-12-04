@@ -174,6 +174,12 @@ def is_empty(input):
             return True
         
 def is_invalid_name(name):
+        if len(name) == 1 and name.isalpha() == False:
+            print_system_message("Name must be longer than one character and contain only alphabetic characters. Please try again.")
+            return False
+        elif len(name) == 1:
+            print_system_message("Name must be longer than one character. Please try again.")
+            return False
         for i in name:
             if i.isalpha() == False:
                 print_system_message("Name cannot contain non-alphabetic characters.")
@@ -220,11 +226,12 @@ def is_invalid_date(date):
 
 def is_invalid_email(email):
     email_regex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-    if re.match(email_regex, email):
-        return False
-    else:
-        print_system_message("Email is formatted incorrectly! Please try again.")
-        return True
+    if email != "":
+        if re.match(email_regex, email):
+            return False
+        else:
+            print_system_message("Email is formatted incorrectly! Please try again.")
+            return True
 
 
 def print_moods(mood_data=[], page=1):

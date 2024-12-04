@@ -21,18 +21,14 @@ def edit_personal_information(user, auth_service):
 
     while True:
         updated_first_name = input("First name: ").strip()
-        if is_empty(updated_first_name):
-            continue
-        elif is_invalid_name(updated_first_name):
+        if is_invalid_name(updated_first_name):
             break
         elif check_exit(updated_first_name):
             return
 
     while True:
         updated_last_name = input("Last name: ").strip()
-        if is_empty(updated_last_name):
-            continue
-        elif is_invalid_name(updated_last_name):
+        if is_invalid_name(updated_last_name):
             break
         elif check_exit(updated_last_name):
             return
