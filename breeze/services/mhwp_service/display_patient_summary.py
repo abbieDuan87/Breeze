@@ -18,9 +18,9 @@ def display_patient_summary(user, auth_service):
     def show_assigned_patients_table(patients):
         """Displays a table of assigned patients."""
         print("\nAssigned Patients:")
-        print("-" * 118)
-        print(f"| {'Username':<15} | {'First Name':<15} | {'Last Name':<15} | {'Gender':<8} | {'DOB':<13} | {'Condition':<15} | {'Medication':<15} |")
-        print("-" * 118)
+        print("-" * 125)
+        print(f"| {'Username':<15} | {'First Name':<15} | {'Last Name':<15} | {'Gender':<10} | {'DOB':<13} | {'Condition':<20} | {'Medication':<15} |")
+        print("-" * 125)
         for patient in patients:
             # Get the most recent condition and prescription if there are multiple ones
             conditions = patient.get_conditions()
@@ -47,17 +47,18 @@ def display_patient_summary(user, auth_service):
                 f"| {patient.get_username():<15} | "
                 f"{patient.get_first_name() or 'N/A':<15} | "
                 f"{patient.get_last_name() or 'N/A':<15} | "
-                f"{patient.get_gender() or 'N/A':<8} | "
+                f"{patient.get_gender() or 'N/A':<10} | "
                 f"{patient.get_date_of_birth() or 'N/A':<13} | "
-                f"{condition_name or 'N/A':<15} | "
+                f"{condition_name or 'N/A':<20} | "
                 f"{medication_name or 'N/A':<15} |"
             )
-        print("-" * 118)
+        print("-" * 125)
 
     def show_patient_details(patient):
         """Displays detailed information for a selected patient."""
         clear_screen_and_show_banner(MHWP_BANNER_STRING)
-        print(f"Details for {selected_patient.get_first_name()} {selected_patient.get_last_name()} (Username: {selected_patient.get_username()}):\n")
+        print_system_message(f"Details for {selected_patient.get_username()}:")
+        print(f"Full Name: {selected_patient.get_first_name()} {selected_patient.get_last_name()}")
         print(f"Gender: {selected_patient.get_gender()}")
         print(f"Date of Birth: {selected_patient.get_date_of_birth()}")
         

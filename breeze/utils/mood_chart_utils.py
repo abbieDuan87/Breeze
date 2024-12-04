@@ -17,7 +17,7 @@ def plot_mood_chart(mood_entries):
     unique_dates = sorted(set(dates))
 
     cell_width = 7  # Width of each date column
-    print("\nMood Chart (ASCII Representation)")
+    print("\nMood Chart")
     print("-" * (len(unique_dates) * cell_width + 11))  # Adjust line length dynamically
 
     # Print y-axis and mood points
