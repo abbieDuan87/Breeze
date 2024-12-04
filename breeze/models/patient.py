@@ -52,13 +52,13 @@ class Patient(User, AppointmentMixin):
         self.__gender = gender
 
     def get_gender(self):
-        return self.__gender
+        return self.__gender or "Unkonwn"
     
     def set_date_of_birth(self, date_of_birth):
         self.__date_of_birth = date_of_birth
 
     def get_date_of_birth(self):
-        return self.__date_of_birth
+        return self.__date_of_birth or "Unknown"
 
     def get_mood_entries(self):
         return self.__mood_entries

@@ -1,5 +1,4 @@
 from datetime import datetime
-import matplotlib.pyplot as plt
 from breeze.models.patient import Patient
 from breeze.utils.cli_utils import clear_screen_and_show_banner, direct_to_dashboard, print_system_message
 from breeze.utils.constants import MHWP_BANNER_STRING
@@ -17,9 +16,9 @@ def display_patient_summary(user, auth_service):
     def show_assigned_patients_table(patients):
         """Displays a table of assigned patients."""
         print("\nAssigned Patients:")
-        print("-" * 110)
-        print(f"| {'Username':<15} | {'First Name':<15} | {'Last Name':<15} | {'Condition':<25} | {'Medication':<30} |")
-        print("-" * 110)
+        print("-" * 125)
+        print(f"| {'Username':<15} | {'First Name':<15} | {'Last Name':<15} | {'Gender':<8} | {'DOB':<13} | {'Condition':<20} | {'Medication':<15} |")
+        print("-" * 125)
         for patient in patients:
             conditions = list(patient.get_conditions().keys())
             medications = [
@@ -30,15 +29,25 @@ def display_patient_summary(user, auth_service):
                 f"| {patient.get_username():<15} | "
                 f"{patient.get_first_name() or 'N/A':<15} | "
                 f"{patient.get_last_name() or 'N/A':<15} | "
-                f"{', '.join(conditions) or 'N/A':<25} | "
-                f"{', '.join(medications) or 'N/A':<30} |"
+                f"{patient.get_gender():<8} | "
+                f"{patient.get_date_of_birth():<13} | "
+                f"{', '.join(conditions) or 'N/A':<20} | "
+                f"{', '.join(medications) or 'N/A':<15} |"
             )
-        print("-" * 110)
+        print("-" * 125)
 
     def show_patient_details(patient):
         """Displays detailed information for a selected patient."""
         clear_screen_and_show_banner(MHWP_BANNER_STRING)
-        print(f"Patient Details: {patient.get_first_name()} {patient.get_last_name()} (Username: {patient.get_username()})")
+        print(f"Details for {selected_patient.get_first_name()} {selected_patient.get_last_name()} (Username: {selected_patient.get_username()}):\n")
+        print(f"Gender: {selected_patient.get_information().get('gender', 'N/A')}")
+        print(f"Date of Birth: {selected_patient.get_information().get('dateOfBirth', 'N/A')}")
+        
+        print("\nConditions:")
+        for condition, notes in selected_patient.get_conditions().items():
+            print(f"  - {condition}:")
+            for note in notes:
+                print(f"    - {note['note']} (Added on: {note['timestamp']})")
 
         # Appointment History
         print("\nAppointment History:")
