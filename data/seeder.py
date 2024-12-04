@@ -43,20 +43,22 @@ def random_date_of_birth(min_age=18, max_age=80):
 
 
 def generate_mood_entries(num_entries):
-    moods = ["Very Happy", "Happy", "Neutral", "Sad", "Very Sad"]
+    moods = {
+        "Very Happy" : [":D", "Feeling awesome!", "Love this feeling!"], 
+        "Happy" : [":)", "Feel good.", "Life is good."],
+        "Neutral" : ["Feeling alright.", ":|", "It is what it is."], 
+        "Sad": ["Feeling bad.", "Feeling a bit down.", ":/"], 
+        "Very Sad": ["Feel terrible.", "Feeling awful right now.", ":("]}
+    
     dates = [random_datetime_within_week().strftime("%Y-%m-%d %H:%M:%S") for i in range(num_entries)]
     dates = sorted(dates)
+    moods_list = [random.choice(list(moods.keys())) for i in range(num_entries)]
     return [
         {
             "id": str(uuid.uuid4()),
-            "mood": random.choice(moods),
-            "comment": random.choice(
-                ["Feeling good.", "Tired.", "Stressed.", "Relaxed."]
-            ),
-            "datetime": random_datetime_within_week().strftime("%Y-%m-%d %H:%M:%S"),
-            
+            "mood": moods_list[i-1],
+            "comment": random.choice(moods[moods_list[i-1]]),
             "datetime": dates[i],
-            "last_update": dates[i]
         }
         for i in range(num_entries)
     ]
@@ -65,11 +67,34 @@ def generate_mood_entries(num_entries):
 def generate_journals(num_entries):
     dates = [random_datetime_within_week().strftime("%Y-%m-%d %H:%M:%S") for i in range(num_entries)]
     dates = sorted(dates)
+    journal_texts = [
+        "Today was amazing! I felt so accomplished after finishing my project. Everything just clicked.",
+        "I had a rough day. It feels like nothing I do is enough, and it's weighing on me.",
+        "What a peaceful afternoon. I went for a walk and just enjoyed the fresh air and sunshine.",
+        "Everything went wrong today. Missed the bus, spilled coffee, and got stuck in traffic. Feeling exhausted.",
+        "Spent the evening with friends, laughing and sharing stories. My heart feels full of joy.",
+        "Feeling lonely tonight. Even surrounded by people, I can't shake this sense of isolation.",
+        "Had a productive day at work. Checked off all my tasks and even got a compliment from my boss.",
+        "Woke up with a sense of dread that just wouldn’t go away. It's like a cloud hovering over me all day.",
+        "Cooked a new recipe today and nailed it! Small wins like this make me happy.",
+        "Dealt with a disagreement with a close friend. I hate conflict—it leaves me feeling unsettled."
+        "Had the most incredible workout today. I feel so energized and proud of myself for sticking with it!",
+        "Today felt overwhelming. There were so many tasks to do, and I barely made it through.",
+        "I had a quiet day at home, but it was nice to recharge and enjoy my own company.",
+        "The sadness hit me hard this evening. It's tough when memories resurface out of nowhere.",
+        "Got an unexpected compliment from a stranger today. It really made my day brighter.",
+        "I feel stuck in a rut right now. Everything feels repetitive, and I don’t know how to break free.",
+        "Spent some quality time with family today. It was heartwarming to reminisce about old times.",
+        "Had to make a tough decision at work. I'm second-guessing myself, and it's stressing me out.",
+        "Tried meditating for the first time today. It was calming and gave me a sense of peace I didn’t expect.",
+        "The day started fine but ended on a sour note. A mistake I made came back to haunt me."
+    ]
+
     return [
         {
             "id": str(uuid.uuid4()),
             "title": f"Journal Entry {i + 1}",
-            "text": "This is a journal entry text.",
+            "text": random.choice(journal_texts),
             "date": dates[i],
             "last_update": dates[i]
         }

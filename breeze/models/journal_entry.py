@@ -63,6 +63,9 @@ class JournalEntry:
         if len(self.entry) > 50:
             stripped_entry = self.entry[:49] + '...'
             return stripped_entry
+        if  "\n" in self.entry:
+            formatted_entry = self.entry.replace("\n", "  ")
+            return formatted_entry
         else:
             return self.entry
     

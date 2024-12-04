@@ -1,5 +1,6 @@
 import json
 import time
+import datetime as dt
 from math import ceil
 from breeze.utils.data_utils import create_journal_entries_from_data, create_mood_entries_from_data, create_appointments_from_data, retrieve_variables_from_data, save_attr_data
 from breeze.utils.cli_utils import clear_screen, print_system_message, print_journals, print_moods, check_exit
@@ -15,9 +16,9 @@ def edit_journal_database(user, journal_data, edit_delete, page_no):
             return journal_data
         entry = -(index + (page_no - 1) * 10)
         try:
-            journal_id = journal_data[::-1][entry].get_id()
-            if edit_delete == 'e':
-                journal_data = edit_journal_data(user, journal_id, entry)
+            journal_id = journal_data[entry].get_id()
+            if edit_delete == 'a':
+                journal_data = edit_journal_data(user, journal_data, journal_id, entry)
             else:
                 journal_data = delete_journal_entry(user, journal_id)
         except IndexError:
@@ -32,12 +33,32 @@ def edit_journal_database(user, journal_data, edit_delete, page_no):
         time.sleep(1)
         return journal_data
 
-def edit_journal_data(user, id, entry):
-    journal_dicts = retrieve_variables_from_data('data/users.json', user.get_username(), 'journals')
-    journal_data = create_journal_entries_from_data(journal_dicts)
-    journal = journal_data[::-1][entry]
-    print_system_message(f"Title: {journal.title}\nText: {journal.entry}")
-    time.sleep(7)
+def edit_journal_data(user, journal_data, journal_id, entry):
+    journal = journal_data[entry]
+    entry = journal.entry
+    while True:
+        clear_screen()
+        print(PATIENT_BANNER_STRING)
+        print_system_message(journal.title)
+        print_system_message(entry) 
+        print('Continue writing to append to your journal entry, enter [S] to save, or [X] to leave without saving:')
+        addition = input("> ")
+        if check_exit(addition):
+            return journal_data
+        if addition.lower() == "s":
+            journal.set_entry(entry)    
+            journal_dicts = retrieve_variables_from_data('data/users.json', user.get_username(), 'journals')
+            for journal_ent in journal_dicts:
+                if journal_ent['id'] == journal_id:
+                    journal_ent['text'] = entry
+                    journal_ent['last_update'] = dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            save_attr_data('data/users.json', user.get_username(), 'journals', journal_dicts)
+            print('Entry edited successfully.')
+            data = create_journal_entries_from_data(journal_dicts)
+            time.sleep(2)
+            return data
+        else:
+            entry = entry + "\n" + addition
 
 def view_entry(data, page_no):
     try:
@@ -52,7 +73,8 @@ def view_entry(data, page_no):
             while True:
                 clear_screen()
                 print(PATIENT_BANNER_STRING)
-                print_system_message(f"{viewed.title}\n{viewed.entry}")        
+                print_system_message(viewed.title)
+                print_system_message(viewed.entry)      
                 print("Enter [X] to return to the previous page.")
                 return_val= input("> ").strip().lower()
                 if return_val == 'x': 
@@ -66,8 +88,6 @@ def view_entry(data, page_no):
         print_system_message("An error occurred - invalid input.")
         time.sleep(1)
         return
-
-
 
 def delete_journal_entry(user, journal_id):
     journal_dicts = retrieve_variables_from_data('data/users.json', user.get_username(), 'journals')
@@ -136,10 +156,10 @@ def show_journal_history(user):
             if print_journals(journal_data, page_no):
                 print(f'Page [{page_no}] of [{ceil(len(journal_data)/10)}]\n')
                 print("[V] View a journal entry on this page")
-                print("[E] Edit a journal entry on this page")
+                print("[A] Add to a journal entry on this page")
                 print("[D] Delete a journal entry on this page")
             
-        valid_inputs = ["v", "e", "d", "x"]
+        valid_inputs = ["v", "a", "d", "x"]
         
         if not filtered:
             print("[S] Search by title or text content")
@@ -177,9 +197,9 @@ def show_journal_history(user):
             case "v":
                 print("Enter the input of the entry you want to view, or type [X] to exit")
                 view_entry(journal_data, page_no)
-            case "e":
+            case "a":
                 print("Enter the input of the entry you want to edit, or type [X] to exit")    
-                journal_data = edit_journal_database(user, journal_data, 'e', page_no)
+                journal_data = edit_journal_database(user, journal_data, 'a', page_no)
             case "d":
                 print("Enter the input of the entry you want to delete, or type [X] to exit")
                 journal_data = edit_journal_database(user, journal_data, 'd', page_no)
@@ -314,7 +334,7 @@ def show_history(user):
         print("[A] Appointments - see my appointment history")
         print("[M] Mood - view and delete my past mood entries")
         print("[J] Journal - view, edit and delete my past journal entries")
-        print("[X] Exit\n")
+        print("[X] Exit")
 
         user_input = input("> ").strip().lower()
         if check_exit(user_input):

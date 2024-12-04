@@ -28,6 +28,9 @@ class MoodEntry:
         if len(self.comment) > 50:
             stripped = self.comment[:49]
             return stripped
+        if  "\n" in self.comment:
+            formatted = self.comment.replace("\n", "  ")
+            return formatted
         return self.comment
 
     def to_dict(self):
