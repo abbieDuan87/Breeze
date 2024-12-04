@@ -55,9 +55,9 @@ class AuthService:
         first_name,
         last_name,
         email,
-        emergency_contact_email=None,
-        date_of_birth=None,
         gender=None,
+        date_of_birth=None,
+        emergency_contact_email=None
     ):
         """Helper method to create a new user based on role.
         Args:
@@ -81,9 +81,9 @@ class AuthService:
                     first_name,
                     last_name,
                     email,
-                    gender,
-                    date_of_birth,
-                    emergency_contact_email,
+                    gender=gender,
+                    date_of_birth=date_of_birth,
+                    emergency_contact_email=emergency_contact_email
                 )
             case "m":
                 return MHWP(username, password, first_name, last_name, email)
