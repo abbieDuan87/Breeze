@@ -158,9 +158,7 @@ def manage_appointment(user, auth_service):
                 clear_screen_and_show_banner(PATIENT_BANNER_STRING)
                 print(f"Hi, {user.get_username()} !")
 
-                upcoming_appointments = show_upcoming_appointments(
-                    user, is_own_view=False
-                )
+                upcoming_appointments = show_upcoming_appointments(user)
 
                 if not upcoming_appointments:
                     time.sleep(1)
