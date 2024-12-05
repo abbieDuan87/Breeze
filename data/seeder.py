@@ -58,7 +58,7 @@ def generate_mood_entries(num_entries):
             "id": str(uuid.uuid4()),
             "mood": moods_list[i-1],
             "comment": random.choice(moods[moods_list[i-1]]),
-            "datetime": dates[i],
+            "date": dates[i],
         }
         for i in range(num_entries)
     ]

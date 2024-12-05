@@ -2,11 +2,11 @@ import json
 import time
 import datetime as dt
 from math import ceil
-from breeze.utils.data_utils import create_journal_entries_from_data, create_mood_entries_from_data, create_appointments_from_data, retrieve_variables_from_data, save_attr_data
+from breeze.utils.data_utils import create_journal_entries_from_data, create_mood_entries_from_data, create_appointments_from_data
 from breeze.utils.cli_utils import clear_screen, print_system_message, print_journals, print_moods, check_exit
 from breeze.utils.constants import PATIENT_BANNER_STRING
 
-def edit_journal_database(user, journal_data, edit_delete, page_no):
+def edit_journal_database(user, journal_data, edit_delete, page_no, auth_service):
     try:                      
         journal_ind = input("> ").strip().lower()
         index = int(journal_ind)
@@ -18,9 +18,9 @@ def edit_journal_database(user, journal_data, edit_delete, page_no):
         try:
             journal_id = journal_data[entry].get_id()
             if edit_delete == 'a':
-                journal_data = edit_journal_data(user, journal_data, journal_id, entry)
+                journal_data = edit_journal_data(user, journal_data, journal_id, entry, auth_service)
             else:
-                journal_data = delete_journal_entry(user, journal_id)
+                journal_data = delete_journal_entry(user, journal_id, auth_service)
         except IndexError:
             print_system_message('Invalid index. Please choose from available.')
             time.sleep(2)
@@ -33,7 +33,7 @@ def edit_journal_database(user, journal_data, edit_delete, page_no):
         time.sleep(1)
         return journal_data
 
-def edit_journal_data(user, journal_data, journal_id, entry):
+def edit_journal_data(user, journal_data, journal_id, entry, auth_service):
     journal = journal_data[entry]
     entry = journal.entry
     while True:
@@ -47,14 +47,13 @@ def edit_journal_data(user, journal_data, journal_id, entry):
             return journal_data
         if addition.lower() == "s":
             journal.set_entry(entry)    
-            journal_dicts = retrieve_variables_from_data('data/users.json', user.get_username(), 'journals')
-            for journal_ent in journal_dicts:
+            for journal_ent in user.get_journal_entries():
                 if journal_ent['id'] == journal_id:
                     journal_ent['text'] = entry
                     journal_ent['last_update'] = dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            save_attr_data('data/users.json', user.get_username(), 'journals', journal_dicts)
+            auth_service.save_data_to_file()
             print('Entry edited successfully.')
-            data = create_journal_entries_from_data(journal_dicts)
+            data = create_journal_entries_from_data(user.get_journal_entries())
             time.sleep(2)
             return data
         else:
@@ -89,27 +88,20 @@ def view_entry(data, page_no):
         time.sleep(1)
         return
 
-def delete_journal_entry(user, journal_id):
-    journal_dicts = retrieve_variables_from_data('data/users.json', user.get_username(), 'journals')
-    journal_dicts = [journal for journal in journal_dicts if journal['id'] != journal_id]
-    save_attr_data('data/users.json', user.get_username(), 'journals', journal_dicts)
+def delete_journal_entry(user, journal_id, auth_service):
+    user.delete_journal_entry(journal_id)
+    auth_service.save_data_to_file()
     print('Entry deleted successfully.')
-    data = create_journal_entries_from_data(journal_dicts)
+    data = create_journal_entries_from_data(user.get_journal_entries())
     time.sleep(2)
     return data
 
-def delete_mood_entry(user, mood_id):
-    mood_dicts = retrieve_variables_from_data('data/users.json', user.get_username(), 'moods')
-    try:
-        mood_dicts = [mood for mood in mood_dicts if mood['id'] != mood_id]
-        save_attr_data('data/users.json', user.get_username(), 'moods', mood_dicts)
-        print('Entry deleted successfully.')
-        data = create_mood_entries_from_data(mood_dicts)
-        time.sleep(1)
-    except IndexError:
-        print_system_message('Invalid index. Please choose from available.')
-        time.sleep(2)
-        return
+def delete_mood_entry(user, mood_id, auth_service):
+    user.delete_mood_entry(mood_id)
+    auth_service.save_data_to_file()
+    print('Entry deleted successfully.')
+    data = create_mood_entries_from_data(user.get_mood_entries())
+    time.sleep(1)
     return data
 
 
@@ -127,7 +119,7 @@ def filter_mood_results(data, search_term):
             filtered_list.append(mood)
     return filtered_list
 
-def show_journal_history(user):
+def show_journal_history(user, auth_service):
     # show the users journal entry in table format
     page_no = 1
     filtered = False
@@ -142,7 +134,7 @@ def show_journal_history(user):
                 filtered = False
                 continue
         else:
-            journal_dicts = retrieve_variables_from_data('data/users.json', user.get_username(), 'journals')
+            journal_dicts = user.get_journal_entries()
         
         if not journal_dicts:
             print('\nYou currently have no journal entries!')
@@ -155,6 +147,7 @@ def show_journal_history(user):
                 journal_data = create_journal_entries_from_data(journal_dicts)
             if print_journals(journal_data, page_no):
                 print(f'Page [{page_no}] of [{ceil(len(journal_data)/10)}]\n')
+                print(f"Filtering by result: '{search_filter}'\n") if filtered else None
                 print("[V] View a journal entry on this page")
                 print("[A] Add to a journal entry on this page")
                 print("[D] Delete a journal entry on this page")
@@ -199,10 +192,10 @@ def show_journal_history(user):
                 view_entry(journal_data, page_no)
             case "a":
                 print("Enter the input of the entry you want to edit, or type [X] to exit")    
-                journal_data = edit_journal_database(user, journal_data, 'a', page_no)
+                journal_data = edit_journal_database(user, journal_data, 'a', page_no, auth_service)
             case "d":
                 print("Enter the input of the entry you want to delete, or type [X] to exit")
-                journal_data = edit_journal_database(user, journal_data, 'd', page_no)
+                journal_data = edit_journal_database(user, journal_data, 'd', page_no, auth_service)
             case "n":
                 if "n" in valid_inputs:
                     page_no += 1
@@ -223,12 +216,13 @@ def show_appointment_history(user):
     # show users past appointments
     pass
 
-def show_mood_history(user):
+def show_mood_history(user, auth_service):
     page_no = 1
     filtered = False
     while True: 
         clear_screen()
         print(PATIENT_BANNER_STRING)
+        print(user.get_mood_entries())
 
         if filtered:
             mood_data = filter_mood_results(mood_data, search_filter)
@@ -238,7 +232,7 @@ def show_mood_history(user):
                 filtered = False
                 continue
         else:
-            mood_dicts = retrieve_variables_from_data('data/users.json', user.get_username(), 'moods')
+            mood_dicts = user.get_mood_entries()
         
         if not mood_dicts:
             print('\nYou currently have no mood entries!')
@@ -251,6 +245,7 @@ def show_mood_history(user):
                 mood_data = create_mood_entries_from_data(mood_dicts)
             if print_moods(mood_data, page_no):
                 print(f'Page [{page_no}] of [{ceil(len(mood_data)/10)}]\n')
+                print(f"Filtering by result: '{search_filter}'\n") if filtered else None
                 print("[D] Delete a mood entry on this page")
         
         valid_inputs = ["d", "x"]
@@ -298,7 +293,7 @@ def show_mood_history(user):
                         entry = -(index + (page_no - 1) * 10)
                         try:
                             mood_to_delete = mood_data[entry].get_mood_id()
-                            mood_data = delete_mood_entry(user, mood_to_delete)
+                            mood_data = delete_mood_entry(user, mood_to_delete, auth_service)
                         except IndexError:
                             print_system_message('Invalid index. Please choose from available.')
                             time.sleep(2)
@@ -324,7 +319,7 @@ def show_mood_history(user):
                 time.sleep(1)
                 continue
 
-def show_history(user):
+def show_history(user, auth_service):
     
     while True:
         clear_screen()
@@ -343,9 +338,9 @@ def show_history(user):
             case 'a':
                 show_appointment_history(user)
             case 'm':
-                show_mood_history(user)
+                show_mood_history(user, auth_service)
             case 'j':
-                show_journal_history(user)
+                show_journal_history(user, auth_service)
             case '_':
                 print_system_message('Invalid input. Please try again.')
                 time.sleep(1)
