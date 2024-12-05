@@ -49,34 +49,7 @@ def show_disabled_account_dashboard_menu(username):
         )
         return False
 
-
-def print_appointments(appointments=[], is_own_view=True):
-    if not appointments:
-        print("No upcoming appointments.")
-        return
-
-    headers = ["#", "Date", "Time", "Status", "Patient", "MHWP"]
-
-    rows = [
-        [
-            index + 1,
-            app.date,
-            app.time,
-            (
-                get_colored_status(app.status)
-                if is_own_view
-                else (
-                    get_colored_status("unavailable")
-                    if app.status == "confirmed"
-                    else get_colored_status(app.status)
-                )
-            ),
-            app.patient_username,
-            app.mhwp_username,
-        ]
-        for index, app in enumerate(appointments)
-    ]
-
+def table_creator(headers, rows):
     column_widths = [
         max(len(strip_ansi_codes(str(row[i]))) for row in rows + [headers])
         for i in range(len(headers))
@@ -107,6 +80,70 @@ def print_appointments(appointments=[], is_own_view=True):
         )
     print(separator)
 
+def print_appointments(appointments=[], is_own_view=True):
+    if not appointments:
+        print("No upcoming appointments.")
+        return
+
+    headers = ["#", "Date", "Time", "Status", "Patient", "MHWP"]
+
+    rows = [
+        [
+            index + 1,
+            app.date,
+            app.time,
+            (
+                get_colored_status(app.status)
+                if is_own_view
+                else (
+                    get_colored_status("unavailable")
+                    if app.status == "confirmed"
+                    else get_colored_status(app.status)
+                )
+            ),
+            app.patient_username,
+            app.mhwp_username,
+        ]
+        for index, app in enumerate(appointments)
+    ]
+
+    table_creator(headers, rows)
+
+def print_user_appointments(appointments=[], page=1):
+    if not appointments:
+        return
+    lower = (page - 1) * 10
+    if len(appointments) > ((page - 1) * 10 + 10):
+        upper = lower + 10
+        page_data = appointments[::-1][lower:upper]
+    elif len(appointments) > ((page - 1) * 10):
+        page_data = appointments[::-1][lower:]
+    else:
+        print("No appointments on this page!")
+        return False
+    
+    headers = ["#", "MHWP", "Summary", "Date", "Time"]
+
+    rows = []
+    no_rows = 1
+    for appt in page_data:
+        if appt.summary == None:
+            continue
+        else:
+            stripped = appt.strip_summary()
+            rows.append(
+                [
+                    no_rows,
+                    appt.mhwp_username,
+                    stripped,
+                    appt.date,
+                    appt.time,
+                ]
+            )
+            no_rows += 1
+    table_creator(headers, rows)
+
+    return True
 
 def print_journals(journal_data=[], page=1):
     if not journal_data:
@@ -136,37 +173,68 @@ def print_journals(journal_data=[], page=1):
                 entry.time,
             ]
         )
+    table_creator(headers, rows)
+    # column_widths = [
+    #     max(len(strip_ansi_codes(str(row[i]))) for row in rows + [headers])
+    #     for i in range(len(headers))
+    # ]
 
-    column_widths = [
-        max(len(strip_ansi_codes(str(row[i]))) for row in rows + [headers])
-        for i in range(len(headers))
-    ]
+    # separator = "+".join("-" * (width + 2) for width in column_widths)
+    # separator = f"+{separator}+"
 
-    separator = "+".join("-" * (width + 2) for width in column_widths)
-    separator = f"+{separator}+"
+    # print(separator)
+    # print(
+    #     "| "
+    #     + " | ".join(
+    #         header.center(width) for header, width in zip(headers, column_widths)
+    #     )
+    #     + " |"
+    # )
+    # print(separator)
+    # for row in rows:
+    #     print(
+    #         "| "
+    #         + " | ".join(
+    #             str(cell).ljust(
+    #                 width + len(str(cell)) - len(strip_ansi_codes(str(cell)))
+    #             )
+    #             for cell, width in zip(row, column_widths)
+    #         )
+    #         + " |"
+    #     )
+    # print(separator)
 
-    print(separator)
-    print(
-        "| "
-        + " | ".join(
-            header.center(width) for header, width in zip(headers, column_widths)
+    return True
+
+def print_moods(mood_data=[], page=1):
+    if not mood_data:
+        return
+    lower = (page - 1) * 10
+    if len(mood_data) > ((page - 1) * 10 + 10):
+        upper = lower + 10
+        page_data = mood_data[::-1][lower:upper]
+    elif len(mood_data) > ((page - 1) * 10):
+        page_data = mood_data[::-1][lower:]
+    else:
+        print("No journal items on this page!")
+        return False
+
+    headers = ["#", "Mood", "Comment", "Date", "Time"]
+
+    rows = []
+    for index, mood in enumerate(page_data):
+        comment = mood.strip_comments()
+        rows.append(
+            [
+                index + 1,
+                mood.mood,
+                comment,
+                mood.date,
+                mood.time,
+            ]
         )
-        + " |"
-    )
-    print(separator)
-    for row in rows:
-        print(
-            "| "
-            + " | ".join(
-                str(cell).ljust(
-                    width + len(str(cell)) - len(strip_ansi_codes(str(cell)))
-                )
-                for cell, width in zip(row, column_widths)
-            )
-            + " |"
-        )
-    print(separator)
 
+    table_creator(headers, rows)
     return True
 def is_empty(input):
         if not input:
@@ -232,68 +300,6 @@ def is_invalid_email(email):
         else:
             print_system_message("Email is formatted incorrectly! Please try again.")
             return True
-
-
-def print_moods(mood_data=[], page=1):
-    if not mood_data:
-        return
-    lower = (page - 1) * 10
-    if len(mood_data) > ((page - 1) * 10 + 10):
-        upper = lower + 10
-        page_data = mood_data[::-1][lower:upper]
-    elif len(mood_data) > ((page - 1) * 10):
-        page_data = mood_data[::-1][lower:]
-    else:
-        print("No journal items on this page!")
-        return False
-
-    headers = ["#", "Mood", "Comment", "Date", "Time"]
-
-    rows = []
-    for index, mood in enumerate(page_data):
-        comment = mood.strip_comments()
-        rows.append(
-            [
-                index + 1,
-                mood.mood,
-                comment,
-                mood.date,
-                mood.time,
-            ]
-        )
-
-    column_widths = [
-        max(len(strip_ansi_codes(str(row[i]))) for row in rows + [headers])
-        for i in range(len(headers))
-    ]
-
-    separator = "+".join("-" * (width + 2) for width in column_widths)
-    separator = f"+{separator}+"
-
-    print(separator)
-    print(
-        "| "
-        + " | ".join(
-            header.center(width) for header, width in zip(headers, column_widths)
-        )
-        + " |"
-    )
-    print(separator)
-    for row in rows:
-        print(
-            "| "
-            + " | ".join(
-                str(cell).ljust(
-                    width + len(str(cell)) - len(strip_ansi_codes(str(cell)))
-                )
-                for cell, width in zip(row, column_widths)
-            )
-            + " |"
-        )
-    print(separator)
-
-    return True
-
 
 def clear_screen_and_show_banner(banner_str):
     clear_screen()

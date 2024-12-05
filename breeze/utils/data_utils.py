@@ -193,6 +193,7 @@ def create_appointments_from_data(appointments_data):
         mhwp_username = app.get("mhwpUsername", None)
         patient_username = app.get("patientUsername", None)
         appointment_id = app.get("appointmentId", None)
+        summary = app.get("summary", None)
         appointment_entries.append(
             AppointmentEntry(
                 date,
@@ -201,6 +202,7 @@ def create_appointments_from_data(appointments_data):
                 mhwp_username,
                 patient_username,
                 appointment_id,
+                summary
             )
         )
 
