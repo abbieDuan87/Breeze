@@ -1,4 +1,5 @@
 from datetime import datetime, time, date
+import time as tm
 from breeze.utils.cli_utils import (
     check_exit,
     clear_screen,
@@ -19,18 +20,16 @@ def print_journal_dashboard(user, title=None, body=None):
         print("\n" + body)
 
 def enter_journal(user, auth_service):
-    error = False
     while True:
         print_journal_dashboard(user)
         # title of the journal entry
         print("What is the title of your entry?")
-        if error:
-            print_system_message("Your title is empty! Please try again!")
         journal_title = input("> ").strip()
         if check_exit(journal_title):
             return 
         if not journal_title:
-            error = True
+            print_system_message("Your title is empty! Please try again!")
+            tm.sleep(1)
             continue
         else:
             break

@@ -37,7 +37,7 @@ def search_exercise():
                 f"Here is your selected meditation for '{valid_keywords[choice]['name']}':"
             )
             print_system_message(colorise(text=search_url, color=63, underline=True))
-            time.sleep(3)
+            time.sleep(1)
             direct_to_dashboard()
         else:
             print_system_message("Invalid choice. Please select a valid option.")

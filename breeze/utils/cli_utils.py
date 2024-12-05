@@ -301,12 +301,7 @@ def check_previous(input_value):
 def direct_to_dashboard(message=""):
     if message:
         print(f"\n{message}")
-    print("Please press B to go back to the dashboard.")
-
-    while True:
-        user_input = input("> ").strip().lower()
-        if user_input == "b":
-            clear_screen()
-            break
-        else:
-            print("Invalid input. Please press B to go back to the dashboard.")
+    print("Enter anything to go back to the dashboard.")
+    user_input = input("> ").strip().lower()
+    clear_screen()
+    return
