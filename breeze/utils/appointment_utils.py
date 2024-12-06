@@ -19,6 +19,17 @@ def confirm_user_choice(
             return False
 
 
+def cancel_appointments_with_inactive_accounts(auth_service, appointments):
+    for app in appointments:
+        patient = auth_service.get_user_by_username(app.patient_username)
+        mhwp = auth_service.get_user_by_username(app.mhwp_username)
+
+        if patient.get_is_disabled() or mhwp.get_is_disabled():
+            app.cancel_appointment()
+
+        auth_service.save_data_to_file()
+
+
 def show_upcoming_appointments(
     user, key=(lambda app: (app.get_date(), app.get_time())), is_own_view=True
 ):
