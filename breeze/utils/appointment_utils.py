@@ -19,6 +19,17 @@ def confirm_user_choice(
             return False
 
 
+def cancel_appointments_with_inactive_accounts(auth_service, appointments):
+    for app in appointments:
+        patient = auth_service.get_user_by_username(app.patient_username)
+        mhwp = auth_service.get_user_by_username(app.mhwp_username)
+
+        if patient.get_is_disabled() or mhwp.get_is_disabled():
+            app.cancel_appointment()
+
+        auth_service.save_data_to_file()
+
+
 def show_upcoming_appointments(
     user, key=(lambda app: (app.get_date(), app.get_time())), is_own_view=True
 ):
@@ -55,6 +66,16 @@ def handle_appointment_action(
     if not appointment:
         print_system_message("No appointment found at the given index.")
         time.sleep(1)
+        return False
+
+    mhwp_obj = auth_service.get_user_by_username(appointment.mhwp_username)
+    patient_obj = auth_service.get_user_by_username(appointment.patient_username)
+
+    if mhwp_obj.get_is_disabled() or patient_obj.get_is_disabled():
+        print_system_message(
+            "This appointment cannot be confirmed or cancelled because the patient's account has been disabled. No further action is required."
+        )
+        time.sleep(2)
         return False
 
     if action == "cancel" and appointment.get_status() == "cancelled":

@@ -120,6 +120,33 @@ def filter_mood_results(data, search_term):
             filtered_list.append(mood)
     return filtered_list
 
+def view_appt_summary(data, page_no):
+    try:
+        ind = input("> ").strip().lower()
+        index = int(ind)
+        if not 0 < index <= 10:
+            print_system_message('Invalid index. Please choose from available.')
+            time.sleep(2)
+        entry = -(index + (page_no - 1) * 10)
+        try:
+            viewed = data[entry]        
+            while True:
+                clear_screen()
+                print(PATIENT_BANNER_STRING)
+                print_system_message(viewed.mhwp_username)
+                print_system_message(viewed.summary)      
+                print("Enter [X] to return to the previous page.")
+                return_val= input("> ").strip().lower()
+                if return_val == 'x': 
+                    break
+        except IndexError:
+            print_system_message('Invalid index. Please choose from available.')
+            time.sleep(2)
+    except ValueError:
+        if ind == "x":
+            return
+        print_system_message("An error occurred - invalid input.")
+
 def show_journal_history(user, auth_service):
     # show the users journal entry in table format
     page_no = 1
@@ -234,25 +261,21 @@ def show_appointment_history(user):
                 filtered = False
                 continue
         else:
-            appt_dicts = []
-            appt_ids = retrieve_variables_from_data('data/users.json', user.get_username(), 'appointments')
-            with open ('data/users.json', 'r') as file:
-                data = json.load(file)
-                for appt_id in appt_ids:
-                    for appt in data['appointments']:
-                        if appt['appointmentId'] == appt_id and appt.get('summary', None) != None:
-                            appt_dicts.append(appt)
-        if not appt_dicts:
+            appt_data = []
+            appts = user.get_appointments()
+            for appt in appts:
+                if appt.summary != None:
+                    appt_data.append(appt)
+        if not appt_data:
             print('\nYou currently have no appointments!')
             print('Navigate to the Appointment tab on the dashboard to schedule an appointment with your MHWP.')
             print('Returning...')
             time.sleep(3)
             break
         else:
-            if not filtered:
-                appt_data = create_appointments_from_data(appt_dicts)
             if print_user_appointments(appt_data):
                 print(f'Page [{page_no}] of [{ceil(len(appt_data)/10)}]\n')
+                print(f"Filtering by result: '{search_filter}'\n") if filtered else None
                 print("[V] View an appointment on this page")
         
         valid_inputs = ["v", "x"]
@@ -280,7 +303,8 @@ def show_appointment_history(user):
             continue
         match user_input:
             case "v":
-                pass
+                print("Enter the input of the entry you want to view, or type [X] to exit")
+                view_appt_summary(appt_data, page_no)
             case "s":
                 print("Type a term to search by or quit using [X]:")
                 while True:

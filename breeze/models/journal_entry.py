@@ -53,21 +53,20 @@ class JournalEntry:
         }
     
     def strip_title(self):
-        if len(self.title) > 20:
-            stripped_title = self.title[:19] + '...'
-            return stripped_title
-        else:
-            return self.title
+        stripped = self.title
+        if "\n" in stripped:
+            stripped = stripped.replace("\n", "  ")
+        if len(self.summary) > 20:
+            stripped = stripped[:19] + '...'
+        return stripped
         
     def strip_entry(self):
-        if len(self.entry) > 50:
-            stripped_entry = self.entry[:49] + '...'
-            return stripped_entry
-        if  "\n" in self.entry:
-            formatted_entry = self.entry.replace("\n", "  ")
-            return formatted_entry
-        else:
-            return self.entry
+        stripped = self.entry
+        if "\n" in stripped:
+            stripped = stripped.replace("\n", "  ")
+        if len(stripped) > 50:
+            stripped = stripped[:50] + '...'
+        return stripped
     
     def __str__(self):
         return (

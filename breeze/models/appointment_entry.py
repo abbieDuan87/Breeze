@@ -94,6 +94,7 @@ class AppointmentEntry:
             f"  status={self.status},\n"
             f"  patient={self.patient_username},\n"
             f"  mhwp={self.mhwp_username}\n"
+            f"  summary={self.summary}"
             f")"
         )
 
