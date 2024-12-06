@@ -3,7 +3,7 @@ import time
 import datetime as dt
 from math import ceil
 
-from breeze.utils.cli_utils import clear_screen, print_system_message, print_journals, print_moods, check_exit
+from breeze.utils.data_utils import create_journal_entries_from_data, create_mood_entries_from_data
 from breeze.utils.cli_utils import clear_screen, print_system_message, print_user_appointments, print_journals, print_moods, check_exit
 from breeze.utils.constants import PATIENT_BANNER_STRING
 

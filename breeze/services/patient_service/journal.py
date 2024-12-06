@@ -63,7 +63,7 @@ def enter_journal(user, auth_service):
     if hasattr(user, "add_journal_entry"):
         user.add_journal_entry(new_entry.get_id(), journal_title, journal_body, datetime_str)
         auth_service.save_data_to_file()
-        display_journal_screen(user, title=title, body=journal_body)
+        print_journal_dashboard(user, title=title, body=journal_body)
         direct_to_dashboard("Journal entry saved! You may view and add to your entry via [H] History")
     else:
         print_system_message(f"User {user.get_username()} not found in records!")
