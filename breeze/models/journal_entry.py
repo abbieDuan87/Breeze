@@ -56,7 +56,7 @@ class JournalEntry:
         stripped = self.title
         if "\n" in stripped:
             stripped = stripped.replace("\n", "  ")
-        if len(self.summary) > 20:
+        if len(self.title) > 20:
             stripped = stripped[:19] + '...'
         return stripped
         
