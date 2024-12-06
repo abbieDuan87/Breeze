@@ -92,7 +92,7 @@ def print_appointments(appointments=[], is_own_view=True):
     rows = [
         [
             index + 1,
-            app.date,
+            app.date.strftime("%d-%m-%Y"),
             app.time,
             (
                 get_colored_status(app.status)
@@ -286,11 +286,11 @@ def is_invalid_username(username, users):
 
 
 def is_invalid_date(date):
-    date_regex = "^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/([0-9]{4})$"
+    date_regex = "^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-([0-9]{4})$"
     if re.match(date_regex, date):
         # secondary check for invalid dates eg. 31 Sep, 31 Feb
         try:
-            dob_check = dt.strptime(date, "%d/%m/%Y")
+            dob_check = dt.strptime(date, "%d-%m-%Y")
             sixteenth = dt(dob_check.year + 16, dob_check.month, dob_check.day)
             if dt.now() > sixteenth:
                 return False

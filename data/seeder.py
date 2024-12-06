@@ -27,12 +27,13 @@ def random_datetime_next_weekdays():
     random_weekday = random.choice(weekdays)
     return random_weekday
 
+
 def random_datetime_next_last(next_last):
     dates = []
-    j = 1 if next_last == 'next' else -1
+    j = 1 if next_last == "next" else -1
     for i in range(7):
-        if next_last == 'last':
-            i+=1
+        if next_last == "last":
+            i += 1
         last_day = (datetime.now() + timedelta(days=i * j)).date()
         if last_day.weekday() in (5, 6):
             continue
@@ -40,6 +41,7 @@ def random_datetime_next_last(next_last):
             dates.append(last_day)
     return random.choice(dates)
 
+  
 def random_datetime(start, end):
     delta = end - start
     random_second = random.randint(0, int(delta.total_seconds()))
@@ -51,7 +53,7 @@ def random_date_of_birth(min_age=18, max_age=80):
     birth_year = today.year - random.randint(min_age, max_age)
     birth_month = random.randint(1, 12)
     birth_day = random.randint(1, 28)  # Avoid invalid dates
-    return datetime(birth_year, birth_month, birth_day).strftime("%Y-%m-%d")
+    return datetime(birth_year, birth_month, birth_day).strftime("%d-%m-%Y")
 
 
 def generate_mood_entries(num_entries):
@@ -62,7 +64,7 @@ def generate_mood_entries(num_entries):
         "Sad": ["Feeling bad.", "Feeling a bit down.", ":/"], 
         "Very Sad": ["Feel terrible.", "Feeling awful right now.", ":("]}
     
-    dates = [random_datetime_within_week().strftime("%Y-%m-%d %H:%M:%S") for i in range(num_entries)]
+    dates = [random_datetime_within_week().strftime("%d-%m-%Y %H:%M:%S") for i in range(num_entries)]
     dates = sorted(dates)
     moods_list = [random.choice(list(moods.keys())) for i in range(num_entries)]
     return [
@@ -133,8 +135,8 @@ def generate_prescriptions():
             "medication": random.choice(medications),
             "dosage": f"{random.randint(1, 3)} mg",
             "frequency": "once daily",
-            "start_date": (datetime.now() - timedelta(days=30)).strftime("%Y-%m-%d"),
-            "end_date": (datetime.now() + timedelta(days=180)).strftime("%Y-%m-%d"),
+            "start_date": (datetime.now() - timedelta(days=30)).strftime("%d-%m-%Y"),
+            "end_date": (datetime.now() + timedelta(days=180)).strftime("%d-%m-%Y"),
             "notes": "Take with food.",
         }
     ]
@@ -162,7 +164,7 @@ def generate_appointments(patients, mhwps):
         "Focused on grounding techniques for managing panic.",
         "Explored triggers for depression; planned positive activities.",
         "Reviewed progress with therapy goals and setbacks.",
-        "Addressed guilt and worked on self-forgiveness strategies."
+        "Addressed guilt and worked on self-forgiveness strategies.",
     ]
 
     appointments = []
@@ -181,13 +183,15 @@ def generate_appointments(patients, mhwps):
         if assigned_mhwp:
             for i in range(2):
                 # generate elapsed appointments first
-                next_last = 'last' if i == 0 else 'next'
+                next_last = "last" if i == 0 else "next"
                 num_appointments = random.randint(
                     1, 3
                 )  # Generate 1-3 appointments per patient
                 generated_appointments = set()  # prevent generated overlap appointment
                 for _ in range(num_appointments):
-                    appointment_date = random_datetime_next_last(next_last).strftime("%Y-%m-%d")
+                    appointment_date = random_datetime_next_last(next_last).strftime(
+                        "%d-%m-%Y"
+                    )
                     appointment_time = random.choice(time_slots)
 
                     appointment_key = (appointment_date, appointment_time)
@@ -201,14 +205,14 @@ def generate_appointments(patients, mhwps):
                         "appointmentId": str(uuid.uuid4()),
                         "date": appointment_date,
                         "time": appointment_time,
-                        "status": random.choice(statuses) if i == 1 else 'confirmed',
+                        "status": random.choice(statuses) if i == 1 else "confirmed",
                         "mhwpUsername": assigned_mhwp,
                         "patientUsername": patient["username"],
                     }
 
                     # Add comment if appointment was in the past
                     if i == 0:
-                        appointment['summary'] = random.choice(summaries)
+                        appointment["summary"] = random.choice(summaries)
 
                     # Add the appointment to the global list
                     appointments.append(appointment)
@@ -234,26 +238,28 @@ def generate_patients(num_patients, mhwp_usernames):
     patients = []
     for i in range(1, num_patients + 1):
         assigned_mhwp = mhwp_usernames[(i - 1) % len(mhwp_usernames)]
-        patients.append({
-            "username": f"patient{i}",
-            "password": "",
-            "role": "Patient",
-            "isDisabled": False,
-            "information": {
-                "firstName": f"Patient{i}First",
-                "lastName": f"Patient{i}Last",
-                "email": f"patient{i}@example.com",
-                "emergencyContactEmail": f"emergency.patient{i}@example.com",
-                "gender": random.choice(genders),
-                "dateOfBirth": random_date_of_birth(),
-            },
-            "assignedMHWP": assigned_mhwp,
-            "moods": generate_mood_entries(random.randint(2, 15)),
-            "journals": generate_journals(random.randint(1, 5)),
-            "appointments": [],
-            "conditions": generate_conditions(),
-            "prescriptions": generate_prescriptions(),
-        })
+        patients.append(
+            {
+                "username": f"patient{i}",
+                "password": "",
+                "role": "Patient",
+                "isDisabled": False,
+                "information": {
+                    "firstName": f"Patient{i}First",
+                    "lastName": f"Patient{i}Last",
+                    "email": f"patient{i}@example.com",
+                    "emergencyContactEmail": f"emergency.patient{i}@example.com",
+                    "gender": random.choice(genders),
+                    "dateOfBirth": random_date_of_birth(),
+                },
+                "assignedMHWP": assigned_mhwp,
+                "moods": generate_mood_entries(random.randint(2, 15)),
+                "journals": generate_journals(random.randint(1, 5)),
+                "appointments": [],
+                "conditions": generate_conditions(),
+                "prescriptions": generate_prescriptions(),
+            }
+        )
     return patients
 
 

@@ -48,7 +48,7 @@ def decode_user(user_data, appointments_data):
             appointments=appointments,
             assigned_MHWP=user_data.get("assignedMHWP", None),
             conditions=user_data.get("conditions", {}),
-            prescriptions=user_data.get("prescriptions", [])
+            prescriptions=user_data.get("prescriptions", []),
         )
 
     elif role == "admin":
@@ -134,7 +134,8 @@ def save_data(file_path, user_object_list):
 
     with open(file_path, "w") as file:
         json.dump(data_to_save, file, indent=4)
-            
+
+        
 def create_appointments_from_data(appointments_data):
     """Convert each appointment entry (dictionary) into Appoinment Entry object
 
@@ -162,11 +163,12 @@ def create_appointments_from_data(appointments_data):
                 mhwp_username,
                 patient_username,
                 appointment_id,
-                summary
+                summary,
             )
         )
 
     return appointment_entries
+
 
 def create_journal_entries_from_data(journal_data):
     """Convert each journal entry (dictionary) into JournalEntry object
@@ -185,8 +187,8 @@ def create_journal_entries_from_data(journal_data):
         body = entry.get("text")
         dt = entry.get("date")
         last_update = entry.get("last_update")
-        date = datetime.strptime(dt, "%Y-%m-%d %H:%M:%S").date()
-        time = datetime.strptime(dt, "%Y-%m-%d %H:%M:%S").time()
+        date = datetime.strptime(dt, "%d-%m-%Y %H:%M:%S").date()
+        time = datetime.strptime(dt, "%d-%m-%Y %H:%M:%S").time()
         journal_entries.append(
             JournalEntry(
                 title,
@@ -199,6 +201,7 @@ def create_journal_entries_from_data(journal_data):
         )
 
     return journal_entries
+
 
 def create_mood_entries_from_data(mood_data):
     """Convert each mood entry (dictionary) into MoodEntry object
@@ -216,8 +219,8 @@ def create_mood_entries_from_data(mood_data):
         mood = entry.get("mood")
         comment = entry.get("comment")
         dt = entry.get("date")
-        date = datetime.strptime(dt, "%Y-%m-%d %H:%M:%S").date()
-        time = datetime.strptime(dt, "%Y-%m-%d %H:%M:%S").time()
+        date = datetime.strptime(dt, "%d-%m-%Y %H:%M:%S").date()
+        time = datetime.strptime(dt, "%d-%m-%Y %H:%M:%S").time()
         mood_entries.append(
             MoodEntry(
                 mood,
@@ -229,6 +232,7 @@ def create_mood_entries_from_data(mood_data):
         )
 
     return mood_entries
+
 
 # for testing, to run: python -m breeze.utils.data_utils
 if __name__ == "__main__":
