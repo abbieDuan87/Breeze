@@ -55,7 +55,6 @@ def enter_journal(user, auth_service):
             journal_body = journal_body + "\n" + journal_addition
 
     # Combine all parts of the journal entry
-    journal_ent = journal_body + " " + " ".join(journal_additions)
     datetime_str = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
     date_string = datetime.now().strftime("%d-%m-%Y")
     time_string = datetime.now().strftime("%H:%M:%S")

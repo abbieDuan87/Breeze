@@ -176,7 +176,7 @@ def print_journals(journal_data=[], page=1):
                 stripped,
                 entry.date,
                 entry.time,
-                entry.last_update if str(entry.last_update) != str(date_time) else 'No Updates'
+                entry.last_update if str(entry.last_update) != dt.strftime(date_time, '%d-%m-%Y %H:%M:%S') else 'No Updates'
             ]
         )
     table_creator(headers, rows)
