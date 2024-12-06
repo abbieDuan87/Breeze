@@ -60,35 +60,6 @@ def edit_journal_data(user, journal_data, journal_id, entry, auth_service):
         else:
             entry = entry + "\n" + addition
 
-def view_entry(data, page_no):
-    try:
-        journal_ind = input("> ").strip().lower()
-        index = int(journal_ind)
-        if not 0 < index <= 10:
-            print_system_message('Invalid index. Please choose from available.')
-            time.sleep(2)
-        entry = -(index + (page_no - 1) * 10)
-        try:
-            viewed = data[entry]        
-            while True:
-                clear_screen()
-                print(PATIENT_BANNER_STRING)
-                print_system_message(viewed.title)
-                print_system_message(viewed.entry)      
-                print("Enter [X] to return to the previous page.")
-                return_val= input("> ").strip().lower()
-                if return_val == 'x': 
-                    break
-        except IndexError:
-            print_system_message('Invalid index. Please choose from available.')
-            time.sleep(2)
-    except ValueError:
-        if journal_ind == "x":
-            return
-        print_system_message("An error occurred - invalid input.")
-        time.sleep(1)
-        return
-
 def delete_journal_entry(user, journal_id, auth_service):
     user.delete_journal_entry(journal_id)
     auth_service.save_data_to_file()
@@ -119,6 +90,42 @@ def filter_mood_results(data, search_term):
         if search_term in mood.mood.lower() or search_term in mood.comment.lower():
             filtered_list.append(mood)
     return filtered_list
+
+def filter_appt_results(data, search_term):
+    filtered_list = []
+    for appt in data:
+        if search_term in appt.summary.lower() or search_term in appt.mhwp_username.lower():
+            filtered_list.append(appt)
+    return filtered_list
+
+def view_entry(data, page_no):
+    try:
+        journal_ind = input("> ").strip().lower()
+        index = int(journal_ind)
+        if not 0 < index <= 10:
+            print_system_message('Invalid index. Please choose from available.')
+            time.sleep(2)
+        entry = -(index + (page_no - 1) * 10)
+        try:
+            viewed = data[entry]        
+            while True:
+                clear_screen()
+                print(PATIENT_BANNER_STRING)
+                print_system_message(viewed.title)
+                print_system_message(viewed.entry)      
+                print("Enter [X] to return to the previous page.")
+                return_val= input("> ").strip().lower()
+                if return_val == 'x': 
+                    break
+        except IndexError:
+            print_system_message('Invalid index. Please choose from available.')
+            time.sleep(2)
+    except ValueError:
+        if journal_ind == "x":
+            return
+        print_system_message("An error occurred - invalid input.")
+        time.sleep(1)
+        return
 
 def view_appt_summary(data, page_no):
     try:
@@ -238,13 +245,6 @@ def show_journal_history(user, auth_service):
                 print("An error occurred - invalid input.")
                 time.sleep(1)
                 continue
-
-def filter_appt_results(data, search_term):
-    filtered_list = []
-    for appt in data:
-        if search_term in appt.summary.lower() or search_term in appt.mhwp_username.lower():
-            filtered_list.append(appt)
-    return filtered_list
     
 def show_appointment_history(user):
     page_no = 1
@@ -306,12 +306,14 @@ def show_appointment_history(user):
                 print("Enter the input of the entry you want to view, or type [X] to exit")
                 view_appt_summary(appt_data, page_no)
             case "s":
-                print("Type a term to search by or quit using [X]:")
+                print("Type a term to search by or quit using [X] (type 'X/' to filter by string 'X'):")
                 while True:
                     search_filter = input("> ").strip().lower()
                     if search_filter == 'x':
                         break
                     else:
+                        if search_filter == 'x/':
+                            search_filter = 'x'
                         page_no = 1
                         filtered = True
                         break
@@ -386,12 +388,14 @@ def show_mood_history(user, auth_service):
             continue
         match user_input:
             case "s":
-                print("Type a term to search by or quit using [X]:")
+                print("Type a term to search by or quit using [X] (type 'X/' to filter by string 'X'):")
                 while True:
                     search_filter = input("> ").strip().lower()
                     if search_filter == 'x':
                         break
                     else:
+                        if search_filter  == "x/":
+                            search_filter = "x"
                         page_no = 1
                         filtered = True
                         break

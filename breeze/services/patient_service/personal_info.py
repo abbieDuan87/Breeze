@@ -52,7 +52,9 @@ def edit_personal_information(user, auth_service):
         'f' : 'Female',
         'n' : 'Non-binary',
         't' : 'Transgender',
-        'o' : 'Other'
+        'o' : 'Other',
+        "0": "Other"
+    
     }
     while True:
         show_default_layout(user, addon=addon)
