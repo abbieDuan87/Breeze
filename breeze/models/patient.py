@@ -52,13 +52,13 @@ class Patient(User, AppointmentMixin):
         self.__gender = gender
 
     def get_gender(self):
-        return self.__gender
+        return self.__gender or "Unkonwn"
     
     def set_date_of_birth(self, date_of_birth):
         self.__date_of_birth = date_of_birth
 
     def get_date_of_birth(self):
-        return self.__date_of_birth
+        return self.__date_of_birth or "Unknown"
 
     def get_mood_entries(self):
         return self.__mood_entries
@@ -102,9 +102,10 @@ class Patient(User, AppointmentMixin):
         timestamp = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
         if condition not in self.__conditions:
             self.__conditions[condition] = []  
-        self.__conditions[condition].append({"note": notes, "timestamp": timestamp})  # Add note with timestamp
-
-
+        self.__conditions[condition].append({"note": notes, "timestamp": timestamp})
+    
+    def get_conditions(self):
+        return self.__conditions
 
     def add_prescription(self, medication, dosage, frequency, start_date, end_date, notes):
         self.__prescriptions.append({

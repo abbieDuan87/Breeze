@@ -4,7 +4,7 @@ from breeze.models.admin import Admin
 from breeze.models.patient import Patient
 from breeze.models.mhwp import MHWP
 
-from breeze.utils.cli_utils import print_system_message, direct_to_dashboard, clear_screen, is_invalid_username, is_invalid_date, is_invalid_email
+from breeze.utils.cli_utils import print_system_message, direct_to_dashboard, clear_screen, is_invalid_username, is_invalid_date, is_invalid_email, is_valid_name, is_empty
 from breeze.utils.data_utils import load_data, save_data
 from breeze.utils.constants import REGISTER_BANNER_STRING
 
@@ -99,11 +99,24 @@ class AuthService:
             else:
                 print_system_message("Invalid role. Please select a valid option.")
 
-        first_name = input("First name: ").strip()
-        last_name = input("Last name: ").strip()
+        while True:
+            first_name = input("First name: ").strip()
+            if is_empty(first_name):
+                continue
+            elif is_valid_name(first_name):
+                break
 
         while True:
+            last_name = input("Last name: ").strip()
+            if is_empty(last_name):
+                continue
+            elif is_valid_name(last_name):
+                break
+            
+        while True:
             email = input("Email: ").strip()
+            if is_empty(email):
+                continue
             if is_invalid_email(email):
                 continue
             break
@@ -115,19 +128,21 @@ class AuthService:
             break
 
         password = input("Password: ").strip()
-        
+
         gender = None
         date_of_birth = None
         emergency_contact_email = None
-        
+
         if role == "p":
-            print("Gender Options:\n[M] Male\n[F] Female\n[N] Non-binary\n[T] Transgender\n[O] Other")
+            print(
+                "Gender Options:\n[M] Male\n[F] Female\n[N] Non-binary\n[T] Transgender\n[O] Other"
+            )
             gender_dict = {
-                'm' : 'Male',
-                'f' : 'Female',
-                'n' : 'Non-binary',
-                't' : 'Transgender',
-                'o' : 'Other'
+                "m": "Male",
+                "f": "Female",
+                "n": "Non-binary",
+                "t": "Transgender",
+                "o": "Other",
             }
             while True:
                 gender = input("> ").strip().lower()
@@ -144,98 +159,126 @@ class AuthService:
                 break
 
             while True:
-                emergency_contact_email = input("Emergency contact email (optional): ").strip()
-                if emergency_contact_email and is_invalid_email(emergency_contact_email):
+                emergency_contact_email = input(
+                    "Emergency contact email (optional): "
+                ).strip()
+                if emergency_contact_email and is_invalid_email(
+                    emergency_contact_email
+                ):
                     continue
                 break
 
         while True:
             clear_screen()
             print(REGISTER_BANNER_STRING)
-            if role == 'p':
+            if role == "p":
                 print_system_message(
                     f"First name: {first_name}\nLast name: {last_name}\nEmail: {email}\n"
                     f"Username: {username}\nPassword: {password}\nGender: {gender}\n"
                     f"Date of Birth: {date_of_birth}\nEmergency Contact Email: {emergency_contact_email}"
                 )
-            else: 
+            else:
                 print_system_message(
                     f"First name: {first_name}\nLast name: {last_name}\nEmail: {email}\n"
                     f"Username: {username}\nPassword: {password}"
                 )
-            print("Would you like to edit any of the information? Enter [E] to edit, or type any other key to confirm details.")
+            print(
+                "Would you like to edit any of the information? Enter [E] to edit, or type any other key to confirm details."
+            )
             response = input("> ").strip().lower()
-            if response == 'e':
+            if response == "e":
                 clear_screen()
                 print(REGISTER_BANNER_STRING)
-                if role == 'p':
+                if role == "p":
                     print_system_message(
                         f"First name: {first_name}\nLast name: {last_name}\nEmail: {email}\n"
                         f"Username: {username}\nPassword: {password}\nEmergency Contact Email: {emergency_contact_email}"
                     )
-                    print('Enter the value of the data you wish to edit (1-8), or type any other key to confirm:')
-                
-                else: 
+                    print(
+                        "Enter the value of the data you wish to edit (1-8), or type any other key to confirm:"
+                    )
+
+                else:
                     print_system_message(
                         f"First name: {first_name}\nLast name: {last_name}\nEmail: {email}\n"
                         f"Username: {username}\nPassword: {password}"
                     )
-                    print('Enter the value of the data you wish to edit (1-5), or type any other key to confirm:')
-                
-                print('[1] First Name\n[2] Last Name\n[3] Email\n[4] Username\n[5] Password')
-                if role == 'p':
-                    print('[6] Gender\n[7] Date of Birth\n[8] Emergency Contact Email')
+                    print(
+                        "Enter the value of the data you wish to edit (1-5), or type any other key to confirm:"
+                    )
 
-                to_edit = input('> ').strip().lower()
+                print(
+                    "[1] First Name\n[2] Last Name\n[3] Email\n[4] Username\n[5] Password"
+                )
+                if role == "p":
+                    print("[6] Gender\n[7] Date of Birth\n[8] Emergency Contact Email")
 
-                if role == 'p':
+                to_edit = input("> ").strip().lower()
+
+                if role == "p":
                     match to_edit:
-                        case '6':
+                        case "6":
                             while True:
                                 gender = input("> ").strip().lower()
                                 if gender not in gender_dict.keys():
-                                    print_system_message("Please select a valid option.")
+                                    print_system_message(
+                                        "Please select a valid option."
+                                    )
                                 else:
                                     gender = gender_dict[gender]
                                     break
-                        case '7':
+                        case "7":
                             while True:
                                 date_of_birth = input("Date of Birth (DD/MM/YYYY): ")
                                 if is_invalid_date(date_of_birth):
                                     continue
                                 break
-                        case '8':
+                        case "8":
                             while True:
-                                emergency_contact_email = input("Emergency Contact Email (Optional): ").strip()
-                                if emergency_contact_email and is_invalid_email(emergency_contact_email):
+                                emergency_contact_email = input(
+                                    "Emergency Contact Email (Optional): "
+                                ).strip()
+                                if emergency_contact_email and is_invalid_email(
+                                    emergency_contact_email
+                                ):
                                     continue
                                 break
                         case _:
                             pass
                 match to_edit:
                     case '1':
-                        first_name = input("First name: ").strip()
+                        while True:
+                            first_name = input("First name: ").strip()
+                            if is_empty(first_name):
+                                continue
+                            elif is_valid_name(first_name):
+                                break
                     case '2':
-                        last_name = input("Last name: ").strip()
+                        while True:
+                            last_name = input("Last name: ").strip()
+                            if is_empty(last_name):
+                                continue
+                            elif is_valid_name(last_name):
+                                break
                     case '3':
                         while True:
                             email = input("Email: ").strip()
                             if is_invalid_email(email):
                                 continue
                             break
-                    case '4':
+                    case "4":
                         while True:
                             username = input("Username: ").strip().lower()
                             if is_invalid_username(username, self.users):
                                 continue
                             break
-                    case '5':
+                    case "5":
                         password = input("Password: ").strip()
                     case _:
                         break
             else:
                 break
-        
+
         new_user = self._register_role(
             role,
             username,
@@ -252,13 +295,15 @@ class AuthService:
             if mhwp:
                 mhwp.add_patient(new_user.get_username())
                 new_user.set_assigned_mhwp(mhwp.get_username())
-                print_system_message(f"You have been assigned to MHWP: {mhwp.get_first_name()} {mhwp.get_last_name()}.")
+                print_system_message(
+                    f"You have been assigned to MHWP: {mhwp.get_first_name()} {mhwp.get_last_name()}."
+                )
 
         if new_user:
             self.users[new_user.get_username()] = new_user
             self.save_data_to_file()
             direct_to_dashboard("Account created successfully!")
-    
+
     def find_mhwp_with_fewest_patients(self):
         """Finds the MHWP with the fewest assigned patients.
 
@@ -276,9 +321,17 @@ class AuthService:
         else:
             return None
 
-
     def get_all_users(self):
         return self.users
 
     def get_user_by_username(self, username):
         return self.users.get(username, None)
+
+
+if __name__ == "__main__":
+    auth_servce = AuthService()
+    gp1 = auth_servce.get_user_by_username("mhwp1")
+    print(gp1)
+    print(gp1.get_appointments())
+    gp1.display_calendar()
+    gp1.display_calendar(is_MHWP_view=False)

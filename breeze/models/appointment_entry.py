@@ -11,6 +11,7 @@ class AppointmentEntry:
         mhwp_username=None,
         patient_username=None,
         appointment_id=None,
+        summary=None
     ):
         """
         Initialises an appointment entry.
@@ -35,6 +36,7 @@ class AppointmentEntry:
         self.mhwp_username = mhwp_username
         self.patient_username = patient_username
         self.status = status  # "requested", "confirmed", or "cancelled"
+        self.summary = summary
 
     def get_id(self):
         return self.appointment_id
@@ -47,6 +49,14 @@ class AppointmentEntry:
 
     def get_status(self):
         return self.status
+
+    def strip_summary(self):
+        stripped = self.summary
+        if "\n" in stripped:
+            stripped = stripped.replace("\n", "  ")
+        if len(self.summary) > 50:
+            stripped = stripped[:50] + '...'
+        return stripped
 
     def cancel_appointment(self):
         """
@@ -65,7 +75,7 @@ class AppointmentEntry:
         Marks the appointment as requested and updates status.
         """
         self.status = "requested"
-    
+
     def is_confirmed(self):
         """
         Checks if the appointment status is confirmed.
@@ -87,6 +97,9 @@ class AppointmentEntry:
             f")"
         )
 
+    def __repr__(self):
+        return self.__str__()
+
     def to_dict(self):
         """
         Converts the AppointmentEntry object into a dictionary representation.
@@ -101,4 +114,5 @@ class AppointmentEntry:
             "status": self.status,
             "mhwpUsername": self.mhwp_username,
             "patientUsername": self.patient_username,
+            "summary": self.summary
         }

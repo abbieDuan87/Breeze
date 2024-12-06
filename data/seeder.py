@@ -27,6 +27,18 @@ def random_datetime_next_weekdays():
     random_weekday = random.choice(weekdays)
     return random_weekday
 
+def random_datetime_next_last(next_last):
+    dates = []
+    j = 1 if next_last == 'next' else -1
+    for i in range(7):
+        if next_last == 'last':
+            i+=1
+        last_day = (datetime.now() + timedelta(days=i * j)).date()
+        if last_day.weekday() in (5, 6):
+            continue
+        else:
+            dates.append(last_day)
+    return random.choice(dates)
 
 def random_datetime(start, end):
     delta = end - start
@@ -130,6 +142,29 @@ def generate_prescriptions():
 
 def generate_appointments(patients, mhwps):
     statuses = ["requested", "confirmed", "cancelled"]
+    summaries = [
+        "Discussed coping strategies for anxiety, set goals.",
+        "Reviewed sleep habits; introduced mindfulness exercises.",
+        "Explored stress triggers; created a relaxation plan.",
+        "Focused on emotional regulation; reviewed progress.",
+        "Addressed work-life balance challenges; set boundaries.",
+        "Discussed past trauma and initiated processing therapy.",
+        "Worked on social anxiety; practiced exposure techniques.",
+        "Identified cognitive distortions; introduced CBT tools.",
+        "Explored grief and coping strategies for loss.",
+        "Focused on self-esteem building activities and affirmations.",
+        "Reviewed progress on anger management techniques.",
+        "Introduced journaling as a tool for emotional expression.",
+        "Worked on communication skills in relationships.",
+        "Explored values and goal alignment in life planning.",
+        "Discussed medication effects; adjusted treatment plan.",
+        "Processed recent life changes; emphasized resilience.",
+        "Focused on grounding techniques for managing panic.",
+        "Explored triggers for depression; planned positive activities.",
+        "Reviewed progress with therapy goals and setbacks.",
+        "Addressed guilt and worked on self-forgiveness strategies."
+    ]
+
     appointments = []
     time_slots = []
     for hour in range(9, 17):
@@ -144,45 +179,52 @@ def generate_appointments(patients, mhwps):
     for patient in patients:
         assigned_mhwp = patient["assignedMHWP"]
         if assigned_mhwp:
-            num_appointments = random.randint(
-                1, 3
-            )  # Generate 1-3 appointments per patient
-            generated_appointments = set()  # prevent generated overlap appointment
-            for _ in range(num_appointments):
-                appointment_date = random_datetime_next_weekdays().strftime("%Y-%m-%d")
-                appointment_time = random.choice(time_slots)
+            for i in range(2):
+                # generate elapsed appointments first
+                next_last = 'last' if i == 0 else 'next'
+                num_appointments = random.randint(
+                    1, 3
+                )  # Generate 1-3 appointments per patient
+                generated_appointments = set()  # prevent generated overlap appointment
+                for _ in range(num_appointments):
+                    appointment_date = random_datetime_next_last(next_last).strftime("%Y-%m-%d")
+                    appointment_time = random.choice(time_slots)
 
-                appointment_key = (appointment_date, appointment_time)
+                    appointment_key = (appointment_date, appointment_time)
 
-                if appointment_key in generated_appointments:
-                    break
-                else:
-                    generated_appointments.add(appointment_key)
-
-                appointment = {
-                    "appointmentId": str(uuid.uuid4()),
-                    "date": appointment_date,
-                    "time": appointment_time,
-                    "status": random.choice(statuses),
-                    "mhwpUsername": assigned_mhwp,
-                    "patientUsername": patient["username"],
-                }
-
-                # Add the appointment to the global list
-                appointments.append(appointment)
-
-                # Link the appointment ID to the patient
-                if "appointments" not in patient:
-                    patient["appointments"] = []
-                patient["appointments"].append(appointment["appointmentId"])
-
-                # Link the appointment ID to the assigned MHWP
-                for mhwp in mhwps:
-                    if mhwp["username"] == assigned_mhwp:
-                        if "appointments" not in mhwp:
-                            mhwp["appointments"] = []
-                        mhwp["appointments"].append(appointment["appointmentId"])
+                    if appointment_key in generated_appointments:
                         break
+                    else:
+                        generated_appointments.add(appointment_key)
+
+                    appointment = {
+                        "appointmentId": str(uuid.uuid4()),
+                        "date": appointment_date,
+                        "time": appointment_time,
+                        "status": random.choice(statuses) if i == 1 else 'confirmed',
+                        "mhwpUsername": assigned_mhwp,
+                        "patientUsername": patient["username"],
+                    }
+
+                    # Add comment if appointment was in the past
+                    if i == 0:
+                        appointment['summary'] = random.choice(summaries)
+
+                    # Add the appointment to the global list
+                    appointments.append(appointment)
+
+                    # Link the appointment ID to the patient
+                    if "appointments" not in patient:
+                        patient["appointments"] = []
+                    patient["appointments"].append(appointment["appointmentId"])
+
+                    # Link the appointment ID to the assigned MHWP
+                    for mhwp in mhwps:
+                        if mhwp["username"] == assigned_mhwp:
+                            if "appointments" not in mhwp:
+                                mhwp["appointments"] = []
+                            mhwp["appointments"].append(appointment["appointmentId"])
+                            break
 
     return appointments
 

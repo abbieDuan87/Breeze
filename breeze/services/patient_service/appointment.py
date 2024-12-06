@@ -1,7 +1,9 @@
+import datetime
 import time
 from breeze.models.appointment_entry import AppointmentEntry
 from breeze.services.email_service import EmailService
 from breeze.utils.appointment_utils import (
+    can_book_today,
     confirm_user_choice,
     handle_appointment_action,
     show_upcoming_appointments,
@@ -65,7 +67,7 @@ def manage_appointment(user, auth_service):
 
                 if assigned_mhwp_object:
                     clear_screen_and_show_banner(PATIENT_BANNER_STRING)
-                    app_code_map = generate_calendar_slot_code_map()
+                    app_code_map = generate_calendar_slot_code_map(include_today=True)
 
                     assigned_mhwp_object.display_calendar(is_MHWP_view=False)
                     print(
@@ -88,6 +90,14 @@ def manage_appointment(user, auth_service):
                         checked_patient_app = user.get_appointment_by_date_time(
                             app_date_time_tuple[0], app_date_time_tuple[1]
                         )
+
+                        if not can_book_today(app_date_time_tuple):
+                            print_system_message(
+                                "This time slot must be booked at least 2 hours in advance for today's appointments. Please choose another slot."
+                            )
+                            time.sleep(1)
+                            continue
+
                         if (
                             checked_mhwp_app
                             and checked_mhwp_app.get_status() != "cancelled"
@@ -148,9 +158,7 @@ def manage_appointment(user, auth_service):
                 clear_screen_and_show_banner(PATIENT_BANNER_STRING)
                 print(f"Hi, {user.get_username()} !")
 
-                upcoming_appointments = show_upcoming_appointments(
-                    user, is_MHWP_view=False
-                )
+                upcoming_appointments = show_upcoming_appointments(user)
 
                 if not upcoming_appointments:
                     time.sleep(1)

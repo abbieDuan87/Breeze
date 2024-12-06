@@ -50,33 +50,7 @@ def show_disabled_account_dashboard_menu(username):
         return False
 
 
-def print_appointments(appointments=[], is_own_view=True):
-    if not appointments:
-        print("No upcoming appointments.")
-        return
-
-    headers = ["#", "Date", "Time", "Status", "Patient", "MHWP"]
-
-    rows = [
-        [
-            index + 1,
-            app.date,
-            app.time,
-            (
-                get_colored_status(app.status)
-                if is_own_view
-                else (
-                    get_colored_status("unavailable")
-                    if app.status == "confirmed"
-                    else get_colored_status(app.status)
-                )
-            ),
-            app.patient_username,
-            app.mhwp_username,
-        ]
-        for index, app in enumerate(appointments)
-    ]
-
+def table_creator(headers, rows):
     column_widths = [
         max(len(strip_ansi_codes(str(row[i]))) for row in rows + [headers])
         for i in range(len(headers))
@@ -106,6 +80,73 @@ def print_appointments(appointments=[], is_own_view=True):
             + " |"
         )
     print(separator)
+
+
+def print_appointments(appointments=[], is_own_view=True):
+    if not appointments:
+        print("No upcoming appointments.")
+        return
+
+    headers = ["#", "Date", "Time", "Status", "Patient", "MHWP"]
+
+    rows = [
+        [
+            index + 1,
+            app.date,
+            app.time,
+            (
+                get_colored_status(app.status)
+                if is_own_view
+                else (
+                    get_colored_status("unavailable")
+                    if app.status == "confirmed"
+                    else get_colored_status(app.status)
+                )
+            ),
+            app.patient_username,
+            app.mhwp_username,
+        ]
+        for index, app in enumerate(appointments)
+    ]
+
+    table_creator(headers, rows)
+
+
+def print_user_appointments(appointments=[], page=1):
+    if not appointments:
+        return
+    lower = (page - 1) * 10
+    if len(appointments) > ((page - 1) * 10 + 10):
+        upper = lower + 10
+        page_data = appointments[::-1][lower:upper]
+    elif len(appointments) > ((page - 1) * 10):
+        page_data = appointments[::-1][lower:]
+    else:
+        print("No appointments on this page!")
+        return False
+
+    headers = ["#", "MHWP", "Summary", "Date", "Time"]
+
+    rows = []
+    no_rows = 1
+    for appt in page_data:
+        if appt.summary == None:
+            continue
+        else:
+            stripped = appt.strip_summary()
+            rows.append(
+                [
+                    no_rows,
+                    appt.mhwp_username,
+                    stripped,
+                    appt.date,
+                    appt.time,
+                ]
+            )
+            no_rows += 1
+    table_creator(headers, rows)
+
+    return True
 
 
 def print_journals(journal_data=[], page=1):
@@ -138,45 +179,98 @@ def print_journals(journal_data=[], page=1):
                 entry.last_update if str(entry.last_update) != str(date_time) else 'No Updates'
             ]
         )
+    table_creator(headers, rows)
+    # column_widths = [
+    #     max(len(strip_ansi_codes(str(row[i]))) for row in rows + [headers])
+    #     for i in range(len(headers))
+    # ]
 
-    column_widths = [
-        max(len(strip_ansi_codes(str(row[i]))) for row in rows + [headers])
-        for i in range(len(headers))
-    ]
+    # separator = "+".join("-" * (width + 2) for width in column_widths)
+    # separator = f"+{separator}+"
 
-    separator = "+".join("-" * (width + 2) for width in column_widths)
-    separator = f"+{separator}+"
-
-    print(separator)
-    print(
-        "| "
-        + " | ".join(
-            header.center(width) for header, width in zip(headers, column_widths)
-        )
-        + " |"
-    )
-    print(separator)
-    for row in rows:
-        print(
-            "| "
-            + " | ".join(
-                str(cell).ljust(
-                    width + len(str(cell)) - len(strip_ansi_codes(str(cell)))
-                )
-                for cell, width in zip(row, column_widths)
-            )
-            + " |"
-        )
-    print(separator)
+    # print(separator)
+    # print(
+    #     "| "
+    #     + " | ".join(
+    #         header.center(width) for header, width in zip(headers, column_widths)
+    #     )
+    #     + " |"
+    # )
+    # print(separator)
+    # for row in rows:
+    #     print(
+    #         "| "
+    #         + " | ".join(
+    #             str(cell).ljust(
+    #                 width + len(str(cell)) - len(strip_ansi_codes(str(cell)))
+    #             )
+    #             for cell, width in zip(row, column_widths)
+    #         )
+    #         + " |"
+    #     )
+    # print(separator)
 
     return True
 
 
-def is_invalid_username(username, users):
-    if not username:
-        print_system_message("Username cannot be empty. Please try again.")
+def print_moods(mood_data=[], page=1):
+    if not mood_data:
+        return
+    lower = (page - 1) * 10
+    if len(mood_data) > ((page - 1) * 10 + 10):
+        upper = lower + 10
+        page_data = mood_data[::-1][lower:upper]
+    elif len(mood_data) > ((page - 1) * 10):
+        page_data = mood_data[::-1][lower:]
+    else:
+        print("No journal items on this page!")
+        return False
+
+    headers = ["#", "Mood", "Comment", "Date", "Time"]
+
+    rows = []
+    for index, mood in enumerate(page_data):
+        comment = mood.strip_comments()
+        rows.append(
+            [
+                index + 1,
+                mood.mood,
+                comment,
+                mood.date,
+                mood.time,
+            ]
+        )
+
+    table_creator(headers, rows)
+    return True
+
+
+def is_empty(input):
+    if not input:
+        print_system_message("Field cannot be empty. Please try again.")
         return True
-    elif username in users:
+
+
+def is_valid_name(name):
+    if len(name) == 1 and name.isalpha() == False:
+        print_system_message(
+            "Name must be longer than one character and contain only alphabetic characters. Please try again."
+        )
+        return False
+    elif len(name) == 1:
+        print_system_message(
+            "Name must be longer than one character. Please try again."
+        )
+        return False
+    for i in name:
+        if i.isalpha() == False:
+            print_system_message("Name cannot contain non-alphabetic characters.")
+            return False
+    return True
+
+
+def is_invalid_username(username, users):
+    if username in users:
         print_system_message("Username already taken! Please choose another.")
         return True
     elif username.lower() != username or len(username) < 2 or len(username) > 10:
@@ -215,72 +309,12 @@ def is_invalid_date(date):
 
 def is_invalid_email(email):
     email_regex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-    if re.match(email_regex, email):
-        return False
-    else:
-        print_system_message("Email is formatted incorrectly! Please try again.")
-        return True
-
-
-def print_moods(mood_data=[], page=1):
-    if not mood_data:
-        return
-    lower = (page - 1) * 10
-    if len(mood_data) > ((page - 1) * 10 + 10):
-        upper = lower + 10
-        page_data = mood_data[::-1][lower:upper]
-    elif len(mood_data) > ((page - 1) * 10):
-        page_data = mood_data[::-1][lower:]
-    else:
-        print("No journal items on this page!")
-        return False
-
-    headers = ["#", "Mood", "Comment", "Date", "Time"]
-
-    rows = []
-    for index, mood in enumerate(page_data):
-        comment = mood.strip_comments()
-        rows.append(
-            [
-                index + 1,
-                mood.mood,
-                comment,
-                mood.date,
-                mood.time,
-            ]
-        )
-
-    column_widths = [
-        max(len(strip_ansi_codes(str(row[i]))) for row in rows + [headers])
-        for i in range(len(headers))
-    ]
-
-    separator = "+".join("-" * (width + 2) for width in column_widths)
-    separator = f"+{separator}+"
-
-    print(separator)
-    print(
-        "| "
-        + " | ".join(
-            header.center(width) for header, width in zip(headers, column_widths)
-        )
-        + " |"
-    )
-    print(separator)
-    for row in rows:
-        print(
-            "| "
-            + " | ".join(
-                str(cell).ljust(
-                    width + len(str(cell)) - len(strip_ansi_codes(str(cell)))
-                )
-                for cell, width in zip(row, column_widths)
-            )
-            + " |"
-        )
-    print(separator)
-
-    return True
+    if email != "":
+        if re.match(email_regex, email):
+            return False
+        else:
+            print_system_message("Email is formatted incorrectly! Please try again.")
+            return True
 
 
 def clear_screen_and_show_banner(banner_str):
@@ -303,7 +337,7 @@ def check_previous(input_value):
 def direct_to_dashboard(message=""):
     if message:
         print(f"\n{message}")
-    print("Please press B to go back to the dashboard.")
+    print("Please press [B] to go back to the dashboard.")
 
     while True:
         user_input = input("> ").strip().lower()
@@ -311,4 +345,4 @@ def direct_to_dashboard(message=""):
             clear_screen()
             break
         else:
-            print("Invalid input. Please press B to go back to the dashboard.")
+            print("Invalid input. Please press [B] to go back to the dashboard.")
