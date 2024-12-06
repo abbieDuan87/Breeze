@@ -73,7 +73,7 @@ def handle_appointment_action(
 
     if mhwp_obj.get_is_disabled() or patient_obj.get_is_disabled():
         print_system_message(
-            "This appointment cannot be confirmed or canceled because the patient's account has been disabled. No further action is required."
+            "This appointment cannot be confirmed or cancelled because the patient's account has been disabled. No further action is required."
         )
         time.sleep(2)
         return False

@@ -53,7 +53,7 @@ def manage_appointments(user, auth_service):
                 else:
                     print_system_message(str(ve))
 
-                time.sleep(0.5)
+                time.sleep(1)
                 continue
 
     while True:
