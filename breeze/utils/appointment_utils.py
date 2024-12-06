@@ -68,6 +68,16 @@ def handle_appointment_action(
         time.sleep(1)
         return False
 
+    mhwp_obj = auth_service.get_user_by_username(appointment.mhwp_username)
+    patient_obj = auth_service.get_user_by_username(appointment.patient_username)
+
+    if mhwp_obj.get_is_disabled() or patient_obj.get_is_disabled():
+        print_system_message(
+            "This appointment cannot be confirmed or canceled because the patient's account has been disabled. No further action is required."
+        )
+        time.sleep(2)
+        return False
+
     if action == "cancel" and appointment.get_status() == "cancelled":
         print_system_message("This appointment is already cancelled. No action needed.")
         time.sleep(1)
