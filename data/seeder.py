@@ -340,6 +340,7 @@ def generate_mhwps(num_mhwps):
     mhwps = []
     for i in range(1, num_mhwps + 1):
         mhwp_username = f"mhwp{i}"
+        first_name, last_name = random_first_last_name()
         mhwps.append(
             {
                 "username": mhwp_username,
@@ -347,8 +348,8 @@ def generate_mhwps(num_mhwps):
                 "role": "MHWP",
                 "isDisabled": False,
                 "information": {
-                    "firstName": f"MHWP{i}First",
-                    "lastName": f"MHWP{i}Last",
+                    "firstName": first_name,
+                    "lastName": last_name,
                     "email": f"mhwp{i}@example.com",
                 },
                 "appointments": [],
