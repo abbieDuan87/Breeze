@@ -81,8 +81,8 @@ def record_mood(user, auth_service):
             comment = input("> ").strip()
             if check_exit(comment):
                 return
-            datetime_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            date_string = datetime.now().strftime("%Y-%m-%d")
+            datetime_str = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+            date_string = datetime.now().strftime("%d-%m-%Y")
             time_string = datetime.now().strftime("%H:%M:%S")
             new_mood = MoodEntry(mood_description, comment, date_string, time_string)
             if hasattr(user, "add_mood_entry"):

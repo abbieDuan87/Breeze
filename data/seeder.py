@@ -40,7 +40,7 @@ def random_datetime_next_last(next_last):
         else:
             dates.append(last_day)
     return random.choice(dates)
-
+  
 
 def random_datetime(start, end):
     delta = end - start
@@ -53,7 +53,7 @@ def random_date_of_birth(min_age=18, max_age=80):
     birth_year = today.year - random.randint(min_age, max_age)
     birth_month = random.randint(1, 12)
     birth_day = random.randint(1, 28)  # Avoid invalid dates
-    return datetime(birth_year, birth_month, birth_day).strftime("%Y-%m-%d")
+    return datetime(birth_year, birth_month, birth_day).strftime("%d-%m-%Y")
 
 
 def random_first_last_name():
@@ -123,17 +123,13 @@ def random_first_last_name():
 
 def generate_mood_entries(num_entries):
     moods = {
-        "Very Happy": [":D", "Feeling awesome!", "Love this feeling!"],
-        "Happy": [":)", "Feel good.", "Life is good."],
-        "Neutral": ["Feeling alright.", ":|", "It is what it is."],
-        "Sad": ["Feeling bad.", "Feeling a bit down.", ":/"],
-        "Very Sad": ["Feel terrible.", "Feeling awful right now.", ":("],
-    }
-
-    dates = [
-        random_datetime_within_week().strftime("%Y-%m-%d %H:%M:%S")
-        for i in range(num_entries)
-    ]
+        "Very Happy" : [":D", "Feeling awesome!", "Love this feeling!"], 
+        "Happy" : [":)", "Feel good.", "Life is good."],
+        "Neutral" : ["Feeling alright.", ":|", "It is what it is."], 
+        "Sad": ["Feeling bad.", "Feeling a bit down.", ":/"], 
+        "Very Sad": ["Feel terrible.", "Feeling awful right now.", ":("]}
+    
+    dates = [random_datetime_within_week().strftime("%d-%m-%Y %H:%M:%S") for i in range(num_entries)]
     dates = sorted(dates)
     moods_list = [random.choice(list(moods.keys())) for i in range(num_entries)]
     return [
@@ -207,8 +203,8 @@ def generate_prescriptions():
             "medication": random.choice(medications),
             "dosage": f"{random.randint(1, 3)} mg",
             "frequency": "once daily",
-            "start_date": (datetime.now() - timedelta(days=30)).strftime("%Y-%m-%d"),
-            "end_date": (datetime.now() + timedelta(days=180)).strftime("%Y-%m-%d"),
+            "start_date": (datetime.now() - timedelta(days=30)).strftime("%d-%m-%Y"),
+            "end_date": (datetime.now() + timedelta(days=180)).strftime("%d-%m-%Y"),
             "notes": "Take with food.",
         }
     ]
@@ -262,7 +258,7 @@ def generate_appointments(patients, mhwps):
                 generated_appointments = set()  # prevent generated overlap appointment
                 for _ in range(num_appointments):
                     appointment_date = random_datetime_next_last(next_last).strftime(
-                        "%Y-%m-%d"
+                        "%d-%m-%Y"
                     )
                     appointment_time = random.choice(time_slots)
 
