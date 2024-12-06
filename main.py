@@ -1,12 +1,16 @@
 import os
 import subprocess
+import sys
 from breeze.app import BreezeApp
 
 
 def run_seeder():
-    if not os.path.exists("data/users.json"):
+    users_file_path = os.path.join("data", "users.json")
+    seeder_script_path = os.path.join("data", "seeder.py")
+
+    if not os.path.exists(users_file_path):
         try:
-            subprocess.run(["python", "data/seeder.py"], check=True)
+            subprocess.run([sys.executable, seeder_script_path], check=True)
             print("Seeder script ran successfully.")
         except subprocess.CalledProcessError as e:
             print(f"Error while running seeder.py: {e}")
