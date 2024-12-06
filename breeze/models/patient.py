@@ -62,6 +62,9 @@ class Patient(User, AppointmentMixin):
 
     def get_mood_entries(self):
         return self.__mood_entries
+    
+    def get_journal_entries(self):
+        return self.__journal_entries
 
     def get_appointments(self):
         return self.__appointments
@@ -74,13 +77,20 @@ class Patient(User, AppointmentMixin):
 
     def add_mood_entry(self, mood_id, mood, comment, datetime_str):
         self.__mood_entries.append(
-            {"id": mood_id, "mood": mood, "comment": comment, "datetime": datetime_str}
+            {"id": mood_id, "mood": mood, "comment": comment, "date": datetime_str}
         )
+
+    def delete_mood_entry(self, mood_id):
+        self.__mood_entries = [mood for mood in self.__mood_entries if mood['id'] != mood_id]
+
 
     def add_journal_entry(self, journal_id, title, entry, datetime_str):
         self.__journal_entries.append(
-            {"id": journal_id, "title": title, "entry": entry, "datetime" : datetime_str}
+            {"id": journal_id, "title": title, "text": entry, "date" : datetime_str}
         )
+    
+    def delete_journal_entry(self, journal_id):
+        self.__journal_entries = [journal for journal in self.__journal_entries if journal['id'] != journal_id]
 
     def get_assigned_mhwp(self):
         return self.__assigned_mhwp

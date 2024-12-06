@@ -9,6 +9,7 @@ from breeze.utils.cli_utils import (
 from breeze.utils.constants import PATIENT_BANNER_STRING
 from breeze.models.journal_entry import JournalEntry
 
+
 def print_journal_dashboard(user, title=None, body=None):
     clear_screen()
     print(PATIENT_BANNER_STRING)
@@ -32,6 +33,7 @@ def enter_journal(user, auth_service):
             tm.sleep(1)
             continue
         else:
+            title = journal_title
             break
         
     #  body of the journal entry
@@ -61,6 +63,7 @@ def enter_journal(user, auth_service):
     if hasattr(user, "add_journal_entry"):
         user.add_journal_entry(new_entry.get_id(), journal_title, journal_body, datetime_str)
         auth_service.save_data_to_file()
-        direct_to_dashboard("Journal entry saved!")
+        display_journal_screen(user, title=title, body=journal_body)
+        direct_to_dashboard("Journal entry saved! You may view and add to your entry via [H] History")
     else:
         print_system_message(f"User {user.get_username()} not found in records!")
