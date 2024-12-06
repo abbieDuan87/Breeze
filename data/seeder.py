@@ -40,8 +40,8 @@ def random_datetime_next_last(next_last):
         else:
             dates.append(last_day)
     return random.choice(dates)
-
   
+
 def random_datetime(start, end):
     delta = end - start
     random_second = random.randint(0, int(delta.total_seconds()))
@@ -54,6 +54,71 @@ def random_date_of_birth(min_age=18, max_age=80):
     birth_month = random.randint(1, 12)
     birth_day = random.randint(1, 28)  # Avoid invalid dates
     return datetime(birth_year, birth_month, birth_day).strftime("%d-%m-%Y")
+
+
+def random_first_last_name():
+    first_names = [
+        "Akira",
+        "Amara",
+        "Carlos",
+        "Chinwe",
+        "Daisuke",
+        "Elena",
+        "Farah",
+        "Giovanni",
+        "Haruto",
+        "Imani",
+        "Javier",
+        "Kai",
+        "Leila",
+        "Mateo",
+        "Nia",
+        "Olga",
+        "Pavel",
+        "Quynh",
+        "Ravi",
+        "Sofia",
+        "Tariq",
+        "Uma",
+        "Viktor",
+        "Wen",
+        "Xia",
+        "Yara",
+        "Zubair",
+    ]
+    last_names = [
+        "Ahmed",
+        "Baker",
+        "Chang",
+        "Diaz",
+        "Esposito",
+        "Fernandez",
+        "Gupta",
+        "Hernandez",
+        "Ivanov",
+        "Jones",
+        "Kim",
+        "Lopez",
+        "Matsumoto",
+        "Nguyen",
+        "O'Connor",
+        "Patel",
+        "Quispe",
+        "Rodriguez",
+        "Singh",
+        "Tanaka",
+        "Umarov",
+        "Valdez",
+        "Wang",
+        "Xiong",
+        "Yamamoto",
+        "Zhou",
+    ]
+
+    first_name = random.choice(first_names)
+    last_name = random.choice(last_names)
+
+    return first_name, last_name
 
 
 def generate_mood_entries(num_entries):
@@ -70,8 +135,8 @@ def generate_mood_entries(num_entries):
     return [
         {
             "id": str(uuid.uuid4()),
-            "mood": moods_list[i-1],
-            "comment": random.choice(moods[moods_list[i-1]]),
+            "mood": moods_list[i - 1],
+            "comment": random.choice(moods[moods_list[i - 1]]),
             "date": dates[i],
         }
         for i in range(num_entries)
@@ -79,7 +144,10 @@ def generate_mood_entries(num_entries):
 
 
 def generate_journals(num_entries):
-    dates = [random_datetime_within_week().strftime("%Y-%m-%d %H:%M:%S") for i in range(num_entries)]
+    dates = [
+        random_datetime_within_week().strftime("%Y-%m-%d %H:%M:%S")
+        for i in range(num_entries)
+    ]
     dates = sorted(dates)
     journal_texts = [
         "Today was amazing! I felt so accomplished after finishing my project. Everything just clicked.",
@@ -101,7 +169,7 @@ def generate_journals(num_entries):
         "Spent some quality time with family today. It was heartwarming to reminisce about old times.",
         "Had to make a tough decision at work. I'm second-guessing myself, and it's stressing me out.",
         "Tried meditating for the first time today. It was calming and gave me a sense of peace I didn’t expect.",
-        "The day started fine but ended on a sour note. A mistake I made came back to haunt me."
+        "The day started fine but ended on a sour note. A mistake I made came back to haunt me.",
     ]
 
     return [
@@ -110,7 +178,7 @@ def generate_journals(num_entries):
             "title": f"Journal Entry {i + 1}",
             "text": random.choice(journal_texts),
             "date": dates[i],
-            "last_update": dates[i]
+            "last_update": dates[i],
         }
         for i in range(num_entries)
     ]
@@ -238,6 +306,7 @@ def generate_patients(num_patients, mhwp_usernames):
     patients = []
     for i in range(1, num_patients + 1):
         assigned_mhwp = mhwp_usernames[(i - 1) % len(mhwp_usernames)]
+        first_name, last_name = random_first_last_name()
         patients.append(
             {
                 "username": f"patient{i}",
@@ -245,8 +314,8 @@ def generate_patients(num_patients, mhwp_usernames):
                 "role": "Patient",
                 "isDisabled": False,
                 "information": {
-                    "firstName": f"Patient{i}First",
-                    "lastName": f"Patient{i}Last",
+                    "firstName": first_name,
+                    "lastName": last_name,
                     "email": f"patient{i}@example.com",
                     "emergencyContactEmail": f"emergency.patient{i}@example.com",
                     "gender": random.choice(genders),
@@ -267,6 +336,7 @@ def generate_mhwps(num_mhwps):
     mhwps = []
     for i in range(1, num_mhwps + 1):
         mhwp_username = f"mhwp{i}"
+        first_name, last_name = random_first_last_name()
         mhwps.append(
             {
                 "username": mhwp_username,
@@ -274,8 +344,8 @@ def generate_mhwps(num_mhwps):
                 "role": "MHWP",
                 "isDisabled": False,
                 "information": {
-                    "firstName": f"MHWP{i}First",
-                    "lastName": f"MHWP{i}Last",
+                    "firstName": first_name,
+                    "lastName": last_name,
                     "email": f"mhwp{i}@example.com",
                 },
                 "appointments": [],
