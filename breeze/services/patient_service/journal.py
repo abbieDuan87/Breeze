@@ -27,7 +27,7 @@ def enter_journal(user, auth_service):
         print("What is the title of your entry?")
         journal_title = input("> ").strip()
         if check_exit(journal_title):
-            return 
+            return
         if not journal_title:
             print_system_message("Your title is empty! Please try again!")
             tm.sleep(1)
@@ -35,14 +35,14 @@ def enter_journal(user, auth_service):
         else:
             title = journal_title
             break
-        
+
     #  body of the journal entry
     print_journal_dashboard(user, title=journal_title)
     print("\nWrite your journal entry below.")
     journal_body = input("> ").strip()
     if check_exit(journal_body):
         return
-   
+      
     while True:
         print_journal_dashboard(user, title=journal_title, body=journal_body)
         print("\nWould you like to add more? Type [S] to save if finished, or continue writing:")
@@ -55,8 +55,9 @@ def enter_journal(user, auth_service):
             journal_body = journal_body + "\n" + journal_addition
 
     # Combine all parts of the journal entry
-    datetime_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    date_string = datetime.now().strftime("%Y-%m-%d")
+    journal_ent = journal_body + " " + " ".join(journal_additions)
+    datetime_str = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+    date_string = datetime.now().strftime("%d-%m-%Y")
     time_string = datetime.now().strftime("%H:%M:%S")
     new_entry = JournalEntry(journal_title, journal_body, date_string, time_string)
     # Save the journal entry

@@ -5,7 +5,7 @@ class AppointmentMixin:
     def get_appointment_by_date_time(self, date, time, not_cancelled=True):
         """Searches for an appointment by date and time."""
         date_obj = (
-            datetime.datetime.strptime(date, "%Y-%m-%d").date()
+            datetime.datetime.strptime(date, "%d-%m-%Y").date()
             if isinstance(date, str)
             else date
         )

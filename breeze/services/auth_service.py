@@ -4,7 +4,16 @@ from breeze.models.admin import Admin
 from breeze.models.patient import Patient
 from breeze.models.mhwp import MHWP
 
-from breeze.utils.cli_utils import print_system_message, direct_to_dashboard, clear_screen, is_invalid_username, is_invalid_date, is_invalid_email, is_valid_name, is_empty
+from breeze.utils.cli_utils import (
+    print_system_message,
+    direct_to_dashboard,
+    clear_screen,
+    is_invalid_username,
+    is_invalid_date,
+    is_invalid_email,
+    is_valid_name,
+    is_empty,
+)
 from breeze.utils.data_utils import load_data, save_data
 from breeze.utils.constants import REGISTER_BANNER_STRING
 
@@ -50,7 +59,7 @@ class AuthService:
         email,
         gender=None,
         date_of_birth=None,
-        emergency_contact_email=None
+        emergency_contact_email=None,
     ):
         """Helper method to create a new user based on role.
         Args:
@@ -76,7 +85,7 @@ class AuthService:
                     email,
                     gender=gender,
                     date_of_birth=date_of_birth,
-                    emergency_contact_email=emergency_contact_email
+                    emergency_contact_email=emergency_contact_email,
                 )
             case "m":
                 return MHWP(username, password, first_name, last_name, email)
@@ -112,7 +121,7 @@ class AuthService:
                 continue
             elif is_valid_name(last_name):
                 break
-            
+
         while True:
             email = input("Email: ").strip()
             if is_empty(email):
@@ -154,7 +163,7 @@ class AuthService:
                     break
 
             while True:
-                date_of_birth = input("Date of Birth (DD/MM/YYYY): ")
+                date_of_birth = input("Date of Birth (DD-MM-YYYY): ")
                 if is_invalid_date(date_of_birth):
                     continue
                 break
@@ -247,21 +256,21 @@ class AuthService:
                         case _:
                             pass
                 match to_edit:
-                    case '1':
+                    case "1":
                         while True:
                             first_name = input("First name: ").strip()
                             if is_empty(first_name):
                                 continue
                             elif is_valid_name(first_name):
                                 break
-                    case '2':
+                    case "2":
                         while True:
                             last_name = input("Last name: ").strip()
                             if is_empty(last_name):
                                 continue
                             elif is_valid_name(last_name):
                                 break
-                    case '3':
+                    case "3":
                         while True:
                             email = input("Email: ").strip()
                             if is_invalid_email(email):

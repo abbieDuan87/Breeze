@@ -11,13 +11,13 @@ class AppointmentEntry:
         mhwp_username=None,
         patient_username=None,
         appointment_id=None,
-        summary=None
+        summary=None,
     ):
         """
         Initialises an appointment entry.
 
         Args:
-            date_str (str): Date of the appointment in 'YYYY-MM-DD' format.
+            date_str (str): Date of the appointment in 'DD-MM-YYYY' format.
             time_str (str): Time of the appointment in 'HH:MM AM/PM' format.
             status (str): The status of the appointment (e.g., "requested", "confirmed", "cancelled").
         """
@@ -26,7 +26,7 @@ class AppointmentEntry:
         if isinstance(date_str, date):
             self.date = date_str
         else:
-            self.date = datetime.strptime(date_str, "%Y-%m-%d").date()
+            self.date = datetime.strptime(date_str, "%d-%m-%Y").date()
 
         # Handle time input
         if isinstance(time_str, time):
@@ -55,7 +55,7 @@ class AppointmentEntry:
         if "\n" in stripped:
             stripped = stripped.replace("\n", "  ")
         if len(self.summary) > 50:
-            stripped = stripped[:50] + '...'
+            stripped = stripped[:50] + "..."
         return stripped
 
     def cancel_appointment(self):
@@ -110,10 +110,10 @@ class AppointmentEntry:
         """
         return {
             "appointmentId": self.appointment_id,
-            "date": self.date.strftime("%Y-%m-%d"),
+            "date": self.date.strftime("%d-%m-%Y"),
             "time": self.time.strftime("%I:%M %p"),
             "status": self.status,
             "mhwpUsername": self.mhwp_username,
             "patientUsername": self.patient_username,
-            "summary": self.summary
+            "summary": self.summary,
         }
