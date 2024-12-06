@@ -2,7 +2,7 @@ import json
 import time
 from math import ceil
 from breeze.utils.data_utils import create_journal_entries_from_data, create_mood_entries_from_data, create_appointments_from_data, retrieve_variables_from_data, save_attr_data
-from breeze.utils.cli_utils import clear_screen, print_system_message, print_journals, print_moods, check_exit
+from breeze.utils.cli_utils import clear_screen, print_system_message, print_user_appointments, print_journals, print_moods, check_exit
 from breeze.utils.constants import PATIENT_BANNER_STRING
 
 def edit_journal_data(user, entry, page):
@@ -180,10 +180,99 @@ def show_journal_history(user):
                 time.sleep(1)
                 continue
 
+def filter_appt_results(data, search_term):
+    filtered_list = []
+    for appt in data:
+        if search_term in appt.summary.lower() or search_term in appt.mhwp_username.lower():
+            filtered_list.append(appt)
+    return filtered_list
     
 def show_appointment_history(user):
-    # show users past appointments
-    pass
+    page_no = 1
+    filtered = False
+    while True: 
+        clear_screen()
+        print(PATIENT_BANNER_STRING)
+
+        if filtered:
+            appt_data = filter_appt_results(appt_data, search_filter)
+            if not appt_data:
+                print(f'There are no results with the search term {search_filter}. Returning...')
+                time.sleep(3)
+                filtered = False
+                continue
+        else:
+            appt_dicts = []
+            appt_ids = retrieve_variables_from_data('data/users.json', user.get_username(), 'appointments')
+            with open ('data/users.json', 'r') as file:
+                data = json.load(file)
+                for appt_id in appt_ids:
+                    for appt in data['appointments']:
+                        if appt['appointmentId'] == appt_id and appt.get('summary', None) != None:
+                            appt_dicts.append(appt)
+        if not appt_dicts:
+            print('\nYou currently have no appointments!')
+            print('Navigate to the Appointment tab on the dashboard to schedule an appointment with your MHWP.')
+            print('Returning...')
+            time.sleep(3)
+            break
+        else:
+            if not filtered:
+                appt_data = create_appointments_from_data(appt_dicts)
+            if print_user_appointments(appt_data):
+                print(f'Page [{page_no}] of [{ceil(len(appt_data)/10)}]\n')
+                print("[V] View an appointment on this page")
+        
+        valid_inputs = ["v", "x"]
+
+        if not filtered:
+            print("[S] Search by MHWP or summary content")
+            valid_inputs.append("s")  
+        if len(appt_data) > page_no * 10:
+            print("[N] See next page")
+            valid_inputs.append("n")
+        if page_no > 1:
+            print("[P] See previous page")
+            valid_inputs.append("p")
+        if filtered:
+            print("[R] Remove filter")
+            valid_inputs.append("r")
+        print("[X] Exit")
+        
+        user_input = input("> ").strip().lower()
+        if check_exit(user_input):
+            return
+        if user_input not in valid_inputs:
+            print_system_message("Invalid input. Please select from the options provided.")
+            time.sleep(1)
+            continue
+        match user_input:
+            case "v":
+                pass
+            case "s":
+                print("Type a term to search by or quit using [X]:")
+                while True:
+                    search_filter = input("> ").strip().lower()
+                    if search_filter == 'x':
+                        break
+                    else:
+                        page_no = 1
+                        filtered = True
+                        break
+            case "n":
+                if "n" in valid_inputs:
+                    page_no += 1
+            case "p":
+                if "p" in valid_inputs:
+                    page_no -= 1
+            case "r":
+                filtered = False
+            case "x":
+                return
+            case _:
+                print("An error occurred - invalid input.")
+                time.sleep(1)
+                continue
 
 def show_mood_history(user):
     page_no = 1
