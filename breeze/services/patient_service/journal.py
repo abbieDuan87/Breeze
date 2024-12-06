@@ -14,29 +14,31 @@ def enter_journal(user, auth_service):
     print(PATIENT_BANNER_STRING)
     print(f"Hi {user.get_username()} !")
     print("Write your journal entry below, or enter [X] to exit without saving.")
-    
+
     # title of the journal entry
     print("\nWhat is the title of your entry?")
     while True:
         journal_title = input("> ").strip()
         if check_exit(journal_title):
-            return 
+            return
         if not journal_title:
             print_system_message("Your title is empty! Please try again!")
             continue
         else:
             break
-        
+
     #  body of the journal entry
     print("\nWrite your journal entry below.")
     journal_body = input("> ").strip()
     if check_exit(journal_body):
         return
-    
+
     # Allow the user to add more to their journal entry
     journal_additions = []
     while True:
-        print("\nWould you like to add more? Type [S] to save if finished, or continue writing:")
+        print(
+            "\nWould you like to add more? Type [S] to save if finished, or continue writing:"
+        )
         journal_addition = input("> ").strip()
         if check_exit(journal_addition):
             return
@@ -52,13 +54,15 @@ def enter_journal(user, auth_service):
 
     # Combine all parts of the journal entry
     journal_ent = journal_body + " " + " ".join(journal_additions)
-    datetime_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    date_string = datetime.now().strftime("%Y-%m-%d")
+    datetime_str = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+    date_string = datetime.now().strftime("%d-%m-%Y")
     time_string = datetime.now().strftime("%H:%M:%S")
     new_entry = JournalEntry(journal_title, journal_ent, date_string, time_string)
     # Save the journal entry
     if hasattr(user, "add_journal_entry"):
-        user.add_journal_entry(new_entry.get_id(), journal_title, journal_ent, datetime_str)
+        user.add_journal_entry(
+            new_entry.get_id(), journal_title, journal_ent, datetime_str
+        )
         auth_service.save_data_to_file()
         direct_to_dashboard("Journal entry saved!")
     else:

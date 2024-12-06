@@ -48,7 +48,7 @@ def decode_user(user_data, appointments_data):
             appointments=appointments,
             assigned_MHWP=user_data.get("assignedMHWP", None),
             conditions=user_data.get("conditions", {}),
-            prescriptions=user_data.get("prescriptions", [])
+            prescriptions=user_data.get("prescriptions", []),
         )
 
     elif role == "admin":
@@ -135,6 +135,7 @@ def save_data(file_path, user_object_list):
     with open(file_path, "w") as file:
         json.dump(data_to_save, file, indent=4)
 
+
 def retrieve_variables_from_data(filepath, username, variable):
     """Retrieves a list of variables (eg. all journal entries, mood entries) for a given user
 
@@ -146,15 +147,16 @@ def retrieve_variables_from_data(filepath, username, variable):
     Returns:
         list of dict: list of entries for given variable
     """
-    with open (filepath, 'r') as file:
+    with open(filepath, "r") as file:
         data = json.load(file)
-    for user in data['users']:
-        if user['username'] == username:
+    for user in data["users"]:
+        if user["username"] == username:
             try:
                 return user[variable]
             except KeyError:
                 return list()
-            
+
+
 def save_attr_data(filepath, username, attribute, attribute_data):
     """Save edited attribute data (eg. journals, mood) to file
 
@@ -165,15 +167,16 @@ def save_attr_data(filepath, username, attribute, attribute_data):
         attribute_data (list of dict): List of attributes
     """
 
-    with open (filepath, 'r') as file:
+    with open(filepath, "r") as file:
         data = json.load(file)
 
-    for user in data['users']:
-        if user['username'] == username:
+    for user in data["users"]:
+        if user["username"] == username:
             user[attribute] = attribute_data
-    
-    with open (filepath, 'w') as file:
+
+    with open(filepath, "w") as file:
         json.dump(data, file, indent=4)
+
 
 def create_appointments_from_data(appointments_data):
     """Convert each appointment entry (dictionary) into Appoinment Entry object
@@ -202,11 +205,12 @@ def create_appointments_from_data(appointments_data):
                 mhwp_username,
                 patient_username,
                 appointment_id,
-                summary
+                summary,
             )
         )
 
     return appointment_entries
+
 
 def create_journal_entries_from_data(journal_data):
     """Convert each journal entry (dictionary) into JournalEntry object
@@ -224,19 +228,14 @@ def create_journal_entries_from_data(journal_data):
         title = entry.get("title")
         body = entry.get("entry")
         dt = entry.get("datetime")
-        date = datetime.strptime(dt, "%Y-%m-%d %H:%M:%S").date()
-        time = datetime.strptime(dt, "%Y-%m-%d %H:%M:%S").time()
+        date = datetime.strptime(dt, "%d-%m-%Y %H:%M:%S").date()
+        time = datetime.strptime(dt, "%d-%m-%Y %H:%M:%S").time()
         journal_entries.append(
-            JournalEntry(
-                title,
-                body,
-                date,
-                time,
-                journal_id=journal_id
-            )
+            JournalEntry(title, body, date, time, journal_id=journal_id)
         )
 
     return journal_entries
+
 
 def create_mood_entries_from_data(mood_data):
     """Convert each mood entry (dictionary) into MoodEntry object
@@ -254,19 +253,12 @@ def create_mood_entries_from_data(mood_data):
         mood = entry.get("mood")
         comment = entry.get("comment")
         dt = entry.get("datetime")
-        date = datetime.strptime(dt, "%Y-%m-%d %H:%M:%S").date()
-        time = datetime.strptime(dt, "%Y-%m-%d %H:%M:%S").time()
-        mood_entries.append(
-            MoodEntry(
-                mood,
-                comment,
-                date,
-                time,
-                mood_id=mood_id
-            )
-        )
+        date = datetime.strptime(dt, "%d-%m-%Y %H:%M:%S").date()
+        time = datetime.strptime(dt, "%d-%m-%Y %H:%M:%S").time()
+        mood_entries.append(MoodEntry(mood, comment, date, time, mood_id=mood_id))
 
     return mood_entries
+
 
 # for testing, to run: python -m breeze.utils.data_utils
 if __name__ == "__main__":

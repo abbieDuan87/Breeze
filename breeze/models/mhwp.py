@@ -71,7 +71,7 @@ class MHWP(User, AppointmentMixin):
             date_range = "No available days"
 
         current_date = datetime.datetime.now()
-        formatted_date = current_date.strftime("%Y-%m-%d %a")
+        formatted_date = current_date.strftime("%d-%m-%Y %a")
 
         header_line = "=" * HEADER_WIDTH
         sub_header_line = "-" * HEADER_WIDTH
@@ -122,7 +122,7 @@ class MHWP(User, AppointmentMixin):
             if day == datetime.date.today():
                 print(f"{'Today':<14}", end=" | ")
             else:
-                print(f"{day.strftime('%Y-%m-%d %a'):<14}", end=" | ")
+                print(f"{day.strftime('%d-%m-%Y %a'):<14}", end=" | ")
         print()
         print("+", "-" * (10 + 17 * len(next_available_days)), "+")
 

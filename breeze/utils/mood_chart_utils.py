@@ -1,5 +1,6 @@
 from datetime import datetime
 
+
 def plot_mood_chart(mood_entries):
     """
     Plots a simple ASCII mood chart with month and date on the x-axis.
@@ -12,7 +13,10 @@ def plot_mood_chart(mood_entries):
         "Very Happy": 5,
     }
 
-    dates = [datetime.strptime(entry["datetime"], "%Y-%m-%d %H:%M:%S").date() for entry in mood_entries]
+    dates = [
+        datetime.strptime(entry["datetime"], "%d-%m-%Y %H:%M:%S").date()
+        for entry in mood_entries
+    ]
     moods = [mood_levels[entry["mood"]] for entry in mood_entries]
     unique_dates = sorted(set(dates))
 
@@ -29,6 +33,10 @@ def plot_mood_chart(mood_entries):
         print(row)
 
     # Print x-axis
-    print(" " * 11 + "-" * (len(unique_dates) * cell_width))  # Adjust x-axis line length
-    x_labels = " " * 11 + "".join(f"{date.strftime('%b %d'):<{cell_width}}" for date in unique_dates)
+    print(
+        " " * 11 + "-" * (len(unique_dates) * cell_width)
+    )  # Adjust x-axis line length
+    x_labels = " " * 11 + "".join(
+        f"{date.strftime('%b %d'):<{cell_width}}" for date in unique_dates
+    )
     print(x_labels)
