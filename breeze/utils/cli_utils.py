@@ -49,6 +49,7 @@ def show_disabled_account_dashboard_menu(username):
         )
         return False
 
+
 def table_creator(headers, rows):
     column_widths = [
         max(len(strip_ansi_codes(str(row[i]))) for row in rows + [headers])
@@ -80,6 +81,7 @@ def table_creator(headers, rows):
         )
     print(separator)
 
+
 def print_appointments(appointments=[], is_own_view=True):
     if not appointments:
         print("No upcoming appointments.")
@@ -109,6 +111,7 @@ def print_appointments(appointments=[], is_own_view=True):
 
     table_creator(headers, rows)
 
+
 def print_user_appointments(appointments=[], page=1):
     if not appointments:
         return
@@ -121,7 +124,7 @@ def print_user_appointments(appointments=[], page=1):
     else:
         print("No appointments on this page!")
         return False
-    
+
     headers = ["#", "MHWP", "Summary", "Date", "Time"]
 
     rows = []
@@ -144,6 +147,7 @@ def print_user_appointments(appointments=[], page=1):
     table_creator(headers, rows)
 
     return True
+
 
 def print_journals(journal_data=[], page=1):
     if not journal_data:
@@ -206,6 +210,7 @@ def print_journals(journal_data=[], page=1):
 
     return True
 
+
 def print_moods(mood_data=[], page=1):
     if not mood_data:
         return
@@ -236,24 +241,32 @@ def print_moods(mood_data=[], page=1):
 
     table_creator(headers, rows)
     return True
+
+
 def is_empty(input):
-        if not input:
-            print_system_message("Field cannot be empty. Please try again.")
-            return True
-        
-def is_valid_name(name):
-        if len(name) == 1 and name.isalpha() == False:
-            print_system_message("Name must be longer than one character and contain only alphabetic characters. Please try again.")
-            return False
-        elif len(name) == 1:
-            print_system_message("Name must be longer than one character. Please try again.")
-            return False
-        for i in name:
-            if i.isalpha() == False:
-                print_system_message("Name cannot contain non-alphabetic characters.")
-                return False
+    if not input:
+        print_system_message("Field cannot be empty. Please try again.")
         return True
-        
+
+
+def is_valid_name(name):
+    if len(name) == 1 and name.isalpha() == False:
+        print_system_message(
+            "Name must be longer than one character and contain only alphabetic characters. Please try again."
+        )
+        return False
+    elif len(name) == 1:
+        print_system_message(
+            "Name must be longer than one character. Please try again."
+        )
+        return False
+    for i in name:
+        if i.isalpha() == False:
+            print_system_message("Name cannot contain non-alphabetic characters.")
+            return False
+    return True
+
+
 def is_invalid_username(username, users):
     if username in users:
         print_system_message("Username already taken! Please choose another.")
@@ -301,6 +314,7 @@ def is_invalid_email(email):
             print_system_message("Email is formatted incorrectly! Please try again.")
             return True
 
+
 def clear_screen_and_show_banner(banner_str):
     clear_screen()
     print(banner_str)
@@ -321,7 +335,7 @@ def check_previous(input_value):
 def direct_to_dashboard(message=""):
     if message:
         print(f"\n{message}")
-    print("Please press B to go back to the dashboard.")
+    print("Please press [B] to go back to the dashboard.")
 
     while True:
         user_input = input("> ").strip().lower()
@@ -329,4 +343,4 @@ def direct_to_dashboard(message=""):
             clear_screen()
             break
         else:
-            print("Invalid input. Please press B to go back to the dashboard.")
+            print("Invalid input. Please press [B] to go back to the dashboard.")
