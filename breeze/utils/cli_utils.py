@@ -162,12 +162,13 @@ def print_journals(journal_data=[], page=1):
         print("No journal items on this page!")
         return False
 
-    headers = ["#", "Title", "Text", "Date", "Time"]
+    headers = ["#", "Title", "Text", "Date", "Time", "Last Update"]
 
     rows = []
     for index, entry in enumerate(page_data):
         title = entry.strip_title()
         stripped = entry.strip_entry()
+        date_time = dt.combine(entry.date, entry.time)
         rows.append(
             [
                 index + 1,
@@ -175,6 +176,7 @@ def print_journals(journal_data=[], page=1):
                 stripped,
                 entry.date,
                 entry.time,
+                entry.last_update if str(entry.last_update) != str(date_time) else 'No Updates'
             ]
         )
     table_creator(headers, rows)
@@ -335,7 +337,7 @@ def check_previous(input_value):
 def direct_to_dashboard(message=""):
     if message:
         print(f"\n{message}")
-    print("Please press B to go back to the dashboard.")
+    print("Please press [B] to go back to the dashboard.")
 
     while True:
         user_input = input("> ").strip().lower()
@@ -343,4 +345,4 @@ def direct_to_dashboard(message=""):
             clear_screen()
             break
         else:
-            print("Invalid input. Please press B to go back to the dashboard.")
+            print("Invalid input. Please press [B] to go back to the dashboard.")

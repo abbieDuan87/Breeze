@@ -63,19 +63,22 @@ class BreezeApp:
 
     def show_login(self):
         """Prompts the user to log in, and redirects to the dashboard."""
-        user = self.auth_service.login()
-        if user:
-            self.show_dashboard(user)
-        else:
-            print_system_message(
-                "Invalid credentials!\nType 'B' to go back to the main menu, or press any other key to try again."
-            )
-            user_input = input("> ")
-            if user_input.strip().lower() == "b":
-                clear_screen()
-                self.show_main_menu()
+        while True:
+            user = self.auth_service.login()
+            if user:
+                self.show_dashboard(user)
             else:
-                self.show_login()
+                print_system_message(
+                    "Invalid credentials!\nType 'B' to go back to the main menu, or press any other key to try again."
+                )
+                user_input = input("> ")
+                if user_input.strip().lower() == "b":
+                    clear_screen()
+                    self.show_main_menu()
+                else:
+                    clear_screen()
+                    print(LOGIN_BANNER_STRING)
+                    self.show_login()
 
     def show_register(self):
         """Prompts the user to register a new account and guides them to log in if successful."""

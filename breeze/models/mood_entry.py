@@ -25,11 +25,13 @@ class MoodEntry:
         return self.time
     
     def strip_comments(self):
-        if len(self.comment) > 50:
-            stripped = self.comment[:49]
-            return stripped
-        return self.comment
-
+        stripped = self.comment
+        if "\n" in stripped:
+            stripped = stripped.replace("\n", "  ")
+        if len(stripped) > 50:
+            stripped = stripped[:50] + '...'
+        return stripped
+    
     def to_dict(self):
         self.datetime = datetime.combine(self.date, self.time)
         return {

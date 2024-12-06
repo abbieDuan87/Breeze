@@ -1,9 +1,10 @@
-import datetime
 import time
 from breeze.models.appointment_entry import AppointmentEntry
 from breeze.services.email_service import EmailService
+from breeze.utils.ansi_utils import colorise
 from breeze.utils.appointment_utils import (
     can_book_today,
+    cancel_appointments_with_inactive_accounts,
     confirm_user_choice,
     handle_appointment_action,
     show_upcoming_appointments,
@@ -34,11 +35,23 @@ def manage_appointment(user, auth_service):
         print(f"Hi, {user.get_username()} !")
 
         assigned_mhwp = user.get_assigned_mhwp()
-        if assigned_mhwp:
+        assigned_mhwp_object = auth_service.get_user_by_username(assigned_mhwp)
+        if assigned_mhwp_object:
             print(f"Your current assigned MHWP: {assigned_mhwp}.")
         else:
             print("You have no assigned MHWP.")
 
+        if assigned_mhwp_object.get_is_disabled():
+            print_system_message(
+                colorise(
+                    f"Your currently assigned MHWP ({assigned_mhwp}) has been disabled. Please contact the admin for assistance.",
+                    color=126,
+                )
+            )
+
+        cancel_appointments_with_inactive_accounts(
+            auth_service, user.get_appointments()
+        )
         show_upcoming_appointments(user)
 
         print("\nChoose one of the following options:")
@@ -58,8 +71,15 @@ def manage_appointment(user, auth_service):
                 assigned_mhwp_object = auth_service.get_user_by_username(
                     assigned_mhwp_username
                 )
+                if assigned_mhwp_object.get_is_disabled():
+                    print_system_message(
+                        f"Your assigned MHWP (username: {assigned_mhwp_object.get_username()}) has been disabled, and you can no longer book with them.\n\nPlease contact the admin for assistance."
+                    )
+                    time.sleep(5)
+                    break
+
                 if not assigned_mhwp_object:
-                    print(
+                    print_system_message(
                         "You have no assigned MHWP at this moment, contact the admin for more info."
                     )
                     time.sleep(1)
@@ -158,6 +178,9 @@ def manage_appointment(user, auth_service):
                 clear_screen_and_show_banner(PATIENT_BANNER_STRING)
                 print(f"Hi, {user.get_username()} !")
 
+                cancel_appointments_with_inactive_accounts(
+                    auth_service, user.get_appointments()
+                )
                 upcoming_appointments = show_upcoming_appointments(user)
 
                 if not upcoming_appointments:

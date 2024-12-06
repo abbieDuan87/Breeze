@@ -1,4 +1,5 @@
 from datetime import datetime
+import time
 from breeze.models.mood_entry import MoodEntry
 from breeze.utils.ansi_utils import colorise
 from breeze.utils.cli_utils import (
@@ -42,9 +43,7 @@ mood_chart = {
     },
 }
 
-
-def record_mood(user, auth_service):
-    """Records the patient's mood for the day."""
+def display_mood_dashboard(user):
     clear_screen()
     print(PATIENT_BANNER_STRING)
     print(f"Hi, {user.get_username()}! Start record your mood for the day!")
@@ -53,6 +52,10 @@ def record_mood(user, auth_service):
         mood_text = f"[{key}] {mood['name'].ljust(12)} - {mood['description']}"
         print(colorise(mood_text, color=mood["color_code"]) + f"  {mood['emoji']}")
 
+
+
+def record_mood(user, auth_service):
+    """Records the patient's mood for the day."""
     colour_to_mood = {
         "g": "Very Happy",
         "l": "Happy",
@@ -62,6 +65,7 @@ def record_mood(user, auth_service):
     }
 
     while True:
+        display_mood_dashboard(user)
         print(
             "\nEnter the colour code that represents your mood today (or enter [X] to exit without saving): "
         )
@@ -98,3 +102,4 @@ def record_mood(user, auth_service):
             print_system_message(
                 f"Invalid color entered. Please choose from {color_names}."
             )
+            time.sleep(2)

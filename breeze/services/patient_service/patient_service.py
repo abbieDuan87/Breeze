@@ -31,7 +31,7 @@ class PatientService:
         manage_appointment(user, self.auth_service)
 
     def show_history(self, user):
-        show_history(user)
+        show_history(user, self.auth_service)
 
     def learn_mental_health(self):
         learn_mental_health()
