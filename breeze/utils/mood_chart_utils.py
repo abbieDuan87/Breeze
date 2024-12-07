@@ -14,7 +14,7 @@ def plot_mood_chart(mood_entries):
     }
 
     dates = [
-        datetime.strptime(entry["datetime"], "%d-%m-%Y %H:%M:%S").date()
+        datetime.strptime(entry["date"], "%d-%m-%Y %H:%M:%S").date()
         for entry in mood_entries
     ]
     moods = [mood_levels[entry["mood"]] for entry in mood_entries]
