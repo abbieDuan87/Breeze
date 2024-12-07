@@ -34,9 +34,9 @@ class BreezeApp:
         while True:
             print(BREEZE_BANNER_STRING)
             print("Welcome to Breeze - Mental Health Management System ! \n")
-            print("[L]ogin")
-            print("[R]egister")
-            print("[E]xit")
+            print("[L] Login")
+            print("[R] Register")
+            print("[E] Exit")
             print()
 
             print(
