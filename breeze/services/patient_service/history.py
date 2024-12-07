@@ -108,7 +108,7 @@ def view_entry(data, page_no):
                 print(PATIENT_BANNER_STRING)
                 print(f'Here is your journal entry entitled {viewed.title}:')
                 print_system_message(viewed.entry)      
-                return
+                return True
         except IndexError:
             print_system_message('Invalid index. Please choose from available.')
             time.sleep(2)
@@ -134,7 +134,7 @@ def view_mood(data, page_no):
                 clear_screen()
                 print(PATIENT_BANNER_STRING)
                 print_system_message(f"Your mood was: {viewed.mood}\nYour comment was: {viewed.comment}") if viewed.comment else print_system_message(f"Your mood was: {viewed.mood}")     
-                return
+                return True
         except IndexError:
             print_system_message('Invalid index. Please choose from available.')
             time.sleep(2)
@@ -143,6 +143,7 @@ def view_mood(data, page_no):
             return
         print_system_message("An error occurred - invalid input.")
         time.sleep(2)
+        return
 
 
 def view_appt_summary(data, page_no):
@@ -161,7 +162,7 @@ def view_appt_summary(data, page_no):
                 print(PATIENT_BANNER_STRING)
                 print(f'\nHere is your appointment summary from {viewed.date}:')
                 print_system_message(viewed.summary)      
-                return
+                return True
         except IndexError:
             print_system_message('Invalid index. Please choose from available.')
             time.sleep(2)
@@ -170,6 +171,7 @@ def view_appt_summary(data, page_no):
             return
         print_system_message("An error occurred - invalid input.")
         time.sleep(2)
+        return
 
 def show_journal_history(user, auth_service):
     # show the users journal entry in table format
@@ -239,20 +241,20 @@ def show_journal_history(user, auth_service):
                         break
             case "v":
                 print("Enter the index of the entry you want to view, or type [X] to exit")
-                view_entry(journal_data, page_no)
-                print("\nWhat would you like to do next?")
-                print("[R] Return to journal dashboard")
-                print("[X] Exit")
+                if view_entry(journal_data, page_no):
+                    print("\nWhat would you like to do next?")
+                    print("[R] Return to journal dashboard")
+                    print("[X] Exit")
 
-                next_action = input("> ").strip().lower()
+                    next_action = input("> ").strip().lower()
 
-                if next_action == "r":
-                    continue
-                elif next_action == "x":
-                    return True
-                else:
-                    print_system_message("Invalid choice. Please select [R] or [X].")
-                    time.sleep(1)
+                    if next_action == "r":
+                        continue
+                    elif next_action == "x":
+                        return True
+                    else:
+                        print_system_message("Invalid choice. Please select [R] or [X].")
+                        time.sleep(1)
             case "a":
                 print("Enter the index of the entry you want to edit, or type [X] to exit")    
                 journal_data = edit_journal_database(user, journal_data, 'a', page_no, auth_service)
@@ -339,20 +341,20 @@ def show_appointment_history(user):
         match user_input:
             case "v":
                 print("Enter the index of the entry you want to view, or type [X] to exit")
-                view_appt_summary(appt_data, page_no)
-                print("\nWhat would you like to do next?")
-                print("[R] Return to appointment dashboard")
-                print("[X] Exit")
+                if view_appt_summary(appt_data, page_no):
+                    print("\nWhat would you like to do next?")
+                    print("[R] Return to appointment dashboard")
+                    print("[X] Exit")
 
-                next_action = input("> ").strip().lower()
+                    next_action = input("> ").strip().lower()
 
-                if next_action == "r":
-                    continue
-                elif next_action == "x":
-                    return True
-                else:
-                    print_system_message("Invalid choice. Please select [R] or [X].")
-                    time.sleep(1)
+                    if next_action == "r":
+                        continue
+                    elif next_action == "x":
+                        return True
+                    else:
+                        print_system_message("Invalid choice. Please select [R] or [X].")
+                        time.sleep(1)
             case "s":
                 print("Type a term to search by, or quit by leaving the entry blank:")
                 while True:
@@ -433,20 +435,20 @@ def show_mood_history(user, auth_service):
         match user_input:
             case "v":
                 print("Enter the index of the entry you want to view, or type [X] to exit")
-                view_mood(mood_data, page_no)
-                print("\nWhat would you like to do next?")
-                print("[R] Return to mood dashboard")
-                print("[X] Exit")
+                if view_mood(mood_data, page_no):
+                    print("\nWhat would you like to do next?")
+                    print("[R] Return to mood dashboard")
+                    print("[X] Exit")
 
-                next_action = input("> ").strip().lower()
+                    next_action = input("> ").strip().lower()
 
-                if next_action == "r":
-                    continue
-                elif next_action == "x":
-                    return True
-                else:
-                    print_system_message("Invalid choice. Please select [R] or [X].")
-                    time.sleep(1)
+                    if next_action == "r":
+                        continue
+                    elif next_action == "x":
+                        return True
+                    else:
+                        print_system_message("Invalid choice. Please select [R] or [X].")
+                        time.sleep(1)
             case "s":
                 print("Type a term to search by, or quit by leaving the entry blank:")
                 while True:
