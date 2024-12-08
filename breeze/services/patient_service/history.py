@@ -51,7 +51,7 @@ def edit_journal_data(user, journal_data, journal_id, entry, auth_service):
             for journal_ent in user.get_journal_entries():
                 if journal_ent['id'] == journal_id:
                     journal_ent['text'] = entry
-                    journal_ent['last_update'] = dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    journal_ent['last_update'] = dt.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
             auth_service.save_data_to_file()
             print('Entry edited successfully.')
             data = create_journal_entries_from_data(user.get_journal_entries())

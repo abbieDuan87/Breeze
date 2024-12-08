@@ -11,7 +11,7 @@ class JournalEntry:
         time_dt = time
         date_dt = date
         if type(date) == str:
-            date_dt = dt.datetime.strptime(date, "%Y-%m-%d").date()
+            date_dt = dt.datetime.strptime(date, "%d-%m-%Y").date()
         if type(time) == str:
             time_dt = dt.datetime.strptime(time, "%H:%M:%S").time()
         self.last_update = last_update if last_update else dt.datetime.combine(date_dt, time_dt)
