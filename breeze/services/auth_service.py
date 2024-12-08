@@ -201,12 +201,11 @@ class AuthService:
                 print(REGISTER_BANNER_STRING)
                 if role == "p":
                     print_system_message(
-                        f"First name: {first_name}\nLast name: {last_name}\nEmail: {email}\n"
-                        f"Username: {username}\nPassword: {password}\nEmergency Contact Email: {emergency_contact_email}"
+                    f"First name: {first_name}\nLast name: {last_name}\nEmail: {email}\n"
+                    f"Username: {username}\nPassword: {password}\nGender: {gender}\n"
+                    f"Date of Birth: {date_of_birth}\nEmergency Contact Email: {emergency_contact_email}"
                     )
-                    print(
-                        "Enter the value of the data you wish to edit (1-8), or type any other key to confirm:"
-                    )
+                    print("Enter the value of the data you wish to edit (1-8), or type any other key to confirm:")
 
                 else:
                     print_system_message(
@@ -225,36 +224,6 @@ class AuthService:
 
                 to_edit = input("> ").strip().lower()
 
-                if role == "p":
-                    match to_edit:
-                        case "6":
-                            while True:
-                                gender = input("> ").strip().lower()
-                                if gender not in gender_dict.keys():
-                                    print_system_message(
-                                        "Please select a valid option."
-                                    )
-                                else:
-                                    gender = gender_dict[gender]
-                                    break
-                        case "7":
-                            while True:
-                                date_of_birth = input("Date of Birth (DD/MM/YYYY): ")
-                                if is_invalid_date(date_of_birth):
-                                    continue
-                                break
-                        case "8":
-                            while True:
-                                emergency_contact_email = input(
-                                    "Emergency Contact Email (Optional): "
-                                ).strip()
-                                if emergency_contact_email and is_invalid_email(
-                                    emergency_contact_email
-                                ):
-                                    continue
-                                break
-                        case _:
-                            pass
                 match to_edit:
                     case "1":
                         while True:
@@ -284,6 +253,38 @@ class AuthService:
                             break
                     case "5":
                         password = input("Password: ").strip()
+                    case "6":
+                        if role != "p":
+                            break
+                        while True:
+                            print("Gender Options:\n[M] Male\n[F] Female\n[N] Non-binary\n[T] Transgender\n[O] Other")
+                            gender = input("> ").strip().lower()
+                            if gender not in gender_dict.keys():
+                                print_system_message(
+                                    "Please select a valid option."
+                                )
+                            else:
+                                gender = gender_dict[gender]
+                                break
+                    case "7":
+                        if role != "p":
+                            break
+                        while True:
+                            date_of_birth = input("Date of Birth (DD-MM-YYYY): ")
+                            if is_invalid_date(date_of_birth):
+                                continue
+                            break
+                    case "8":
+                        if role != "p":
+                            break
+                        while True:
+                            emergency_contact_email = input(
+                                   "Emergency Contact Email (Optional): "
+                            ).strip()
+                            if emergency_contact_email and is_invalid_email(emergency_contact_email):
+                                continue
+                            break
+
                     case _:
                         break
             else:

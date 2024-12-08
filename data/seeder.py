@@ -40,7 +40,7 @@ def random_datetime_next_last(next_last):
         else:
             dates.append(last_day)
     return random.choice(dates)
-  
+
 
 def random_datetime(start, end):
     delta = end - start
@@ -123,13 +123,17 @@ def random_first_last_name():
 
 def generate_mood_entries(num_entries):
     moods = {
-        "Very Happy" : [":D", "Feeling awesome!", "Love this feeling!"], 
-        "Happy" : [":)", "Feel good.", "Life is good."],
-        "Neutral" : ["Feeling alright.", ":|", "It is what it is."], 
-        "Sad": ["Feeling bad.", "Feeling a bit down.", ":/"], 
-        "Very Sad": ["Feel terrible.", "Feeling awful right now.", ":("]}
-    
-    dates = [random_datetime_within_week().strftime("%d-%m-%Y %H:%M:%S") for i in range(num_entries)]
+        "Very Happy": [":D", "Feeling awesome!", "Love this feeling!"],
+        "Happy": [":)", "Feel good.", "Life is good."],
+        "Neutral": ["Feeling alright.", ":|", "It is what it is."],
+        "Sad": ["Feeling bad.", "Feeling a bit down.", ":/"],
+        "Very Sad": ["Feel terrible.", "Feeling awful right now.", ":("],
+    }
+
+    dates = [
+        random_datetime_within_week().strftime("%d-%m-%Y %H:%M:%S")
+        for _ in range(num_entries)
+    ]
     dates = sorted(dates)
     moods_list = [random.choice(list(moods.keys())) for i in range(num_entries)]
     return [
