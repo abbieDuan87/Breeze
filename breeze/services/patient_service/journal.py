@@ -15,10 +15,11 @@ def print_journal_dashboard(user, title=None, body=None):
     print(PATIENT_BANNER_STRING)
     print(f"Hi {user.get_username()} !")
     print("Write your journal entry below, or enter [X] to exit without saving.\n")
-    if title: 
+    if title:
         print(title)
     if body:
         print("\n" + body)
+
 
 def enter_journal(user, auth_service):
     while True:
@@ -42,10 +43,12 @@ def enter_journal(user, auth_service):
     journal_body = input("> ").strip()
     if check_exit(journal_body):
         return
-      
+
     while True:
         print_journal_dashboard(user, title=journal_title, body=journal_body)
-        print("\nWould you like to add more? Type [S] to save if finished, or continue writing:")
+        print(
+            "\nWould you like to add more? Type [S] to save if finished, or continue writing:"
+        )
         journal_addition = input("> ").strip()
         if check_exit(journal_addition):
             return
@@ -55,16 +58,19 @@ def enter_journal(user, auth_service):
             journal_body = journal_body + "\n" + journal_addition
 
     # Combine all parts of the journal entry
-    journal_ent = journal_body + " " + " ".join(journal_additions)
     datetime_str = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
     date_string = datetime.now().strftime("%d-%m-%Y")
     time_string = datetime.now().strftime("%H:%M:%S")
     new_entry = JournalEntry(journal_title, journal_body, date_string, time_string)
     # Save the journal entry
     if hasattr(user, "add_journal_entry"):
-        user.add_journal_entry(new_entry.get_id(), journal_title, journal_body, datetime_str)
+        user.add_journal_entry(
+            new_entry.get_id(), journal_title, journal_body, datetime_str
+        )
         auth_service.save_data_to_file()
         print_journal_dashboard(user, title=title, body=journal_body)
-        direct_to_dashboard("Journal entry saved! You may view and add to your entry via [H] History")
+        direct_to_dashboard(
+            "Journal entry saved! You may view and add to your entry via [H] History"
+        )
     else:
         print_system_message(f"User {user.get_username()} not found in records!")
