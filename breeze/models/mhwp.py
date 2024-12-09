@@ -40,7 +40,15 @@ class MHWP(User, AppointmentMixin):
             assigned_patients if assigned_patients is not None else []
         )
 
+    def sort_appointments(self):
+        self.__appointments = sorted(
+            self.__appointments,
+            key=lambda x: (datetime.datetime.combine(x.date, x.time)
+        ))
+        return 
+    
     def get_appointments(self):
+        self.sort_appointments()
         return self.__appointments
 
     def set_appointments(self, appointments):

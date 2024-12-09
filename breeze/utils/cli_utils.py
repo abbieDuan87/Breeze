@@ -3,7 +3,6 @@ import re
 from datetime import datetime as dt
 from breeze.utils.calendar_utils import get_colored_status, strip_ansi_codes
 
-
 def print_system_message(message):
     """Print the system message in a box that dynamically sizes according to the length of the message.
 
@@ -125,7 +124,7 @@ def print_user_appointments(appointments=[], page=1):
         print("No appointments on this page!")
         return False
 
-    headers = ["#", "MHWP", "Summary", "Date", "Time"]
+    headers = ["#", "MHWP", "Appointment Summary", "Date", "Time"]
 
     rows = []
     no_rows = 1
@@ -176,44 +175,46 @@ def print_journals(journal_data=[], page=1):
                 stripped,
                 entry.date,
                 entry.time,
-                entry.last_update if str(entry.last_update) != str(date_time) else 'No Updates'
+                entry.last_update if str(entry.last_update) != dt.strftime(date_time, '%d-%m-%Y %H:%M:%S') else 'No Updates'
             ]
         )
     table_creator(headers, rows)
-    # column_widths = [
-    #     max(len(strip_ansi_codes(str(row[i]))) for row in rows + [headers])
-    #     for i in range(len(headers))
-    # ]
-
-    # separator = "+".join("-" * (width + 2) for width in column_widths)
-    # separator = f"+{separator}+"
-
-    # print(separator)
-    # print(
-    #     "| "
-    #     + " | ".join(
-    #         header.center(width) for header, width in zip(headers, column_widths)
-    #     )
-    #     + " |"
-    # )
-    # print(separator)
-    # for row in rows:
-    #     print(
-    #         "| "
-    #         + " | ".join(
-    #             str(cell).ljust(
-    #                 width + len(str(cell)) - len(strip_ansi_codes(str(cell)))
-    #             )
-    #             for cell, width in zip(row, column_widths)
-    #         )
-    #         + " |"
-    #     )
-    # print(separator)
-
     return True
 
 
 def print_moods(mood_data=[], page=1):
+    mood_colouring = {
+        "G": {
+            "name": "Green",
+            "description": "Very Happy",
+            "color_code": 40,
+            "emoji": "\U0001F60A",
+        },
+        "L": {
+            "name": "Light Green",
+            "description": "Happy",
+            "color_code": 120,
+            "emoji": "\U0001F642",
+        },
+        "Y": {
+            "name": "Yellow",
+            "description": "Neutral",
+            "color_code": 226,
+            "emoji": "\U0001F610",
+        },
+        "O": {
+            "name": "Orange",
+            "description": "Sad",
+            "color_code": 208,
+            "emoji": "\U0001F641",
+        },
+        "R": {
+            "name": "Red",
+            "description": "Very Sad",
+            "color_code": 160,
+            "emoji": "\U0001F622",
+        },
+    }
     if not mood_data:
         return
     lower = (page - 1) * 10

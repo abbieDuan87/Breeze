@@ -152,6 +152,7 @@ class AuthService:
                 "n": "Non-binary",
                 "t": "Transgender",
                 "o": "Other",
+                "0": "Other"
             }
             while True:
                 gender = input("> ").strip().lower()

@@ -148,9 +148,10 @@ def generate_mood_entries(num_entries):
 
 
 def generate_journals(num_entries):
+
     dates = [
         random_datetime_within_week().strftime("%d-%m-%Y %H:%M:%S")
-        for _ in range(num_entries)
+        for i in range(num_entries)
     ]
     dates = sorted(dates)
     journal_texts = [

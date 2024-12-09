@@ -65,8 +65,16 @@ class Patient(User, AppointmentMixin):
 
     def get_journal_entries(self):
         return self.__journal_entries
-
+    
+    def sort_appointments(self):
+        self.__appointments = sorted(
+            self.__appointments,
+            key=lambda x: (datetime.combine(x.date, x.time)
+        ))
+        return 
+    
     def get_appointments(self):
+        self.sort_appointments()
         return self.__appointments
 
     def set_appointments(self, appointments):
