@@ -22,6 +22,7 @@ def manage_appointments(user, auth_service):
             )
             upcoming_appointments = show_upcoming_appointments(
                 user,
+                auth_service,
                 (
                     lambda app: (
                         app.get_date(),
@@ -64,6 +65,7 @@ def manage_appointments(user, auth_service):
         )
         upcoming_appointments = show_upcoming_appointments(
             user,
+            auth_service,
             (lambda app: (app.get_date(), app.get_time(), app.patient_username)),
         )
 

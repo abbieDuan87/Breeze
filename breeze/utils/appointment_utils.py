@@ -24,6 +24,10 @@ def cancel_appointments_with_inactive_accounts(auth_service, appointments):
         patient = auth_service.get_user_by_username(app.patient_username)
         mhwp = auth_service.get_user_by_username(app.mhwp_username)
 
+        if not patient or not mhwp:
+            app.cancel_appointment()
+            continue
+
         if patient.get_is_disabled() or mhwp.get_is_disabled():
             app.cancel_appointment()
 
@@ -31,7 +35,7 @@ def cancel_appointments_with_inactive_accounts(auth_service, appointments):
 
 
 def show_upcoming_appointments(
-    user, key=(lambda app: (app.get_date(), app.get_time())), is_own_view=True
+    user, auth_service, key=(lambda app: (app.get_date(), app.get_time())), is_own_view=True
 ):
     """Displays the user's upcoming appointments."""
     upcoming_appointments = sorted(
@@ -39,6 +43,8 @@ def show_upcoming_appointments(
             app
             for app in user.get_appointments()
             if app.get_date() >= datetime.datetime.now().date()
+            and auth_service.get_user_by_username(app.patient_username)
+            and auth_service.get_user_by_username(app.mhwp_username)
         ],
         key=key,
     )
