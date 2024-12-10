@@ -522,8 +522,9 @@ def show_history(user, auth_service):
             case 'j':
                 if show_journal_history(user, auth_service):
                     return
-            case '_':
+            case _:
                 print_system_message('Invalid input. Please try again.')
                 time.sleep(1)
+                continue
 
 
