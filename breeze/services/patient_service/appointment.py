@@ -52,7 +52,7 @@ def manage_appointment(user, auth_service):
         cancel_appointments_with_inactive_accounts(
             auth_service, user.get_appointments()
         )
-        show_upcoming_appointments(user)
+        show_upcoming_appointments(user, auth_service)
 
         print("\nChoose one of the following options:")
         print(
@@ -181,7 +181,7 @@ def manage_appointment(user, auth_service):
                 cancel_appointments_with_inactive_accounts(
                     auth_service, user.get_appointments()
                 )
-                upcoming_appointments = show_upcoming_appointments(user)
+                upcoming_appointments = show_upcoming_appointments(user, auth_service)
 
                 if not upcoming_appointments:
                     time.sleep(1)
