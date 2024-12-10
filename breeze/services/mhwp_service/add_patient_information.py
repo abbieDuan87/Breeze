@@ -35,7 +35,7 @@ def add_patient_information(user, auth_service):
         print("[7] Eating Disorders")
         print("[8] Phobias")
         print("[9] Panic disorder")
-        print("[10] Antisocial personality disorder (ASPD)")
+        print("[10] ASPD (Antisocial personality disorder)")
         print("[O] Other condition")
         print("[X] Exit")
 
@@ -50,7 +50,7 @@ def add_patient_information(user, auth_service):
             "7": "Eating Disorders",
             "8": "Phobias",
             "9": "Panic disorder",
-            "10": "Antisocial personality disorder (ASPD)",
+            "10": "ASPD (Antisocial personality disorder)",
         }
         display_condition_menu(patient)
         while True:

@@ -12,7 +12,7 @@ def random_datetime_within_week():
     return random_datetime(start_of_week, end_of_week)
 
 
-def random_datetime_next_weekdays():
+def random_date_next_weekdays():
     today = datetime.now()
 
     weekdays = [today]
@@ -28,7 +28,7 @@ def random_datetime_next_weekdays():
     return random_weekday
 
 
-def random_datetime_next_last(next_last):
+def random_date_next_last(next_last):
     dates = []
     j = 1 if next_last == "next" else -1
     for i in range(7):
@@ -131,8 +131,8 @@ def generate_mood_entries(num_entries):
     }
 
     dates = [
-        random_datetime_within_week().strftime("%d-%m-%Y %H:%M:%S")
-        for _ in range(num_entries)
+        random_datetime(datetime.now() - timedelta(days=7), datetime.now()).strftime("%d-%m-%Y %H:%M:%S")
+        for i in range(num_entries)
     ]
     dates = sorted(dates)
     moods_list = [random.choice(list(moods.keys())) for i in range(num_entries)]
@@ -150,7 +150,7 @@ def generate_mood_entries(num_entries):
 def generate_journals(num_entries):
 
     dates = [
-        random_datetime_within_week().strftime("%d-%m-%Y %H:%M:%S")
+        random_datetime(datetime.now() - timedelta(days=7), datetime.now()).strftime("%d-%m-%Y %H:%M:%S")
         for i in range(num_entries)
     ]
     dates = sorted(dates)
@@ -262,7 +262,7 @@ def generate_appointments(patients, mhwps):
                 )  # Generate 1-3 appointments per patient
                 generated_appointments = set()  # prevent generated overlap appointment
                 for _ in range(num_appointments):
-                    appointment_date = random_datetime_next_last(next_last).strftime(
+                    appointment_date = random_date_next_last(next_last).strftime(
                         "%d-%m-%Y"
                     )
                     appointment_time = random.choice(time_slots)

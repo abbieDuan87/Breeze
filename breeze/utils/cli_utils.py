@@ -167,7 +167,7 @@ def print_journals(journal_data=[], page=1):
     for index, entry in enumerate(page_data):
         title = entry.strip_title()
         stripped = entry.strip_entry()
-        date_time = dt.combine(entry.date, entry.time)
+        date_time = entry.date + ' ' + entry.time
         rows.append(
             [
                 index + 1,
@@ -175,7 +175,7 @@ def print_journals(journal_data=[], page=1):
                 stripped,
                 entry.date,
                 entry.time,
-                entry.last_update if str(entry.last_update) != dt.strftime(date_time, '%d-%m-%Y %H:%M:%S') else 'No Updates'
+                entry.last_update if str(entry.last_update) != str(date_time) else 'No Updates'
             ]
         )
     table_creator(headers, rows)

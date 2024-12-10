@@ -39,6 +39,8 @@ def display_patient_summary(user, auth_service):
                     key=lambda item: max(entry["timestamp"] for entry in item[1]),
                 )
                 condition_name = recent_condition[0]
+                if len(condition_name) > 20:
+                    condition_name = condition_name[:16] + '...'
             else:
                 condition_name = "N/A"
 
@@ -49,6 +51,8 @@ def display_patient_summary(user, auth_service):
                     key=lambda p: datetime.strptime(p["start_date"], "%d-%m-%Y"),
                 )
                 medication_name = recent_prescription["medication"]
+                if len(medication_name) > 15:
+                    medication_name = medication_name[:12] + '...'
             else:
                 medication_name = "N/A"
 
