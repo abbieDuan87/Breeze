@@ -251,6 +251,8 @@ def generate_appointments(patients, mhwps):
 
             time_slots.append(f"{display_hour}:{minute} {am_pm}")
 
+    generated_appointments = set()
+
     for patient in patients:
         assigned_mhwp = patient["assignedMHWP"]
         if assigned_mhwp:
@@ -260,14 +262,17 @@ def generate_appointments(patients, mhwps):
                 num_appointments = random.randint(
                     1, 3
                 )  # Generate 1-3 appointments per patient
-                generated_appointments = set()  # prevent generated overlap appointment
                 for _ in range(num_appointments):
                     appointment_date = random_datetime_next_last(next_last).strftime(
                         "%d-%m-%Y"
                     )
                     appointment_time = random.choice(time_slots)
 
-                    appointment_key = (appointment_date, appointment_time)
+                    appointment_key = (
+                        appointment_date,
+                        appointment_time,
+                        assigned_mhwp,
+                    )
 
                     if appointment_key in generated_appointments:
                         continue
