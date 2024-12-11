@@ -270,7 +270,7 @@ def generate_appointments(patients, mhwps):
                     appointment_key = (appointment_date, appointment_time)
 
                     if appointment_key in generated_appointments:
-                        break
+                        continue
                     else:
                         generated_appointments.add(appointment_key)
 
