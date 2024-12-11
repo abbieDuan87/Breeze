@@ -64,17 +64,17 @@ MHWP
 
 	•	Features:
 	•	View assigned patients.
-	•	Access patient records (add, delete, edit conditions and prescriptions).
+	•	Manage patient records (add, delete, edit conditions and prescriptions).
     •	Manage appointments with patients.
 
 Patients
 
 	•	Features:
 	•	Log mood entries and journal entries.
-    •	Book an appointment with assgiend mhwp.
-    •	View hisotries (mood, journal, appointment).
-    •	Seach for meditation exercises.
-    •	Learn about mental conditions.
+    •	Book an appointment with assigned mhwp.
+    •	View histories (mood, journal, appointment).
+    •	Search for meditation exercises.
+    •	Learn about mental health conditions.
 
 
 Development Details
