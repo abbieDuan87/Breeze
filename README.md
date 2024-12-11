@@ -24,13 +24,15 @@ This project is implemented in Python and designed to run as a standalone applic
 ```bash
 git clone <repository_url>
 cd Breeze
+```
 
-Step 2: Run the Application
+### Step 2: Run the Application
 
 Simply run the following command:
 
+```bash
 python3 main.py
-
+```
 	•	The application will check for missing dependencies and install them automatically.
 	•	If the data/users.json file does not exist, the seeder.py script will generate it with dummy data.
 
@@ -93,4 +95,4 @@ Important Notes
 
 	•	Ensure you have sufficient permissions to install Python packages globally or use a virtual environment.
 	•	To regenerate the users.json file, delete the existing file in /data and rerun main.py.
-```
+
