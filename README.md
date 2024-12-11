@@ -33,8 +33,8 @@ Simply run the following command:
 ```bash
 python3 main.py
 ```
-	•	The application will check for missing dependencies and install them automatically.
-	•	If the data/users.json file does not exist, the seeder.py script will generate it with dummy data.
+- The application will check for missing dependencies and install them automatically.
+- If the data/users.json file does not exist, the seeder.py script will generate it with dummy data.
 
 ## Application Structure
 ```bash
@@ -59,25 +59,25 @@ Breeze/
 
 #### Admin
 
-	•	Features:
-		•	View summaries of all users.
-		•	Manage users (add, delete, disable, edit).
+- Features:
+	- View summaries of all users.
+	- Manage users (add, delete, disable, edit).
 
 #### MHWP
 
-	•	Features:
-		•	View assigned patients.
-		•	Access patient records (add, delete, edit conditions and prescriptions).
-	        •	Manage appointments with patients.
+- Features:
+	- View assigned patients.
+	- Access patient records (add, delete, edit conditions and prescriptions).
+	- Manage appointments with patients.
 
 #### Patients
 
-	•	Features:
-		•	Log mood entries and journal entries.
-	    	•	Book an appointment with assgiend mhwp.
-	    	•	View hisotries (mood, journal, appointment).
-	    	•	Seach for meditation exercises.
-	    	•	Learn about mental conditions.
+- Features:
+	- Log mood entries and journal entries.
+	- Book an appointment with assgiend mhwp.
+	- View hisotries (mood, journal, appointment).
+	- Seach for meditation exercises.
+	- Learn about mental conditions.
 
 
 ## Development Details
@@ -88,12 +88,12 @@ When you run main.py, the script checks for missing dependencies. If any are fou
 
 ### Data Seeding
 
-	•	The seeder.py script is embedded in main.py.
-	•	On the first run, it generates dummy data for users.json in the /data directory.
-	•	If users.json already exists, it is overwritten to ensure a fresh start.
+- The seeder.py script is embedded in main.py.
+- On the first run, it generates dummy data for users.json in the /data directory.
+- If users.json already exists, it is overwritten to ensure a fresh start.
 
 ## Important Notes
 
-	•	Ensure you have sufficient permissions to install Python packages globally or use a virtual environment.
-	•	To regenerate the users.json file, delete the existing file in /data and rerun main.py.
+- Ensure you have sufficient permissions to install Python packages globally or use a virtual environment.
+- To regenerate the users.json file, delete the existing file in /data and rerun main.py.
 
