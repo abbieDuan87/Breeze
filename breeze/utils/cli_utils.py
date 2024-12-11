@@ -138,7 +138,7 @@ def print_user_appointments(appointments=[], page=1):
                     no_rows,
                     appt.mhwp_username,
                     stripped,
-                    appt.date,
+                    appt.date.strftime("%d-%m-%Y"),
                     appt.time,
                 ]
             )
@@ -167,7 +167,7 @@ def print_journals(journal_data=[], page=1):
     for index, entry in enumerate(page_data):
         title = entry.strip_title()
         stripped = entry.strip_entry()
-        date_time = dt.combine(entry.date, entry.time)
+        date_time = entry.date + ' ' + entry.time
         rows.append(
             [
                 index + 1,
@@ -175,7 +175,7 @@ def print_journals(journal_data=[], page=1):
                 stripped,
                 entry.date,
                 entry.time,
-                entry.last_update if str(entry.last_update) != dt.strftime(date_time, '%d-%m-%Y %H:%M:%S') else 'No Updates'
+                entry.last_update if str(entry.last_update) != str(date_time) else 'No Updates'
             ]
         )
     table_creator(headers, rows)
@@ -183,38 +183,6 @@ def print_journals(journal_data=[], page=1):
 
 
 def print_moods(mood_data=[], page=1):
-    mood_colouring = {
-        "G": {
-            "name": "Green",
-            "description": "Very Happy",
-            "color_code": 40,
-            "emoji": "\U0001F60A",
-        },
-        "L": {
-            "name": "Light Green",
-            "description": "Happy",
-            "color_code": 120,
-            "emoji": "\U0001F642",
-        },
-        "Y": {
-            "name": "Yellow",
-            "description": "Neutral",
-            "color_code": 226,
-            "emoji": "\U0001F610",
-        },
-        "O": {
-            "name": "Orange",
-            "description": "Sad",
-            "color_code": 208,
-            "emoji": "\U0001F641",
-        },
-        "R": {
-            "name": "Red",
-            "description": "Very Sad",
-            "color_code": 160,
-            "emoji": "\U0001F622",
-        },
-    }
     if not mood_data:
         return
     lower = (page - 1) * 10
@@ -237,7 +205,7 @@ def print_moods(mood_data=[], page=1):
                 index + 1,
                 mood.mood,
                 comment,
-                mood.date,
+                mood.date.strftime("%d-%m-%Y"),
                 mood.time,
             ]
         )

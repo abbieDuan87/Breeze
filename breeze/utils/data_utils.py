@@ -187,8 +187,8 @@ def create_journal_entries_from_data(journal_data):
         body = entry.get("text")
         dt = entry.get("date")
         last_update = entry.get("last_update")
-        date = datetime.strptime(dt, "%d-%m-%Y %H:%M:%S").date()
-        time = datetime.strptime(dt, "%d-%m-%Y %H:%M:%S").time()
+        date = dt[:10]
+        time = dt[11:]
         journal_entries.append(
             JournalEntry(
                 title,
