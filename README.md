@@ -32,7 +32,7 @@ Simply run the following command:
 
 ```bash
 python3 main.py
-```
+
 	•	The application will check for missing dependencies and install them automatically.
 	•	If the data/users.json file does not exist, the seeder.py script will generate it with dummy data.
 
@@ -67,17 +67,17 @@ MHWP
 	•	Features:
 	•	View assigned patients.
 	•	Access patient records (add, delete, edit conditions and prescriptions).
-    •	Manage appointments with patients.
+        •	Manage appointments with patients.
 
 Patients
 
 	•	Features:
 	•	Log mood entries and journal entries.
-    •	Book an appointment with assgiend mhwp.
-    •	View hisotries (mood, journal, appointment).
-    •	Seach for meditation exercises.
-    •	Learn about mental conditions.
-
+    	•	Book an appointment with assgiend mhwp.
+    	•	View hisotries (mood, journal, appointment).
+    	•	Seach for meditation exercises.
+    	•	Learn about mental conditions.
+```
 
 Development Details
 
